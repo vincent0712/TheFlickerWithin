@@ -1,5 +1,5 @@
 // File: IInteractable.cs
-public interface Interactable
+public interface IInteractable
 {
     void Interact();
 }

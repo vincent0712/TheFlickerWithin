@@ -10,15 +10,10 @@ public class Playerinteract : MonoBehaviour
 
     public float rayDistance = 6f;
     public LayerMask interactableLayer;
-    void Start()
-    {
-        
-    }
-
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && caninteract)
         {
             Interact();
         }
@@ -27,12 +22,12 @@ public class Playerinteract : MonoBehaviour
     public void Interact()
     {
 
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(cam.transform.position, transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
-            Interactable interactable = hit.collider.GetComponent<Interactable>();
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
                 interactable.Interact();
