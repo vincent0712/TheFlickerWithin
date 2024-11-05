@@ -3,17 +3,19 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInteractable
 {
-    public float openAngle = 90f;          // Angle to open the door
-    public float openSpeed = 2f;           // Speed at which the door opens
-    public bool isOpen = false;            // State of the door
+    public float openAngle = 90f;          
+    public float openSpeed = 2f;          
+    public bool isOpen = false;           
+    private AudioSource au;
 
-    private Quaternion closedRotation;     // Initial closed rotation
-    private Quaternion openRotation;       // Target open rotation
-    private bool isAnimating = false;      // Whether the door is currently rotating
+    private Quaternion closedRotation;    
+    private Quaternion openRotation;       
+    private bool isAnimating = false;      
 
     void Start()
     {
-        // Save the closed rotation and calculate the target open rotation
+        
+        au = gameObject.GetComponent<AudioSource>();
         closedRotation = transform.rotation;
         openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0f, openAngle, 0f));
     }
@@ -22,25 +24,27 @@ public class Door : MonoBehaviour, IInteractable
     {
         if (!isAnimating)
         {
-            isOpen = !isOpen; // Toggle the door state
+            
+            isOpen = !isOpen;
+            au.Play();
             StartCoroutine(RotateDoor());
         }
     }
 
     private System.Collections.IEnumerator RotateDoor()
     {
-        isAnimating = true; // Start the animation
+        isAnimating = true; 
 
         Quaternion targetRotation = isOpen ? openRotation : closedRotation;
 
-        // Smoothly rotate the door towards the target rotation
+        
         while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * openSpeed);
             yield return null;
         }
 
-        transform.rotation = targetRotation; // Snap to the final rotation
-        isAnimating = false; // End the animation
+        transform.rotation = targetRotation; 
+        isAnimating = false; 
     }
 }
