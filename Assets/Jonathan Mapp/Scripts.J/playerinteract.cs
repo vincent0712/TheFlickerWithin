@@ -5,6 +5,7 @@ using UnityEngine;
 public class playerinteract : MonoBehaviour
 {
     public Camera cam;
+    public Camera cam2;
     public float interactDistance = 3f;
     private bool caninteract = true;
 
