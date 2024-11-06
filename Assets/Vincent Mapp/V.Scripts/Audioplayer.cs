@@ -22,21 +22,16 @@ public class Audioplayer : MonoBehaviour
     public IEnumerator randomsound()
     {
         isoncd = true;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(15f);
         int random = Random.Range(1, 10);
         Debug.Log(random);
-        if(random > 1)
+        if(random > 7)
         {
-            
             Playsound(randoms1);
-            StartCoroutine(Wait());
         }
         isoncd = false;
     }
-    public IEnumerator Wait()
-    {
-        yield return new WaitForSeconds(10f);
-    }
+
     public void Playsound(AudioClip sound)
     {
         au.clip = sound;
