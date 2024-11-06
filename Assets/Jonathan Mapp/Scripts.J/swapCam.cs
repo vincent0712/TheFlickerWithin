@@ -6,20 +6,33 @@ using UnityEngine.Rendering;
 public class swapCam : MonoBehaviour
 {
     public Camera cam;
-    private Volume camVolume;
+    public Camera cam2;
+    bool iscam = false;
     void Start()
     {
-        camVolume = GetComponent<Volume>();
+        cam.gameObject.SetActive(true);
+        cam2.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if(!iscam)
+            {
+                cam.gameObject.SetActive(false);
+                cam2.gameObject.SetActive(true);
+                iscam = true;
+            }
+            else if (iscam)
+            {
+                cam2.gameObject.SetActive(false);
+                cam.gameObject.SetActive(true);
+                iscam = false;
+            }
+            
+        }
         
-    }
-
-    private void switchCam()
-    {
-        gameObject.SetActive(camVolume);
     }
 }
