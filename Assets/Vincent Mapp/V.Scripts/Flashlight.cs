@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    public GameObject light;
-    private bool ison = false;
+    public Light light;
+    private bool ison = true;
     private AudioSource aud;
 
     private void Start()
@@ -19,11 +19,13 @@ public class Flashlight : MonoBehaviour
             aud.Play();
             if (ison)
             {
-                light.SetActive(false);
+                light.intensity = 0f;
+                ison = false;
             }
             else if (!ison)
             {
-                light.SetActive(true);
+                light.intensity = 5f;
+                ison = true;
             }
         }
 
