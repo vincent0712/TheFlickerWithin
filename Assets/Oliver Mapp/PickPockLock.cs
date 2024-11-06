@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class PickPockLock : MonoBehaviour
 {
     // References to the UI sliders
+    public Slider targetPinSlider3;     // Slider that moves automatically3
+    public Slider targetPinSlider2;    // Slider that moves automatically2
     public Slider targetPinSlider;    // Slider that moves automatically
     public Slider playerPinSlider;    // Slider controlled by player for a single attempt
 
@@ -63,14 +65,20 @@ public class PickPockLock : MonoBehaviour
             isLockPicked = true;
             Debug.Log("Lock picked successfully!");
             // Optionally, trigger success actions
+            hasAttempted = true;
         }
         else
         {
             Debug.Log("Attempt failed. Try again.");
+            StartCoroutine(wait());
             // Optional: Trigger failure actions, like shaking the lock
+            hasAttempted = true; 
         }
-
-        hasAttempted = true;
+    }
+    public IEnumerator wait()
+    {
+        yield return new WaitForSeconds(2f);
+        ResetAttempt();
     }
 
     // Reset for a new attempt (if you want to allow retries)
