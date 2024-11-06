@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class HStick : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string stick;
 
-    // Update is called once per frame
-    void Update()
+    void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.G))
+        {
+            Inventory.instance.AddToInventory(gameObject);
+            Debug.Log($"{stick} added to inventory.");
+        }
     }
 }
