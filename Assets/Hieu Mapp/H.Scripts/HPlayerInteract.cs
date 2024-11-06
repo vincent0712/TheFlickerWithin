@@ -27,7 +27,7 @@ public class HPlayerInteract : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            HInteract interactable = hit.collider.GetComponent<HInteract>();
             if (interactable != null)
             {
                 interactable.Interact();
