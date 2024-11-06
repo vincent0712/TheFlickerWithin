@@ -4,32 +4,29 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    public Transform targetPoint; 
-    public float followSpeed = 5f; 
-    public float swingAmount = 0.1f; 
-    public float swingSpeed = 3f; 
+    public GameObject light;
+    private bool ison = false;
+    private AudioSource aud;
 
-    private Vector3 offset;
-
-    void Start()
+    private void Start()
     {
-        
-        offset = Vector3.zero;
+        aud = gameObject.GetComponent<AudioSource>();
     }
-
-    void Update()
+    private void Update()
     {
-        
-        offset.x = Mathf.Sin(Time.time * swingSpeed) * swingAmount;
-        offset.y = Mathf.Cos(Time.time * swingSpeed * 0.5f) * swingAmount;
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            aud.Play();
+            if (ison)
+            {
+                light.SetActive(false);
+            }
+            else if (!ison)
+            {
+                light.SetActive(true);
+            }
+        }
 
-        
-        Vector3 targetPosition = targetPoint.position + offset;
 
-        
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
-
-
-        transform.LookAt(targetPosition);
     }
 }
