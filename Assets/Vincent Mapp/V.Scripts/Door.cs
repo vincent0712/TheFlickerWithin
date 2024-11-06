@@ -7,6 +7,7 @@ public class Door : MonoBehaviour, IInteractable
     public float openSpeed = 2f;          
     public bool isOpen = false;           
     private AudioSource au;
+    public bool islocked = false;
 
     private Quaternion closedRotation;    
     private Quaternion openRotation;       
