@@ -14,7 +14,8 @@ public class playerMove : MonoBehaviour
 
 
     private CharacterController controller;
-    private Transform cameraTransform;
+    public Transform cameraTransform;
+    public Transform camra2Transform;
     private float xRotation = 0f;
 
     void Start()
@@ -45,6 +46,9 @@ public class playerMove : MonoBehaviour
 
         // Apply rotations to player and camera
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
+
+        camra2Transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 

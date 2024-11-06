@@ -26,7 +26,11 @@ public class playerinteract : MonoBehaviour
         Ray ray = new Ray(cam.transform.position, transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
+        Ray ray2 = new Ray(cam2.transform.position, transform.forward);
+        RaycastHit hit2;
+
+        if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer) ||
+            Physics.Raycast(ray2, out hit2, rayDistance, interactableLayer))
         {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
