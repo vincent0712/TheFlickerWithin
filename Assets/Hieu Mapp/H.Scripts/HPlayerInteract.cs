@@ -22,14 +22,13 @@ public class HPlayerInteract : MonoBehaviour
     public void Interact()
     {
 
-        Ray ray = new Ray(cam.transform.position, transform.forward);
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
-       
+
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
-            Debug.Log("Hii");
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
