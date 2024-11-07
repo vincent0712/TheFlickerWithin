@@ -50,6 +50,9 @@ public class swapCam : MonoBehaviour
             {
                 cam.gameObject.SetActive(!iscam);
                 cam2.gameObject.SetActive(iscam);
+
+                camera.SetActive(true);
+
                 camera.transform.position = Vector3.Lerp(camTargetpoint.position, camStartingPoint.position, progress);
             }
 
@@ -59,6 +62,11 @@ public class swapCam : MonoBehaviour
 
                 cam.gameObject.SetActive(!iscam);
                 cam2.gameObject.SetActive(iscam);
+
+                if (iscam == true)
+                    camera.SetActive(false);
+                else
+                    camera.SetActive(true);
             }
         }
         
