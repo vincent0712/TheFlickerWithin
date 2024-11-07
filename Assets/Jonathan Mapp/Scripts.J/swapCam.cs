@@ -35,26 +35,35 @@ public class swapCam : MonoBehaviour
             elapsedTime = 0f;
             iscam = !iscam;
             Debug.Log(iscam);
-
-            cam.gameObject.SetActive(!iscam);
-            cam2.gameObject.SetActive(iscam);
         }
 
         if (ismove)
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / moveTime;
+            bool moveback;
 
             if (iscam)
             {
                 camera.transform.position = Vector3.Lerp(camStartingPoint.position, camTargetpoint.position, progress);
+                moveback = false;
+
             }
             else
             {
                 camera.transform.position = Vector3.Lerp(camTargetpoint.position, camStartingPoint.position, progress);
+
+                moveback = true;
             }
 
-            if (progress >= 1)
+            if (progress >= 1 && moveback)
+            {
+                ismove = false;
+
+                cam.gameObject.SetActive(!iscam);
+                cam2.gameObject.SetActive(iscam);
+            }
+            else if(progress >=1 && !moveback)
             {
                 ismove = false;
             }
