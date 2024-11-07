@@ -24,6 +24,9 @@ public class Mdoor : MonoBehaviour, MInteractable
 
     public void Interact()
     {
+
+        if (islocked)
+            return;
         if (!isAnimating)
         {
 
@@ -49,5 +52,6 @@ public class Mdoor : MonoBehaviour, MInteractable
         transform.rotation = targetRotation;
         isAnimating = false;
     }
+
 
 }

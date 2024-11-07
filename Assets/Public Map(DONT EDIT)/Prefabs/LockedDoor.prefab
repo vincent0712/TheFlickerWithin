@@ -333,8 +333,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4634675856088631107, guid: 354fdb2c03199204c9c5acb4f77ab164,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2971267535680496981}
   m_SourcePrefab: {fileID: 100100000, guid: 354fdb2c03199204c9c5acb4f77ab164, type: 3}
+--- !u!1 &3587109762899690228 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4634675856088631107, guid: 354fdb2c03199204c9c5acb4f77ab164,
+    type: 3}
+  m_PrefabInstance: {fileID: 8184822213892294071}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2971267535680496981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3587109762899690228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e5bab770bdd0a4096f6e71bd661ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minigame: {fileID: 0}
+  player: {fileID: 0}
 --- !u!4 &4218793123604109390 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5411775951775096313, guid: 354fdb2c03199204c9c5acb4f77ab164,

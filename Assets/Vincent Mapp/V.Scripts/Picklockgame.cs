@@ -27,8 +27,8 @@ public class Picklockgame : MonoBehaviour
     public bool complete = false;
 
     // Reference to the door script to unlock
-    public Door door;
-    public Playermoveing player;
+    public Mdoor door;
+    public MPlayermovement player;
 
     void Start()
     {
