@@ -4,44 +4,86 @@ using UnityEngine;
 
 public class Mcamswitch : MonoBehaviour
 {
-    public Camera cam;
-    public Camera cam2;
-    bool iscam = false;
-    private GameObject monster;
+    public Camera cam; // Main camera
+    public Camera cam2; // Camera we swap to
+
+    public GameObject camera;
+    public GameObject monster;
+
+    public Transform camStartingPoint;
+    public Transform camTargetpoint;
+
+    private float moveTime = 0.5f; // Time to move camera from startPoint to targetPoint
+    private float elapsedTime = 0f; // Track time
+    private bool iscam = false; // Treack activ camera
+    private bool ismove = false;
+
     void Start()
     {
-        monster = GameObject.FindGameObjectWithTag("monster");
-        monster.SetActive(false);
         cam.gameObject.SetActive(true);
         cam2.gameObject.SetActive(false);
+
+        camera.transform.position = camStartingPoint.transform.position;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !ismove)
         {
-            if (!iscam)
+            ismove = true;
+            elapsedTime = 0f;
+            iscam = !iscam;
+            Debug.Log(iscam);
+        }
+
+        if (ismove)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / moveTime;
+
+            if (iscam)
             {
-
-                monster.SetActive(true);
-
-
-                cam.gameObject.SetActive(false);
-                cam2.gameObject.SetActive(true);
+                camera.transform.position = Vector3.Lerp(camStartingPoint.position, camTargetpoint.position, progress);
                 
-                iscam = true;
             }
-            else if (iscam)
+            else
             {
-                monster.SetActive(false);
-                cam2.gameObject.SetActive(false);
-                cam.gameObject.SetActive(true);
-                iscam = false;
+                cam.gameObject.SetActive(!iscam);
+                cam2.gameObject.SetActive(iscam);
+                
+
+                camera.SetActive(true);
+
+                camera.transform.position = Vector3.Lerp(camTargetpoint.position, camStartingPoint.position, progress);
+                monster.SetActive(iscam);
             }
 
+            if (progress >= 1)
+            {
+                ismove = false;
+
+                cam.gameObject.SetActive(!iscam);
+                cam2.gameObject.SetActive(iscam);
+
+                if (iscam == true)
+                {
+                    camera.SetActive(false);
+                    monster.SetActive(iscam);
+
+                }
+                else
+                {
+                    camera.SetActive(true);
+                    
+                }
+                    
+
+            }
         }
 
     }
+
 
 }
