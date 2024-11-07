@@ -10,6 +10,8 @@ public class PickPockLock : MonoBehaviour
     public Slider targetPinSlider2;    // Slider that moves automatically2
     public Slider targetPinSlider;    // Slider that moves automatically
     public Slider playerPinSlider;    // Slider controlled by player for a single attempt
+    public GameObject locklockSprite;  // Target object to move upon completion
+
 
     // Current pin stage (1, 2, or 3)
     private int currentPin = 1;
@@ -56,6 +58,7 @@ public class PickPockLock : MonoBehaviour
     {
         targetPin.value = Mathf.PingPong(Time.time * targetMoveSpeed, 1);
     }
+  
 
     // Sets each target slider to start at a new random position
     void SetRandomTargetPosition()
@@ -91,6 +94,7 @@ public class PickPockLock : MonoBehaviour
             currentTarget = targetPinSlider3;
             success = Mathf.Abs(playerPinSlider.value - targetPinSlider3.value) <= targetRange;
             pin3c = success;
+
         }
 
         if (success)
@@ -102,6 +106,8 @@ public class PickPockLock : MonoBehaviour
             if (currentPin > 3)
             {
                 complete = true;
+                MoveLockSpriteUpward();
+
                 Debug.Log("All pins picked! Lock successfully picked!");
             }
             else
@@ -116,6 +122,20 @@ public class PickPockLock : MonoBehaviour
             StartCoroutine(ResetAfterDelay());
         }
     }
+    // Move locklockSprite upward upon completion
+    private void MoveLockSpriteUpward()
+    {
+        if (locklockSprite != null)
+        {
+            Vector3 newPosition = locklockSprite.transform.position + new Vector3(0, 20f, 0); // Adjust the '5f' as needed
+            locklockSprite.transform.position = newPosition;
+        }
+        else
+        {
+            Debug.LogWarning("locklockSprite is not assigned.");
+        }
+    }
+
 
     // Resets the lock attempt back to Pin 1 if a pin fails
     private IEnumerator ResetAfterDelay()
