@@ -147,8 +147,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.385933, y: 0.829891, z: 1}
-  m_Center: {x: 0.018772364, y: 0.20461741, z: 0}
+  m_Size: {x: 2.385933, y: 2.0166938, z: 1.4144197}
+  m_Center: {x: 0.018772364, y: 0.7980188, z: 0.04393339}
 --- !u!1 &101635315
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 101635315}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -365,8 +365,8 @@ Light:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 5
   m_Range: 23.270607
-  m_SpotAngle: 123.88397
-  m_InnerSpotAngle: 45.130432
+  m_SpotAngle: 71.12608
+  m_InnerSpotAngle: 39.100945
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -637,8 +637,8 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1058573891}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &539839111
-MeshCollider:
+--- !u!65 &539839111
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -653,12 +653,32 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 3
+  m_Size: {x: 0.79391336, y: 1.7841234, z: 3.7146401}
+  m_Center: {x: -0.21508336, y: 0.8089005, z: 1.3573201}
+--- !u!65 &539839112
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 539839109}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.9798684, y: 2.2470214, z: 1.1302629}
+  m_Center: {x: -2.9899337, y: 0.6235106, z: 0.065131426}
 --- !u!1 &571258277
 GameObject:
   m_ObjectHideFlags: 0
@@ -1463,10 +1483,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: kitchen_parts1
       objectReference: {fileID: 0}
+    - target: {fileID: 2596320701971257389, guid: 313a37035c726604f98976127ae01dc8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 210a702a950cc844c8953d06a6d84880, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 313a37035c726604f98976127ae01dc8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 539839112}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 313a37035c726604f98976127ae01dc8,
         type: 3}
       insertIndex: -1
@@ -1573,7 +1602,7 @@ Transform:
   m_GameObject: {fileID: 1235596804}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.3816502, y: -1.501, z: -3.0624285}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.63716, y: 1.1999999, z: 0.87957}
   m_ConstrainProportionsScale: 0
   m_Children: []

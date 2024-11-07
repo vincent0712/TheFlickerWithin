@@ -23,6 +23,8 @@ public class Door : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (islocked)
+            return;
         if (!isAnimating)
         {
             
