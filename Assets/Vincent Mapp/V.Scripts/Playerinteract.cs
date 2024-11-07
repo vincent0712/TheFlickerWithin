@@ -23,10 +23,10 @@ public class Playerinteract : MonoBehaviour
     public void Interact()
     {
 
-        Ray ray = new Ray(cam.transform.position, transform.forward);
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
-        Ray ray2 = new Ray(cam2.transform.position, transform.forward);
+        Ray ray2 = cam2.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit2;
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer) || Physics.Raycast(ray2, out hit2, rayDistance, interactableLayer))
