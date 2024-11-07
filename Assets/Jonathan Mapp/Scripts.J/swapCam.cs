@@ -5,33 +5,59 @@ using UnityEngine.Rendering;
 
 public class swapCam : MonoBehaviour
 {
-    public Camera cam;
-    public Camera cam2;
-    bool iscam = false;
+    public Camera cam; // Main camera
+    public Camera cam2; // Camera we swap to
+
+    public GameObject camera;
+
+    public Transform camStartingPoint; 
+    public Transform camTargetpoint;
+
+    private float moveTime = 1f; // Time to move camera from startPoint to targetPoint
+    private float elapsedTime = 0f; // Track time
+    private bool iscam = false; // Treack activ camera
+    private bool ismove = false;
+
     void Start()
     {
         cam.gameObject.SetActive(true);
         cam2.gameObject.SetActive(false);
+
+        camera.transform.position = camStartingPoint.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !ismove)
         {
-            if(!iscam)
+            ismove = true;
+            elapsedTime = 0f;
+            iscam = !iscam;
+            Debug.Log(iscam);
+
+            cam.gameObject.SetActive(!iscam);
+            cam2.gameObject.SetActive(iscam);
+        }
+
+        if (ismove)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / moveTime;
+
+            if (iscam)
             {
-                cam.gameObject.SetActive(false);
-                cam2.gameObject.SetActive(true);
-                iscam = true;
+                camera.transform.position = Vector3.Lerp(camStartingPoint.position, camTargetpoint.position, progress);
             }
-            else if (iscam)
+            else
             {
-                cam2.gameObject.SetActive(false);
-                cam.gameObject.SetActive(true);
-                iscam = false;
+                camera.transform.position = Vector3.Lerp(camTargetpoint.position, camStartingPoint.position, progress);
             }
-            
+
+            if (progress >= 1)
+            {
+                ismove = false;
+            }
         }
         
     }
