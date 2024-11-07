@@ -7,11 +7,12 @@ public class Playermoveing : MonoBehaviour
     [Header("Player Settings")]
     public float speed = 5f;
     public float mouseSensitivity = 2f;
+    
 
     [Header("Gravity Settings")]
     public float gravity = -9.81f;
     private Vector3 velocity;
-    private bool canmove = true;
+    public bool canmove = true;
 
     private CharacterController controller;
     public Transform cameraTransform;
