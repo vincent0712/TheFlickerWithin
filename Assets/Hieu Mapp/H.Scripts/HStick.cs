@@ -2,28 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HStick : MonoBehaviour, HInteract
+public class HStick : MonoBehaviour, IInteractable
 {
-    private CapsuleCollider c;
+    //private CapsuleCollider c;
+    private MeshRenderer mesh;
 
-    private void Start()
+    private CapsuleCollider cap;
+    public Color color = Color.red;
+    public Color orgCol = Color.green;
+    bool isvis = true;
+    private Renderer rend;
+
+    public void Start()
     {
-        c = gameObject.GetComponent<CapsuleCollider>();
+        mesh = gameObject.GetComponent<MeshRenderer>();
+        cap = gameObject.GetComponent<CapsuleCollider>();
+        rend = gameObject.GetComponent<Renderer>();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            c.enabled = false;
-        }
-    }
+
 
     public void Interact()
     {
-        CapsuleCollider c = gameObject.GetComponent<CapsuleCollider>();
-        c.enabled = false;
-        
+        if (isvis)
+        {
+            cap.enabled = false;
+            rend.material.color = color;
+            //mesh.enabled = false;
+            isvis = false;
+            
+        }
+            
+        else if (!isvis)
+        {
+            cap.enabled = true;
+            rend.material.color = orgCol;
+            //mesh.enabled = true;
+            isvis = true;
+        }
+            
+
     }
 
 }
