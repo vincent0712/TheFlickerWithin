@@ -35,7 +35,6 @@ public class MPlayerinteract : MonoBehaviour
             MInteractable interactable = hit.collider.GetComponent<MInteractable>();
             if (interactable != null)
             {
-                Debug.Log(interactable);
                 interactable.Interact();
             }
         }

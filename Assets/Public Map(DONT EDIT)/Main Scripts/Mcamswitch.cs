@@ -35,7 +35,7 @@ public class Mcamswitch : MonoBehaviour
             ismove = true;
             elapsedTime = 0f;
             iscam = !iscam;
-            Debug.Log(iscam);
+
         }
 
         if (ismove)
