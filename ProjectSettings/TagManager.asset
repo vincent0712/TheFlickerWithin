@@ -6,6 +6,7 @@ TagManager:
   tags:
   - monster
   - Lockgame
+  - fp
   layers:
   - Default
   - TransparentFX
