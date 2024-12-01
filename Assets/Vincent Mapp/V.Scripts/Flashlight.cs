@@ -1,48 +1,85 @@
 using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Flashlight : MonoBehaviour
 {
     public Light light;
-    private bool ison = true;
+    private bool isOn = true;
     private AudioSource aud;
-    private Transform flashlightpoint;
+    private Transform flashlightPoint;
+    public int battery = 100; // Battery as an integer
     public float followSpeed = 2f;
     public float rotateSpeed = 7f;
+    private TextMeshProUGUI batteryLifeText;
 
     private void Start()
     {
+        batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
         aud = gameObject.GetComponent<AudioSource>();
-        flashlightpoint = GameObject.FindGameObjectWithTag("fp").transform;
+        flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
+
+        // Start the battery drain coroutine
+        StartCoroutine(DrainBattery());
     }
+
+    private void OnEnable()
+    {
+        flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
+        transform.position = flashlightPoint.position;
+        transform.rotation = flashlightPoint.rotation;
+    }
+
     private void Update()
     {
+        batteryLifeText.text = "Battery: " + battery;
+
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             aud.Play();
-            if (ison)
+            if (isOn)
             {
                 light.intensity = 0f;
-                ison = false;
+                isOn = false;
             }
-            else if (!ison)
+            else if (!isOn && battery > 0)
             {
                 light.intensity = 5f;
-                ison = true;
+                isOn = true;
             }
         }
-        Gotopoint();
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            battery += 3;
+        }
 
+            GoToPoint();
     }
 
-    private void Gotopoint()
+    private IEnumerator DrainBattery()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f); // Wait for 1 second
+            if (isOn && battery > 0)
+            {
+                battery -= 1;
+                if (battery <= 0)
+                {
+                    battery = 0;
+                    light.intensity = 0f; // Turn off the light when battery is dead
+                    isOn = false;
+                }
+            }
+        }
+    }
+
+    private void GoToPoint()
     {
         // Move towards the target's position
-        transform.position = Vector3.MoveTowards(transform.position, flashlightpoint.position, followSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, flashlightPoint.position, followSpeed * Time.deltaTime);
 
         // Match the target's rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, flashlightpoint.rotation, rotateSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, flashlightPoint.rotation, rotateSpeed * Time.deltaTime);
     }
 }

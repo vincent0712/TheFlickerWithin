@@ -4,42 +4,46 @@ using UnityEngine;
 using System;
 public class Mcamswitch : MonoBehaviour
 {
-    public Camera cam; // Main camera
-    public Camera cam2; // Camera we swap to
+    public Camera cam; 
+    public Camera cam2; 
 
-    public GameObject camera; // The object that moves
+    public GameObject camera; 
     public GameObject monster;
 
     public Transform camStartingPoint;
     public Transform camTargetpoint;
 
-    private float moveTime = 0.5f; // Time to move camera from startPoint to targetPoint
-    private float elapsedTime = 0f; // Track time
-    private bool iscam = false; // Track active camera
+    private float moveTime = 0.5f; 
+    private float elapsedTime = 0f; 
+    private bool iscam = false; 
     private bool ismove = false;
 
     // Head bob settings
-    public bool enableHeadBob = true; // Toggle head bob effect
-    public float bobSpeed = 5f; // Speed of the bobbing
-    public float bobAmount = 0.05f; // Amount of the bobbing
+    public bool enableHeadBob = true; 
+    public float bobSpeed = 5f; 
+    public float bobAmount = 0.05f; 
 
-    private float bobTimer = 0f; // Timer for head bob calculation
-    private Vector3 defaultCamLocalPosition; // Default local position of the camera
-    private bool hasPlayedFootstep = false; // To ensure sound plays only once per cycle
+    private float bobTimer = 0f; 
+    private Vector3 defaultCamLocalPosition; 
+    private bool hasPlayedFootstep = false;
+    private GameObject flashlight;
+    private bool go = false;
+    
 
     // Footstep sound
-    public AudioSource footstepAudio; // Assign an AudioSource for the footstep sound
+    public AudioSource footstepAudio;
+    public AudioSource cameraAu;
     public List<AudioClip> footsteps = new List<AudioClip>();
 
 
     void Start()
     {
-
+        flashlight = GameObject.FindGameObjectWithTag("fl");
         cam.gameObject.SetActive(true);
         cam2.gameObject.SetActive(false);
 
         camera.transform.localPosition = camStartingPoint.localPosition;
-        defaultCamLocalPosition = cam.transform.localPosition; // Store initial local position
+        defaultCamLocalPosition = cam.transform.localPosition; 
     }
 
     void Update()
@@ -69,6 +73,10 @@ public class Mcamswitch : MonoBehaviour
 
                 camera.transform.localPosition = Vector3.Lerp(camTargetpoint.localPosition, camStartingPoint.localPosition, progress);
                 monster.SetActive(iscam);
+
+                flashlight.gameObject.SetActive(!iscam);
+
+
             }
 
             if (progress >= 1)
@@ -82,6 +90,9 @@ public class Mcamswitch : MonoBehaviour
                 {
                     camera.SetActive(false);
                     monster.SetActive(iscam);
+                    cameraAu.Play();
+
+                    flashlight.gameObject.SetActive(!iscam);
                 }
                 else
                 {
@@ -90,26 +101,26 @@ public class Mcamswitch : MonoBehaviour
             }
         }
 
-        // Apply head bobbing effect
+
         if (enableHeadBob && !ismove)
         {
             if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                // Simulate head bobbing
+
                 bobTimer += Time.deltaTime * bobSpeed;
                 float bobOffsetY = Mathf.Sin(bobTimer) * bobAmount;
                 float bobOffsetX = Mathf.Cos(bobTimer * 0.5f) * bobAmount;
 
                 cam.transform.localPosition = defaultCamLocalPosition + new Vector3(bobOffsetX, bobOffsetY, 0f);
 
-                // Check for the lowest point of the bobbing cycle
+
                 if (bobOffsetY < 0 && !hasPlayedFootstep)
                 {
                     PlayFootstepSound();
                     hasPlayedFootstep = true;
                 }
 
-                // Reset the flag when the bobbing cycle moves upward
+
                 if (bobOffsetY >= 0)
                 {
                     hasPlayedFootstep = false;
@@ -117,7 +128,7 @@ public class Mcamswitch : MonoBehaviour
             }
             else
             {
-                // Reset camera position when not moving
+
                 bobTimer = 0f;
                 cam.transform.localPosition = defaultCamLocalPosition;
                 hasPlayedFootstep = false;
@@ -133,7 +144,7 @@ public class Mcamswitch : MonoBehaviour
             System.Random random = new System.Random();
             int randomNumber = random.Next(0, 3);
             footstepAudio.clip = footsteps[randomNumber];
-            footstepAudio.pitch = UnityEngine.Random.Range((float)0.8, (float)1.2);
+            footstepAudio.pitch = UnityEngine.Random.Range((float)0.85, (float)1.15);
             footstepAudio.Play();
         }
         else
