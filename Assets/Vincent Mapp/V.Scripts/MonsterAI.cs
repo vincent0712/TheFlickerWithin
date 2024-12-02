@@ -1,100 +1,106 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MonsterAI : MonoBehaviour
 {
-
-    //Publics
+    // Public fields
     public float speed;
     public GameObject target;
     public float wanderRadius = 5f;
     public float wanderInterval = 3f;
-
     public List<GameObject> rooms;
-    //Privates
-    private NavMeshAgent nav;
-    bool canMakedes = true;
 
+    // Private fields
+    private NavMeshAgent nav;
+    private bool canMakeDecision = true;
+    private bool isdoingSomething = false;
 
     void Start()
     {
         nav = gameObject.GetComponent<NavMeshAgent>();
-        
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (nav == null)
             return;
 
+        if (canMakeDecision)
+            MakeDecision();
 
-        if(canMakedes)
-            Makedesition();
-
-
-
+        CheckDestinationReached();
     }
 
-    private void Makedesition()
+    private void MakeDecision()
     {
-        canMakedes = false;
-        int des = Randomnumber(1,3);
-        Debug.Log(des);
-        if (des == 1)
+        canMakeDecision = false;
+        
+        int decision = RandomNumber(1, 3);
+        Debug.Log(decision);
+
+        if (decision == 1 && !isdoingSomething)
             Roam();
-        else if(des == 2)
-        {
+        else if (decision == 2 && !isdoingSomething)
             GoToRoom();
-        }
-
-    }
-    private void GoTo(Vector3 pos)
-    {
-        nav.destination = pos;
     }
 
     private void Roam()
     {
         Vector3 newPos = GetRandomPoint(transform.position, wanderRadius);
         GoTo(newPos);
-        StartCoroutine(Wait(5f));
-        
-        Vector3 GetRandomPoint(Vector3 origin, float radius)
+    }
+
+    private void GoToRoom()
+    {
+        if (rooms.Count > 0)
         {
+            Vector3 roomPosition = rooms[RandomNumber(0, rooms.Count)].transform.position;
+            GoTo(roomPosition);
+        }
 
-            Vector3 randomDirection = Random.insideUnitSphere * radius;
-            randomDirection += origin;
+    }
 
+    private void GoTo(Vector3 pos)
+    {
+        if (!canMakeDecision)
+            return;
+        nav.destination = pos;
+    }
 
-            NavMeshHit navHit;
-            NavMesh.SamplePosition(randomDirection, out navHit, radius, NavMesh.AllAreas);
-
-            return navHit.position;
-
+    private void CheckDestinationReached()
+    {
+        // Check if the NavMeshAgent has reached its destination
+        if (!nav.pathPending && nav.remainingDistance <= nav.stoppingDistance)
+        {
+            if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
+            {
+                StartCoroutine(Wait(RandomNumber(2, 4))); // Wait before making the next decision
+            }
         }
     }
 
-    private int Randomnumber(int min, int max)
+    private Vector3 GetRandomPoint(Vector3 origin, float radius)
     {
-        int desition = Random.Range(min, max);
-        return desition;
+        Vector3 randomDirection = Random.insideUnitSphere * radius;
+        randomDirection += origin;
+
+        NavMeshHit navHit;
+        NavMesh.SamplePosition(randomDirection, out navHit, radius, NavMesh.AllAreas);
+
+        return navHit.position;
     }
 
-    IEnumerator Wait(float duration)
+    private int RandomNumber(int min, int max)
     {
+        return Random.Range(min, max);
+    }
+
+    private IEnumerator Wait(float duration)
+    {
+        canMakeDecision = false;
         yield return new WaitForSeconds(duration);
-
-        canMakedes = true;
+        canMakeDecision = true;
     }
-    private void GoToRoom()
-    {
-        nav.destination = rooms[Randomnumber(1, GameObject.FindGameObjectsWithTag("room").Length)].transform.position;
-        Wait(5);
-    }
-
-
 }
