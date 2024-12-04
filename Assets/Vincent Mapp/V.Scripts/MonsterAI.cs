@@ -43,6 +43,7 @@ public class MonsterAI : MonoBehaviour
         {
             if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
             {
+                StartCoroutine(LookAround());
                 StartCoroutine(WaitBeforeNextDecision());
             }
         }
@@ -143,6 +144,7 @@ public class MonsterAI : MonoBehaviour
 
         yield return new WaitForSeconds(waitTime);
         isWaiting = false;
+
         MakeDecision();
     }
 }
