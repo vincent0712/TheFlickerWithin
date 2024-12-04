@@ -135,8 +135,6 @@ public class PickPockLock : MonoBehaviour
             Debug.LogWarning("locklockSprite is not assigned.");
         }
     }
-
-
     // Resets the lock attempt back to Pin 1 if a pin fails
     private IEnumerator ResetAfterDelay()
     {
