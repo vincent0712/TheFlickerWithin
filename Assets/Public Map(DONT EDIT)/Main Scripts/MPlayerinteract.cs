@@ -16,13 +16,14 @@ public class MPlayerinteract : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && caninteract)
         {
+            
             Interact();
         }
     }
 
     public void Interact()
     {
-
+        
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
@@ -31,12 +32,12 @@ public class MPlayerinteract : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer) || Physics.Raycast(ray2, out hit2, rayDistance, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            MInteractable interactable = hit.collider.GetComponent<MInteractable>();
             if (interactable != null)
             {
-                Debug.Log(interactable);
                 interactable.Interact();
             }
         }
     }
+
 }

@@ -6,6 +6,9 @@ TagManager:
   tags:
   - monster
   - Lockgame
+  - fp
+  - fl
+  - room
   layers:
   - Default
   - TransparentFX

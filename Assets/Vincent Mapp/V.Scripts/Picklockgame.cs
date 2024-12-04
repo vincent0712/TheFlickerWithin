@@ -27,8 +27,8 @@ public class Picklockgame : MonoBehaviour
     public bool complete = false;
 
     // Reference to the door script to unlock
-    public Door door;
-    public Playermoveing player;
+    public Mdoor door;
+    public MPlayermovement player;
 
     void Start()
     {
@@ -90,7 +90,7 @@ public class Picklockgame : MonoBehaviour
 
         if (success)
         {
-            Debug.Log($"Pin {currentPin} picked successfully!");
+            //Debug.Log($"Pin {currentPin} picked successfully!");
             currentPin++;
 
             if (currentPin > 3)
@@ -98,17 +98,17 @@ public class Picklockgame : MonoBehaviour
                 complete = true;
                 gameObject.SetActive(false);
                 player.canmove = true;
-                Debug.Log("All pins picked! Lock successfully picked!");
+                //Debug.Log("All pins picked! Lock successfully picked!");
 
                 // Unlock the door
                 if (door != null)
                 {
                     door.islocked = false;
-                    Debug.Log("Door is now unlocked.");
+                    //Debug.Log("Door is now unlocked.");
                 }
                 else
                 {
-                    Debug.LogWarning("Door reference not set in Picklockgame script!");
+                    //Debug.LogWarning("Door reference not set in Picklockgame script!");
                 }
             }
             else
@@ -118,7 +118,7 @@ public class Picklockgame : MonoBehaviour
         }
         else
         {
-            Debug.Log("Attempt failed. Resetting to Pin 1.");
+            //Debug.Log("Attempt failed. Resetting to Pin 1.");
             StartCoroutine(ResetAfterDelay());
         }
     }

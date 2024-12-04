@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class TextAppear : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private string input;
 
-    // Update is called once per frame
-    void Update()
+    public void ReadCode(string code)
     {
-        
+        input = code;
+        Debug.Log(input);
     }
 }
