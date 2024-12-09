@@ -43,11 +43,12 @@ public class MonsterAI : MonoBehaviour
         {
             if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
             {
-                StartCoroutine(LookAround());
+
                 StartCoroutine(WaitBeforeNextDecision());
             }
         }
     }
+
 
     private void MakeDecision()
     {

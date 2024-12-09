@@ -11,10 +11,14 @@ public class Flashlight : MonoBehaviour
     public int battery = 100; // Battery as an integer
     public float followSpeed = 2f;
     public float rotateSpeed = 7f;
+    public float intensity = 5f;
+    public float range = 10f;
     private TextMeshProUGUI batteryLifeText;
 
     private void Start()
     {
+        light.intensity = intensity;
+        light.range = range;
         batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
         aud = gameObject.GetComponent<AudioSource>();
         flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
@@ -44,7 +48,7 @@ public class Flashlight : MonoBehaviour
             }
             else if (!isOn && battery > 0)
             {
-                light.intensity = 5f;
+                light.intensity = intensity;
                 isOn = true;
             }
         }
