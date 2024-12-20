@@ -6,6 +6,7 @@ public class Flashlight : MonoBehaviour
 {
     public Light light;
     private bool isOn = true;
+    public bool isFlickering = false; // Flickering state
     private AudioSource aud;
     private Transform flashlightPoint;
     public int battery = 100; // Battery as an integer
@@ -36,28 +37,30 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
+
+        if (isFlickering && light.intensity > 0f && isOn)
+        {
+            StartCoroutine(FlickerLoop());
+        }
+        if (!isOn)
+            isFlickering = false;
         batteryLifeText.text = "Battery: " + battery;
+        light.intensity = isOn ? intensity : 0f;
+
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             aud.Play();
-            if (isOn)
-            {
-                light.intensity = 0f;
-                isOn = false;
-            }
-            else if (!isOn && battery > 0)
-            {
-                light.intensity = intensity;
-                isOn = true;
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            battery += 3;
+            isOn = !isOn && battery > 0;
         }
 
-            GoToPoint();
+        if (Input.GetKeyDown(KeyCode.M)) // Toggle flicker for testing
+        {
+            isFlickering = !isFlickering; // Start or stop flickering
+
+        }
+
+        GoToPoint();
     }
 
     private IEnumerator DrainBattery()
@@ -71,7 +74,6 @@ public class Flashlight : MonoBehaviour
                 if (battery <= 0)
                 {
                     battery = 0;
-                    light.intensity = 0f; // Turn off the light when battery is dead
                     isOn = false;
                 }
             }
@@ -85,5 +87,35 @@ public class Flashlight : MonoBehaviour
 
         // Match the target's rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, flashlightPoint.rotation, rotateSpeed * Time.deltaTime);
+    }
+
+    private float Rnd(float min, float max)
+    {
+        return Random.Range(min, max);
+    }
+
+    private IEnumerator FlickerLoop()
+    {
+        float originalIntensity = intensity;
+
+        while (isFlickering) // Loop as long as isFlickering is true
+        {
+            float randomDelay = Rnd(0.05f, 0.3f); // Random delay between flickers
+
+            // Randomize intensity or turn off completely
+            if (Random.value > 0.5f)
+            {
+                light.intensity = Random.Range(originalIntensity * 0.5f, originalIntensity); // Dimmed light
+            }
+            else
+            {
+                light.intensity = 0f; // Light off
+            }
+
+            yield return new WaitForSeconds(randomDelay); // Wait for the random delay
+        }
+
+        // Restore flashlight to original state when flickering stops
+        light.intensity = originalIntensity;
     }
 }
