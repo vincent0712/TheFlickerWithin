@@ -9,15 +9,28 @@ public class Flashlight : MonoBehaviour
     public bool isFlickering = false; // Flickering state
     private AudioSource aud;
     private Transform flashlightPoint;
+
+
+    public float fieldOfViewAngle = 90f; // Field of view angle
+    public float maxViewDistance = 15f; // Maximum viewing distance
+    public LayerMask obstacleLayer; // LayerMask for obstacles
+    public Transform observer; // The observer (e.g., enemy or camera)
+    public Transform target; // The target (e.g., player)
+
+    private bool isTargetInSight = false; // Track if the target is in line of sight
+
     public int battery = 100; // Battery as an integer
     public float followSpeed = 2f;
     public float rotateSpeed = 7f;
     public float intensity = 5f;
     public float range = 10f;
+
     private TextMeshProUGUI batteryLifeText;
+    private Camera cam;
 
     private void Start()
     {
+        cam = Camera.main;
         light.intensity = intensity;
         light.range = range;
         batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
@@ -37,6 +50,22 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
+        bool currentlyInSight = IsInLineOfSight(observer.position, observer.forward, target.position);
+
+        // If the line of sight status changes, toggle flickering
+        if (currentlyInSight != isTargetInSight)
+        {
+            isTargetInSight = currentlyInSight;
+
+            isFlickering = isTargetInSight;
+            if (isTargetInSight && !isFlickering)
+            {
+                StartCoroutine(FlickerLoop());
+            }
+
+
+        }
+
 
         if (isFlickering && light.intensity > 0f && isOn)
         {
@@ -52,6 +81,8 @@ public class Flashlight : MonoBehaviour
         {
             aud.Play();
             isOn = !isOn && battery > 0;
+            
+            
         }
 
         if (Input.GetKeyDown(KeyCode.M)) // Toggle flicker for testing
@@ -61,6 +92,34 @@ public class Flashlight : MonoBehaviour
         }
 
         GoToPoint();
+    }
+    private bool IsInLineOfSight(Vector3 observerPosition, Vector3 observerForward, Vector3 targetPosition)
+    {
+        // Calculate the direction from the observer to the target
+        Vector3 directionToTarget = (targetPosition - observerPosition).normalized;
+
+        // Check if the target is within the field of view
+        float angleToTarget = Vector3.Angle(observerForward, directionToTarget);
+        if (angleToTarget > fieldOfViewAngle / 2)
+        {
+            return false; // Target is outside the field of view
+        }
+
+        // Calculate the distance to the target
+        float distanceToTarget = Vector3.Distance(observerPosition, targetPosition);
+        if (distanceToTarget > maxViewDistance)
+        {
+            return false; // Target is too far
+        }
+
+        // Perform the raycast to check for obstacles
+        if (Physics.Raycast(observerPosition, directionToTarget, out RaycastHit hit, distanceToTarget, obstacleLayer))
+        {
+            return false; // The ray hit an obstacle before reaching the target
+        }
+
+        // If we passed all checks, the target is in line of sight
+        return true;
     }
 
     private IEnumerator DrainBattery()

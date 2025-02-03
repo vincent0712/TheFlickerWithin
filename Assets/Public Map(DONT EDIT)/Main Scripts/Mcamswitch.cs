@@ -1,236 +1,196 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.UI;
+using UnityEngine.Rendering;
 
 public class Mcamswitch : MonoBehaviour
 {
     // Cameras
-    public Camera cam;
-    public Camera cam2;
-    public GameObject camera;
-    public GameObject monster;
-
+    public GameObject videocamera; // The visual camera to toggle
+    public Camera playerCamera;    // The player's camera (stationary)
+    public GameObject flashlight;
+    public MeshRenderer monster;
     // Transforms
-    public Transform camStartingPoint;
-    public Transform camTargetpoint;
-    public Transform observer;          // The object checking for the line of sight
-    public Transform target;            // The object to check visibility for
+    public Transform camStartingPoint; // Starting position for the visual camera
+    public Transform camTargetPoint;   // Target position for the visual camera
 
-    // Visibility and Field of View Settings
-    public float maxViewDistance = 10f; // Maximum distance for visibility
-    public float fieldOfViewAngle = 90f; // Field of view in degrees (45° left/right)
-    public LayerMask obstacleLayer;     // Layer for objects blocking line of sight
+    // Post-Processing Effects
+    public Volume vol; // Post-processing volume for effects like night vision
+
+
+    // Night Vision Effects
+    public AudioSource nightVisionToggleSound;
+    private bool isNightVision = false; // Tracks if night vision is active
+    public Light nightvisionlight;
 
     // Movement and Timing
-    private float moveTime = 0.5f;
-    private float elapsedTime = 0f;
-    private bool iscam = false;
-    private bool ismove = false;
-    private bool go = false;
+    public float moveTime = 1f; // Time it takes to move the camera
+    private bool isCamAtTarget = false; // Tracks camera's current position
+    private bool isTransitioning = false; // Prevents multiple transitions at once
 
-    // Head Bob Settings
-    public bool enableHeadBob = true;
-    public float bobSpeed = 5f;
-    public float bobAmount = 0.05f;
-    private float bobTimer = 0f;
-    private Vector3 defaultCamLocalPosition;
-    private Vector3 defaultCam2LocalPosition; // Added for cam2
+    // Camera Wobble
+    public float wobbleAmountX = 0.1f; // Amplitude of the wobble on X-axis
+    public float wobbleAmountY = 0.05f; // Amplitude of the wobble on Y-axis
+    public float wobbleSpeed = 5f;    // Frequency of the wobble
+    private Vector3 originalCameraPosition;
+    private bool isPlayerMoving = false;
+    private float wobbleTimer = 0f;
+    private bool hasPlayedFootstepOnWobble = false;
 
-    // Flashlight
-    private GameObject flashlight;
-    public Flashlight fl;
-
-    // Footstep Sound Settings
-    public AudioSource footstepAudio;
-    public AudioSource heartbeat;
-    public AudioSource cameraAu;
-    public List<AudioClip> footsteps = new List<AudioClip>();
-    private bool hasPlayedFootstep = false;
+    // Footstep Sounds
+    public AudioSource footstepAudioSource;
+    public AudioClip[] footstepClips; // Array of footstep audio clips
 
     void Start()
     {
-        flashlight = GameObject.FindGameObjectWithTag("fl");
-        cam.gameObject.SetActive(true);
-        cam2.gameObject.SetActive(false);
+        // Set the initial position of the visual camera
+        videocamera.transform.position = camStartingPoint.position;
 
-        camera.transform.localPosition = camStartingPoint.localPosition;
-        defaultCamLocalPosition = cam.transform.localPosition;
-        defaultCam2LocalPosition = cam2.transform.localPosition; // Initialize cam2 default position
-    }
 
-    private void Sound()
-    {
-        if(fl.isFlickering == true)
-        {
-            if (heartbeat.volume > 0.9)
-                return;
-            heartbeat.volume += 1.5f * Time.deltaTime;
-            
-        }
-        else if (!fl.isFlickering)
-        {
-            if (heartbeat.volume < 0.3)
-                return;
-            heartbeat.volume -= 1.5f * Time.deltaTime;
-        }
+        // Ensure night vision starts disabled
+        DisableNightVision();
 
+        // Store the original camera position for wobble calculations
+        originalCameraPosition = playerCamera.transform.localPosition;
     }
 
     void Update()
     {
-        
-        fl.isFlickering = IsInLineOfSight(observer.position, observer.forward, target.position);
-        Sound();
-        if (Input.GetKeyDown(KeyCode.Q) && !ismove)
+        // Toggle camera movement and effects on key press
+        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning)
         {
-            ismove = true;
-            elapsedTime = 0f;
-            iscam = !iscam;
+            StartCoroutine(SwapCameraWithEffects());
         }
 
-        if (ismove)
-        {
+        // Handle camera wobble and footsteps
+        HandlePlayerMovementEffects();
+    }
 
+    private IEnumerator SwapCameraWithEffects()
+    {
+        isTransitioning = true;
+
+
+        // Disable night vision immediately when transitioning
+        DisableNightVision();
+
+        // Move the camera
+        yield return StartCoroutine(MoveCamera());
+
+
+        // Re-enable night vision only if the camera is at the target point
+        if (isCamAtTarget)
+        {
+            EnableNightVision();
+        }
+
+        isTransitioning = false;
+    }
+
+    private IEnumerator MoveCamera()
+    {
+        Vector3 start = isCamAtTarget ? camTargetPoint.position : camStartingPoint.position;
+        Vector3 end = isCamAtTarget ? camStartingPoint.position : camTargetPoint.position;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < moveTime)
+        {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / moveTime;
 
-            if (iscam)
-            {
-                camera.transform.localPosition = Vector3.Lerp(camStartingPoint.localPosition, camTargetpoint.localPosition, progress);
-            }
-            else
-            {
-                cam.gameObject.SetActive(!iscam);
-                cam2.gameObject.SetActive(iscam);
+            videocamera.transform.position = Vector3.Lerp(start, end, progress);
 
-                camera.SetActive(true);
-
-                camera.transform.localPosition = Vector3.Lerp(camTargetpoint.localPosition, camStartingPoint.localPosition, progress);
-                monster.SetActive(iscam);
-
-                flashlight.gameObject.SetActive(!iscam);
-            }
-
-            if (progress >= 1)
-            {
-                ismove = false;
-
-                cam.gameObject.SetActive(!iscam);
-                cam2.gameObject.SetActive(iscam);
-
-                if (iscam == true)
-                {
-                    camera.SetActive(false);
-                    monster.SetActive(iscam);
-                    cameraAu.Play();
-
-                    flashlight.gameObject.SetActive(!iscam);
-                }
-                else
-                {
-                    camera.SetActive(true);
-                }
-            }
+            yield return null;
         }
 
-        if (enableHeadBob && !ismove)
+        // Snap to the target position to ensure precision
+        videocamera.transform.position = end;
+
+        // Toggle the current position flag
+        isCamAtTarget = !isCamAtTarget;
+    }
+
+    private void EnableNightVision()
+    {
+        isNightVision = true;
+        videocamera.SetActive(false);
+        monster.enabled = !isNightVision;
+
+        if (nightvisionlight != null)
+            nightvisionlight.intensity = 15f;
+
+        if (vol != null)
         {
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-            {
-                bobTimer += Time.deltaTime * bobSpeed;
-                float bobOffsetY = Mathf.Sin(bobTimer) * bobAmount;
-                float bobOffsetX = Mathf.Cos(bobTimer * 0.5f) * bobAmount;
+            vol.enabled = true;
+            flashlight.SetActive(false);
+        }
 
-                // Apply head bobbing to the currently active camera
-                if (cam.gameObject.activeSelf)
-                {
-                    cam.transform.localPosition = defaultCamLocalPosition + new Vector3(bobOffsetX, bobOffsetY, 0f);
-                }
-                else if (cam2.gameObject.activeSelf)
-                {
-                    cam2.transform.localPosition = defaultCam2LocalPosition + new Vector3(bobOffsetX, bobOffsetY, 0f);
-                }
-
-                // Footstep sound logic
-                if (bobOffsetY < 0 && !hasPlayedFootstep)
-                {
-                    PlayFootstepSound();
-                    hasPlayedFootstep = true;
-                }
-
-                if (bobOffsetY >= 0)
-                {
-                    hasPlayedFootstep = false;
-                }
-            }
-            else
-            {
-                bobTimer = 0f;
-
-                // Reset camera positions when not moving
-                if (cam.gameObject.activeSelf)
-                {
-                    cam.transform.localPosition = defaultCamLocalPosition;
-                }
-                else if (cam2.gameObject.activeSelf)
-                {
-                    cam2.transform.localPosition = defaultCam2LocalPosition;
-                }
-
-                hasPlayedFootstep = false;
-            }
+        // Play toggle sound
+        if (nightVisionToggleSound)
+        {
+            nightVisionToggleSound.Play();
         }
     }
-    bool IsInLineOfSight(Vector3 observerPosition, Vector3 observerForward, Vector3 targetPosition)
+
+    private void DisableNightVision()
     {
-        // Calculate the direction from the observer to the target
-        Vector3 directionToTarget = (targetPosition - observerPosition).normalized;
+        videocamera.SetActive(true);
+        isNightVision = false;
+        monster.enabled = !isNightVision;
 
-        // Check if the target is within the field of view
-        float angleToTarget = Vector3.Angle(observerForward, directionToTarget);
-        if (angleToTarget > fieldOfViewAngle / 2)
+        if (nightvisionlight != null)
+            nightvisionlight.intensity = 0f;
+
+        if (vol != null)
         {
-            // Target is outside the field of view
-            
-            return false;
+            vol.enabled = false;
+            flashlight.SetActive(true);
         }
-
-        // Calculate the distance to the target
-        float distanceToTarget = Vector3.Distance(observerPosition, targetPosition);
-        if (distanceToTarget > maxViewDistance)
-        {
-            // Target is too far
-            
-            return false;
-        }
-
-        // Perform the raycast to check for obstacles
-        if (Physics.Raycast(observerPosition, directionToTarget, out RaycastHit hit, distanceToTarget, obstacleLayer))
-        {
-            // The ray hit an obstacle before reaching the target
-            
-            return false;
-        }
-
-        // If we passed all checks, the target is in line of sight
-
-        return true;
     }
-    private void PlayFootstepSound()
+
+
+
+    private void HandlePlayerMovementEffects()
     {
-        if (footstepAudio != null)
+        // Check for player movement (example: WASD keys or arrow keys)
+        isPlayerMoving = Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0;
+
+        // Apply camera wobble if the player is moving
+        if (isPlayerMoving)
         {
-            System.Random random = new System.Random();
-            int randomNumber = random.Next(0, footsteps.Count);
-            footstepAudio.clip = footsteps[randomNumber];
-            footstepAudio.pitch = UnityEngine.Random.Range(0.85f, 1.15f);
-            footstepAudio.Play();
+            wobbleTimer += Time.deltaTime * wobbleSpeed;
+            float wobbleX = Mathf.Sin(wobbleTimer) * wobbleAmountX;
+            float wobbleY = Mathf.Sin(wobbleTimer * 0.5f) * wobbleAmountY;
+            playerCamera.transform.localPosition = originalCameraPosition + new Vector3(wobbleX, wobbleY, 0);
+
+            // Play footstep sound when the wobble is at its lowest point on the Y-axis
+            if (Mathf.Sin(wobbleTimer * 0.5f) < -0.99f && !hasPlayedFootstepOnWobble)
+            {
+                PlayRandomFootstep();
+                hasPlayedFootstepOnWobble = true;
+            }
+
+            // Reset flag when wobble moves back up
+            if (Mathf.Sin(wobbleTimer * 0.5f) > 0f)
+            {
+                hasPlayedFootstepOnWobble = false;
+            }
         }
         else
         {
-            Debug.LogWarning("Footstep AudioSource is not assigned!");
+            // Reset camera position if the player is not moving
+            playerCamera.transform.localPosition = originalCameraPosition;
+            wobbleTimer = 0f; // Reset wobble timer for smooth restart
+        }
+    }
+
+    private void PlayRandomFootstep()
+    {
+        if (footstepClips.Length > 0 && footstepAudioSource != null)
+        {
+            AudioClip randomClip = footstepClips[Random.Range(0, footstepClips.Length)];
+            footstepAudioSource.PlayOneShot(randomClip);
         }
     }
 }
