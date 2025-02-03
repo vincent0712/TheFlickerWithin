@@ -8,8 +8,8 @@ public class lookAtPlayer : MonoBehaviour
     public Transform player;
     public Transform head;
 
-    private float viewDistans = 10f;
-    private float turnSpeed = 2f;
+    private float viewDistans = 5f;
+    private float turnSpeed = 1f;
 
     void Start()
     {

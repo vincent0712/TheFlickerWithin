@@ -26,19 +26,19 @@ public class HStick : MonoBehaviour, IInteractable
     {
         if (isvis)
         {
-            cap.enabled = true;
+            cap.enabled = false;
             rend.material.color = color;
             //mesh.enabled = false;
-            isvis = false;
+            isvis = !isvis;
             
         }
             
         else if (!isvis)
         {
-            cap.enabled = false;
+            cap.enabled = true;
             rend.material.color = orgCol;
             //mesh.enabled = true;
-            isvis = true;
+            isvis = !isvis;
         }
             
 
