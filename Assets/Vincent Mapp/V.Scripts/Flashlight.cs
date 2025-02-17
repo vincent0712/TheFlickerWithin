@@ -5,10 +5,12 @@ using UnityEngine;
 public class Flashlight : MonoBehaviour
 {
     public Light light;
-    private bool isOn = true;
+    public bool isOn = true;
     public bool isFlickering = false; // Flickering state
     private AudioSource aud;
     private Transform flashlightPoint;
+
+    public bool canflicker = true;
 
 
     public float fieldOfViewAngle = 90f; // Field of view angle
@@ -69,6 +71,8 @@ public class Flashlight : MonoBehaviour
 
         if (isFlickering && light.intensity > 0f && isOn)
         {
+            if (!canflicker)
+                return;
             StartCoroutine(FlickerLoop());
         }
         if (!isOn)
@@ -155,6 +159,8 @@ public class Flashlight : MonoBehaviour
 
     private IEnumerator FlickerLoop()
     {
+
+
         float originalIntensity = intensity;
 
         while (isFlickering) // Loop as long as isFlickering is true

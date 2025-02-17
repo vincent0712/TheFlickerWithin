@@ -63,7 +63,7 @@ public class Mcamswitch : MonoBehaviour
         }
 
         // Handle camera wobble and footsteps
-        HandlePlayerMovementEffects();
+        //HandlePlayerMovementEffects();
     }
 
     private IEnumerator SwapCameraWithEffects()

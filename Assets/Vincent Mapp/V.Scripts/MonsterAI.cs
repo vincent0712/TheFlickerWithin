@@ -1,151 +1,163 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MonsterAI : MonoBehaviour
 {
-    // Public fields
-    public float speed;
-    public float wanderRadius = 5f;
-    public float wanderInterval = 3f;
-    public List<GameObject> rooms;
+    public Transform player;
+    public NavMeshAgent agent;
+    public float visionRange = 10f;
+    public float hearingRange = 15f;
+    public LayerMask playerLayer;
 
-    // Private fields
-    private NavMeshAgent nav;
-    private bool isWaiting = false;
-    private bool isLooking = false;
-    private List<GameObject> unvisitedRooms;
-    public float rotationSpeed = 5f;
-    public float lookAroundDuration = 2f;
+    private Movement playermovementscript;
+    private Flashlight flashlight;
 
-    void Start()
+    private enum MonsterState { Patrolling, Searching, Chasing }
+    private MonsterState currentState = MonsterState.Patrolling;
+
+    private Vector3 lastKnownPosition;
+
+    private void Start()
     {
-        nav = gameObject.GetComponent<NavMeshAgent>();
-        if (nav == null)
-        {
-            Debug.LogError("NavMeshAgent is missing!");
-            return;
-        }
-
-        nav.speed = speed;
-
-        // Initialize unvisited rooms list
-        unvisitedRooms = new List<GameObject>(rooms);
+        playermovementscript = player.GetComponent<Movement>();
+        flashlight = GameObject.FindGameObjectWithTag("fl").GetComponent<Flashlight>();
     }
 
     void Update()
     {
-        if (nav == null || isWaiting)
-            return;
+        AdjustVisionAndHearing();
 
-        if (!nav.pathPending && nav.remainingDistance <= nav.stoppingDistance)
+        // Check if the player is moving within hearing range
+        if (Vector3.Distance(transform.position, player.position) < hearingRange && playermovementscript.isMoving)
         {
-            if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
-            {
+            HearNoise(player.position);
+        }
 
-                StartCoroutine(WaitBeforeNextDecision());
+        switch (currentState)
+        {
+            case MonsterState.Patrolling:
+                Patrol();
+                break;
+            case MonsterState.Searching:
+                Search();
+                break;
+            case MonsterState.Chasing:
+                Chase();
+                break;
+        }
+
+        CheckPlayerVisibility();
+    }
+
+    void AdjustVisionAndHearing()
+    {
+        if (playermovementscript.isHidden)
+        {
+            visionRange = 0f;
+            hearingRange = 0f;
+            return;
+        }
+
+        if (playermovementscript.isCrouching && !flashlight.isOn)
+        {
+            visionRange = 5f;
+            hearingRange = 15f;
+        }
+        else if (playermovementscript.isCrouching && flashlight.isOn)
+        {
+            visionRange = 10f;
+            hearingRange = 15f;
+        }
+        else if (!playermovementscript.isCrouching && !flashlight.isOn)
+        {
+            visionRange = 10f;
+            hearingRange = 15f;
+        }
+    }
+
+    void Patrol()
+    {
+        playermovementscript.isSpotted = false;
+        if (!agent.hasPath)
+        {
+            Vector3 randomPoint = transform.position + Random.insideUnitSphere * 10f;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomPoint, out hit, 10f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
             }
         }
     }
 
-
-    private void MakeDecision()
+    void Search()
     {
-        int decision = Random.Range(1, 6); // Updated to include look-around behavior
-        Debug.Log($"Decision: {decision}");
+        agent.SetDestination(lastKnownPosition);
+        playermovementscript.isSpotted = false;
 
-        if (decision == 2 || decision == 3 || decision == 4)
-            Roam();
-        else if (decision == 1)
-            GoToRoom();
-        else if (decision >= 5)
-            StartCoroutine(LookAround());
-    }
-
-    private void Roam()
-    {
-        Vector3 newPos = GetRandomPoint(transform.position, wanderRadius);
-        Debug.Log($"Roaming to {newPos}");
-        GoTo(newPos);
-    }
-
-    private void GoToRoom()
-    {
-        if (unvisitedRooms.Count == 0)
+        if (Vector3.Distance(transform.position, lastKnownPosition) < 2f)
         {
-            // Reset the list if all rooms have been visited
-            unvisitedRooms = new List<GameObject>(rooms);
-            Debug.Log("All rooms visited. Resetting the list.");
-        }
-
-        if (unvisitedRooms.Count > 0)
-        {
-            GameObject targetRoom = unvisitedRooms[Random.Range(0, unvisitedRooms.Count)];
-            unvisitedRooms.Remove(targetRoom); // Mark the room as visited
-            Debug.Log($"Going to room: {targetRoom.name}");
-            GoTo(targetRoom.transform.position);
+            currentState = MonsterState.Patrolling;
         }
     }
 
-    private IEnumerator LookAround()
+    void Chase()
     {
-        isLooking = true;
-        Debug.Log("Looking around...");
-
-        float elapsedTime = 0f;
-        while (elapsedTime < lookAroundDuration)
-        {
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime * Random.Range(120,300) / lookAroundDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Debug.Log("Finished looking around.");
-        isLooking = false;
+        agent.SetDestination(player.position);
+        playermovementscript.isSpotted = true;
     }
 
-    private void GoTo(Vector3 pos)
+    void CheckPlayerVisibility()
     {
-        NavMeshHit hit;
-        // Check if the position is on the NavMesh within a certain distance
-        if (NavMesh.SamplePosition(pos, out hit, 1.0f, NavMesh.AllAreas))
+        if (Vector3.Distance(transform.position, player.position) < visionRange)
         {
-            nav.SetDestination(hit.position); // Set destination to the valid NavMesh point
-            Debug.Log($"Moving to valid position on NavMesh: {hit.position}");
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, (player.position - transform.position).normalized, out hit, visionRange))
+            {
+                if (hit.collider.CompareTag("Player") && !playermovementscript.isHidden)
+                {
+                    currentState = MonsterState.Chasing;
+                    lastKnownPosition = player.position;
+                    playermovementscript.isSpotted = true;
+                    return;
+                }
+            }
         }
-        else
+
+        if (currentState == MonsterState.Chasing)
         {
-            Debug.LogWarning($"Target position {pos} is not on the NavMesh. Ignoring move command.");
+            currentState = MonsterState.Searching;
+            playermovementscript.isSpotted = false;
         }
     }
 
-    private Vector3 GetRandomPoint(Vector3 origin, float radius)
+    public void HearNoise(Vector3 position)
     {
-        Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += origin;
+        if (currentState == MonsterState.Chasing) return; // Don't switch if already chasing
 
-        NavMeshHit navHit;
-        // Sample position to ensure it's on the NavMesh
-        if (NavMesh.SamplePosition(randomDirection, out navHit, radius, NavMesh.AllAreas))
-        {
-            return navHit.position; // Return a valid point
-        }
+        lastKnownPosition = position;
+        currentState = MonsterState.Searching;
 
-        // If no valid position found, fallback to the origin
-        Debug.LogWarning("Failed to find a valid random point on the NavMesh.");
-        return origin;
+        Debug.Log("Monster heard player moving at: " + position);
     }
 
-    private IEnumerator WaitBeforeNextDecision()
+    void OnDrawGizmos()
     {
-        isWaiting = true;
+        if (player == null) return;
 
-        float waitTime = Random.Range(2f, 4f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, visionRange);
 
-        yield return new WaitForSeconds(waitTime);
-        isWaiting = false;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, hearingRange);
 
-        MakeDecision();
+        Gizmos.color = Color.red;
+        Vector3 direction = (player.position - transform.position).normalized;
+        Gizmos.DrawRay(transform.position, direction * visionRange);
+
+        if (currentState == MonsterState.Searching)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(lastKnownPosition, 0.5f);
+        }
     }
 }
