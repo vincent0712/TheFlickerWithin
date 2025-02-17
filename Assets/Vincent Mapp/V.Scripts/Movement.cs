@@ -95,6 +95,24 @@ public class Movement : MonoBehaviour
 
 
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("table"))
+        {
+            isHidden = true;
+            isCrouching = isHidden;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("table"))
+        {
+            isHidden = false;
+            isCrouching = isHidden;
+        }
+    }
     void HandleLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -135,7 +153,7 @@ public class Movement : MonoBehaviour
 
     void HandleCrouch()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !isHidden)
         {
             isCrouching = !isCrouching;
         }

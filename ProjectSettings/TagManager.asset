@@ -9,6 +9,7 @@ TagManager:
   - fp
   - fl
   - room
+  - table
   layers:
   - Default
   - TransparentFX
