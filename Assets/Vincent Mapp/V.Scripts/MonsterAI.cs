@@ -7,6 +7,8 @@ public class MonsterAI : MonoBehaviour
     public NavMeshAgent agent;
     public float visionRange = 10f;
     public float hearingRange = 15f;
+    public float normalSpeed = 2f;
+    public float chaseSpeed = 3.5f;
     public LayerMask playerLayer;
 
     private Movement playermovementscript;
@@ -60,18 +62,18 @@ public class MonsterAI : MonoBehaviour
 
         if (playermovementscript.isCrouching && !flashlight.isOn)
         {
-            visionRange = 5f;
-            hearingRange = 15f;
+            visionRange = 6.5f;
+            hearingRange = 16f;
         }
         else if (playermovementscript.isCrouching && flashlight.isOn)
         {
-            visionRange = 10f;
-            hearingRange = 15f;
+            visionRange = 13f;
+            hearingRange = 16f;
         }
         else if (!playermovementscript.isCrouching && !flashlight.isOn)
         {
-            visionRange = 10f;
-            hearingRange = 15f;
+            visionRange = 13f;
+            hearingRange = 16f;
         }
     }
 
@@ -91,6 +93,7 @@ public class MonsterAI : MonoBehaviour
 
     void Search()
     {
+        agent.speed = normalSpeed;
         agent.SetDestination(lastKnownPosition);
         playermovementscript.isSpotted = false;
 
@@ -102,6 +105,7 @@ public class MonsterAI : MonoBehaviour
 
     void Chase()
     {
+        agent.speed = chaseSpeed;
         agent.SetDestination(player.position);
         playermovementscript.isSpotted = true;
     }

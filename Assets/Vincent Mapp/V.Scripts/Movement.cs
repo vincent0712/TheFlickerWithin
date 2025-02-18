@@ -3,8 +3,8 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float walkSpeed = 4f;
-    public float crouchSpeed = 2f;
+    public float walkSpeed = 2.5f;
+    public float crouchSpeed = 1.5f;
     public float gravity = 9.8f;
 
 
@@ -28,6 +28,7 @@ public class Movement : MonoBehaviour
     public float fear;
     public bool isSpotted = false;
 
+
     [Header("Headbob Settings")]
     public float bobFrequency = 10f;
     public float crouchBobFrequency = 5f;
@@ -42,6 +43,7 @@ public class Movement : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource heartbeat;
+    public AudioSource chaseMusic;
 
     private Vector3 moveDirection;
 
@@ -65,16 +67,51 @@ public class Movement : MonoBehaviour
 
     void Fear()
     {
+
+
         if (isSpotted && fear < 10f)
         {
             fear += 3.5f * Time.deltaTime;
         }
-        if (!isSpotted && fear > 1f)
+        if (!isSpotted && fear > 0f)
         {
             fear -= 2.5f * Time.deltaTime;
         }
-
         heartbeat.volume = fear / 10;
+        chaseMusic.volume = fear / 10;
+        if (!isSpotted && fear < 0.1)
+        {
+            chaseMusic.volume = 0;
+
+        }
+
+
+        
+
+
+
+
+
+
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("table"))
+        {
+            isHidden = true;
+            isCrouching = isHidden;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("table"))
+        {
+            isHidden = false;
+            isCrouching = isHidden;
+        }
     }
     void HandleLook()
     {
@@ -116,7 +153,7 @@ public class Movement : MonoBehaviour
 
     void HandleCrouch()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !isHidden)
         {
             isCrouching = !isCrouching;
         }
