@@ -5,10 +5,12 @@ using UnityEngine.Audio;
 using UnityEditor.UI;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using UnityEngine.UIElements;
+using TMPro;
 public class menuScript : MonoBehaviour
 {
     public AudioMixer audio;
-    public Dropdown resolutionDropdown;
+    public TMP_Dropdown resolutionDropdown;
 
     private Resolution[] resolutions;
 
@@ -30,8 +32,18 @@ public class menuScript : MonoBehaviour
                 resolutions[i].height == Screen.currentResolution.height)
             {
                 currentResolutionIndex = i;
+               
             }
         }
+
+        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.RefreshShownValue();
+    }
+
+    public void Fullscreen(bool isFullscreen)
+    {
+        Screen.fullScreen = isFullscreen;
     }
 
     public void SetVolume(float volume)
@@ -39,9 +51,10 @@ public class menuScript : MonoBehaviour
         audio.SetFloat("masterVolume", volume);
     }
 
-    public void SetResolution(int resolutionIndew)
+    public void SetResolution(int resolutionIndex)
     {
-        
+        Resolution resolution = resolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
   
     public void SetQuality(int Qualityindex)
