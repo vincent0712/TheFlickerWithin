@@ -18,3 +18,4 @@ EditorBuildSettings:
     path: Assets/Jonathan Mapp/Scene.J/Credits.unity
     guid: b87535817bf90b741b6d6a2fe48ea899
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

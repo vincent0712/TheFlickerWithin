@@ -6,12 +6,16 @@ public class HStick : MonoBehaviour, IInteractable
 {
     //private CapsuleCollider c;
     private MeshRenderer mesh;
-
+    private Renderer rend;
     private CapsuleCollider cap;
+
     public Color color = Color.red;
     public Color orgCol = Color.green;
+
     bool isvis = true;
-    private Renderer rend;
+    private int count;
+    
+
 
     public void Start()
     {
@@ -21,16 +25,20 @@ public class HStick : MonoBehaviour, IInteractable
     }
 
 
+    public void Update()
+    {
+        count = CountDisabledColliders("MinigameObject");
+    }
+
 
     public void Interact()
     {
-        if (isvis)
+        if (isvis && count < 3)
         {
             cap.enabled = false;
             rend.material.color = color;
             //mesh.enabled = false;
             isvis = !isvis;
-            
         }
             
         else if (!isvis)
@@ -42,6 +50,23 @@ public class HStick : MonoBehaviour, IInteractable
         }
             
 
+    }
+
+    public int CountDisabledColliders(string tag)
+    {
+        int count = 0;
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+
+        foreach (GameObject obj in objects)
+        {
+            Collider col = obj.GetComponent<Collider>();
+            if (col != null && !col.enabled)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
 }
