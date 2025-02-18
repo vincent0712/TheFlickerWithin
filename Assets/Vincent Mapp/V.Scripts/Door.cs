@@ -1,7 +1,7 @@
 // Script: Door.cs
 using UnityEngine;
 
-public class Door : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, MInteractable
 {
     public float openAngle = 90f;          
     public float openSpeed = 2f;          

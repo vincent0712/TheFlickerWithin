@@ -8,6 +8,8 @@ public class Movement : MonoBehaviour
     public float gravity = 9.8f;
 
 
+
+    public bool canmove = true;
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
     public Transform playerCamera;
@@ -56,7 +58,8 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-
+        if (!canmove)
+            return;
         HandleLook();
         HandleMovement();
         HandleCrouch();

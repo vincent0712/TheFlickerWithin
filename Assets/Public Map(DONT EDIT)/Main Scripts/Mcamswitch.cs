@@ -1,84 +1,94 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering.Universal;
 
 public class Mcamswitch : MonoBehaviour
 {
     // Cameras
-    public GameObject videocamera; // The visual camera to toggle
-    public Camera playerCamera;    // The player's camera (stationary)
+    public GameObject videocamera;
+    public Camera playerCamera;
     public GameObject flashlight;
     public MeshRenderer monster;
+
     // Transforms
-    public Transform camStartingPoint; // Starting position for the visual camera
-    public Transform camTargetPoint;   // Target position for the visual camera
+    public Transform camStartingPoint;
+    public Transform camTargetPoint;
 
-    // Post-Processing Effects
-    public Volume vol; // Post-processing volume for effects like night vision
+    // Post-Processing
+    public Volume vol;
+    private UnityEngine.Rendering.Universal.LensDistortion lensDistortion;
+    private UnityEngine.Rendering.Universal.Vignette vignette;
+    private UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
+    private UnityEngine.Rendering.Universal.LiftGammaGain liftGammaGain;
+    private UnityEngine.Rendering.Universal.FilmGrain filmgrain;
 
+    // Stored Default Values
+    private float defaultLensDistortion;
+    private float defaultVignetteIntensity;
+    private float defaultSaturation;
+    private float defaultContrast;
+    private Vector4 defaultGamma;
+    private Vector4 defaultGain;
 
     // Night Vision Effects
     public AudioSource nightVisionToggleSound;
-    private bool isNightVision = false; // Tracks if night vision is active
+    private bool isNightVision = false;
     public Light nightvisionlight;
 
     // Movement and Timing
-    public float moveTime = 1f; // Time it takes to move the camera
-    private bool isCamAtTarget = false; // Tracks camera's current position
-    private bool isTransitioning = false; // Prevents multiple transitions at once
-
-    // Camera Wobble
-    public float wobbleAmountX = 0.1f; // Amplitude of the wobble on X-axis
-    public float wobbleAmountY = 0.05f; // Amplitude of the wobble on Y-axis
-    public float wobbleSpeed = 5f;    // Frequency of the wobble
-    private Vector3 originalCameraPosition;
-    private bool isPlayerMoving = false;
-    private float wobbleTimer = 0f;
-    private bool hasPlayedFootstepOnWobble = false;
-
-    // Footstep Sounds
-    public AudioSource footstepAudioSource;
-    public AudioClip[] footstepClips; // Array of footstep audio clips
+    public float moveTime = 1f;
+    private bool isCamAtTarget = false;
+    private bool isTransitioning = false;
 
     void Start()
     {
-        // Set the initial position of the visual camera
+        // Initialize camera position
         videocamera.transform.position = camStartingPoint.position;
-
-
-        // Ensure night vision starts disabled
         DisableNightVision();
 
-        // Store the original camera position for wobble calculations
-        originalCameraPosition = playerCamera.transform.localPosition;
+        // Retrieve and store default post-processing values
+        if (vol != null && vol.profile != null)
+        {
+            if (vol.profile.TryGet(out lensDistortion))
+                defaultLensDistortion = lensDistortion.intensity.value;
+
+
+            if (vol.profile.TryGet(out vignette))
+                defaultVignetteIntensity = vignette.intensity.value;
+
+
+
+            if (vol.profile.TryGet(out colorAdjustments))
+            {
+                defaultSaturation = colorAdjustments.saturation.value;
+                defaultContrast = colorAdjustments.contrast.value;
+            }
+
+            if (vol.profile.TryGet(out liftGammaGain))
+            {
+                defaultGamma = liftGammaGain.gamma.value;
+                defaultGain = liftGammaGain.gain.value;
+            }
+        }
     }
 
     void Update()
     {
-        // Toggle camera movement and effects on key press
         if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning)
         {
             StartCoroutine(SwapCameraWithEffects());
         }
-
-        // Handle camera wobble and footsteps
-        //HandlePlayerMovementEffects();
     }
 
     private IEnumerator SwapCameraWithEffects()
     {
         isTransitioning = true;
 
-
-        // Disable night vision immediately when transitioning
         DisableNightVision();
-
-        // Move the camera
         yield return StartCoroutine(MoveCamera());
 
-
-        // Re-enable night vision only if the camera is at the target point
         if (isCamAtTarget)
         {
             EnableNightVision();
@@ -91,23 +101,17 @@ public class Mcamswitch : MonoBehaviour
     {
         Vector3 start = isCamAtTarget ? camTargetPoint.position : camStartingPoint.position;
         Vector3 end = isCamAtTarget ? camStartingPoint.position : camTargetPoint.position;
-
         float elapsedTime = 0f;
 
         while (elapsedTime < moveTime)
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / moveTime;
-
             videocamera.transform.position = Vector3.Lerp(start, end, progress);
-
             yield return null;
         }
 
-        // Snap to the target position to ensure precision
         videocamera.transform.position = end;
-
-        // Toggle the current position flag
         isCamAtTarget = !isCamAtTarget;
     }
 
@@ -122,16 +126,28 @@ public class Mcamswitch : MonoBehaviour
 
         if (vol != null)
         {
-            vol.enabled = true;
             flashlight.SetActive(false);
+
+            if (colorAdjustments != null)
+            {
+                colorAdjustments.active = true;
+                liftGammaGain.active = true;
+                if (vol.profile.TryGet(out filmgrain))
+                {
+                    filmgrain.intensity.value = 1f;
+                }
+
+                
+
+            }
         }
 
-        // Play toggle sound
         if (nightVisionToggleSound)
         {
             nightVisionToggleSound.Play();
         }
     }
+
 
     private void DisableNightVision()
     {
@@ -144,53 +160,18 @@ public class Mcamswitch : MonoBehaviour
 
         if (vol != null)
         {
-            vol.enabled = false;
             flashlight.SetActive(true);
-        }
-    }
 
-
-
-    private void HandlePlayerMovementEffects()
-    {
-        // Check for player movement (example: WASD keys or arrow keys)
-        isPlayerMoving = Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0;
-
-        // Apply camera wobble if the player is moving
-        if (isPlayerMoving)
-        {
-            wobbleTimer += Time.deltaTime * wobbleSpeed;
-            float wobbleX = Mathf.Sin(wobbleTimer) * wobbleAmountX;
-            float wobbleY = Mathf.Sin(wobbleTimer * 0.5f) * wobbleAmountY;
-            playerCamera.transform.localPosition = originalCameraPosition + new Vector3(wobbleX, wobbleY, 0);
-
-            // Play footstep sound when the wobble is at its lowest point on the Y-axis
-            if (Mathf.Sin(wobbleTimer * 0.5f) < -0.99f && !hasPlayedFootstepOnWobble)
+            if (colorAdjustments != null)
             {
-                PlayRandomFootstep();
-                hasPlayedFootstepOnWobble = true;
-            }
-
-            // Reset flag when wobble moves back up
-            if (Mathf.Sin(wobbleTimer * 0.5f) > 0f)
-            {
-                hasPlayedFootstepOnWobble = false;
+                colorAdjustments.active = false;
+                liftGammaGain.active = false;
+                if (vol.profile.TryGet(out filmgrain))
+                {
+                    filmgrain.intensity.value = 0.8f;
+                }
             }
         }
-        else
-        {
-            // Reset camera position if the player is not moving
-            playerCamera.transform.localPosition = originalCameraPosition;
-            wobbleTimer = 0f; // Reset wobble timer for smooth restart
-        }
     }
 
-    private void PlayRandomFootstep()
-    {
-        if (footstepClips.Length > 0 && footstepAudioSource != null)
-        {
-            AudioClip randomClip = footstepClips[Random.Range(0, footstepClips.Length)];
-            footstepAudioSource.PlayOneShot(randomClip);
-        }
-    }
 }

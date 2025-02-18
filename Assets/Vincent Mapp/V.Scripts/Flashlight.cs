@@ -26,6 +26,7 @@ public class Flashlight : MonoBehaviour
     public float rotateSpeed = 7f;
     public float intensity = 5f;
     public float range = 10f;
+    private Movement movement;
 
     private TextMeshProUGUI batteryLifeText;
     private Camera cam;
@@ -35,6 +36,7 @@ public class Flashlight : MonoBehaviour
         cam = Camera.main;
         light.intensity = intensity;
         light.range = range;
+        movement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
         batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
         aud = gameObject.GetComponent<AudioSource>();
         flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
@@ -52,21 +54,11 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
-        bool currentlyInSight = IsInLineOfSight(observer.position, observer.forward, target.position);
-
-        // If the line of sight status changes, toggle flickering
-        if (currentlyInSight != isTargetInSight)
+        if (movement.isSpotted)
         {
-            isTargetInSight = currentlyInSight;
-
-            isFlickering = isTargetInSight;
-            if (isTargetInSight && !isFlickering)
-            {
-                StartCoroutine(FlickerLoop());
-            }
-
-
+            StartCoroutine(FlickerLoop());
         }
+            
 
 
         if (isFlickering && light.intensity > 0f && isOn)
