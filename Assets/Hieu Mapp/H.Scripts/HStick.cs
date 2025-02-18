@@ -9,10 +9,10 @@ public class HStick : MonoBehaviour, IInteractable
     private Renderer rend;
     private CapsuleCollider cap;
 
-    public Color color = Color.red;
-    public Color orgCol = Color.green;
+    public Color color = Color.green;
+    public Color orgCol = Color.red;
 
-    bool isvis = true;
+    bool isvis = false;
     private int count;
     
 
@@ -27,32 +27,33 @@ public class HStick : MonoBehaviour, IInteractable
 
     public void Update()
     {
-        count = CountDisabledColliders("MinigameObject");
+        count = CountAbledColliders("MinigameObject");
     }
 
 
     public void Interact()
     {
-        if (isvis && count < 3)
+        if (isvis == false && count < 3)
+        {
+
+            cap.enabled = true;
+            rend.material.color = orgCol;
+            //mesh.enabled = true;
+            isvis = true;
+        }
+            
+        else if (isvis == true)
         {
             cap.enabled = false;
             rend.material.color = color;
             //mesh.enabled = false;
-            isvis = !isvis;
-        }
-            
-        else if (!isvis)
-        {
-            cap.enabled = true;
-            rend.material.color = orgCol;
-            //mesh.enabled = true;
-            isvis = !isvis;
+            isvis = false;
         }
             
 
     }
 
-    public int CountDisabledColliders(string tag)
+    public int CountAbledColliders(string tag)
     {
         int count = 0;
         GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
@@ -60,7 +61,7 @@ public class HStick : MonoBehaviour, IInteractable
         foreach (GameObject obj in objects)
         {
             Collider col = obj.GetComponent<Collider>();
-            if (col != null && !col.enabled)
+            if (col != null && col.enabled == true)
             {
                 count++;
             }

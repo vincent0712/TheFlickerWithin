@@ -2,18 +2,11 @@ using UnityEngine;
 
 public class HWinMinigame : MonoBehaviour
 {
-    private GameObject ball;
-    private GameObject holeToWin;
-
-
-    void Start()
+    private void OnCollisionEnter(Collision collision)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(collision.gameObject.name == "WinHole")
+        {
+            Debug.Log("You win");
+        }
     }
 }
