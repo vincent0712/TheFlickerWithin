@@ -2,19 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HPickUp : MonoBehaviour
+public class HPickup : MonoBehaviour
 {
-    public static HPickUp Instance { get; private set; }
+    bool isHolding = false;
+    [SerializeField]
+    float throwForce = 0f;
+    [SerializeField]
+    float maxDistance = 3f;
+    float distance;
 
-    public void Awake()
+    HTempParent hTempParent;
+    Rigidbody rb;
+
+    Vector3 objectPos;
+
+    // Start is called before the first frame update
+    void Start()
     {
-       if(Instance == null)
-        {
-            Instance = this;
-        }
-       else
-        {
-            Destroy(this);
-        }
+        rb = GetComponent<Rigidbody>();
+        hTempParent = HTempParent.Instance;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 }

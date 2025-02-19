@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HPlayerInteract : MonoBehaviour
+public class HPlayerInteract : MonoBehaviour, HInteract
 {
     public Camera cam;
     public float interactDistance = 3f;
@@ -11,21 +11,27 @@ public class HPlayerInteract : MonoBehaviour
     public float rayDistance = 6f;
     public LayerMask interactableLayer;
 
+    ReturnToStart rt;
+
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E) && caninteract)
         {
             Interact();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RestartDoorBalls();
+        }
     }
 
     public void Interact()
     {
-
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
-
-
+        
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
@@ -34,6 +40,20 @@ public class HPlayerInteract : MonoBehaviour
             {
                 Debug.Log(interactable);
                 interactable.Interact();
+            }
+        }
+    }
+
+    public void RestartDoorBalls()
+    {
+        float interactRage = 2f;
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRage);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPCInteractable npcInteractable))
+            {
+                npcInteractable.Interact();
+
             }
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class MPlayerinteract : MonoBehaviour
 {
     public Camera cam;
-    public Camera cam2;
+
     public float interactDistance = 3f;
     private bool caninteract = true;
 
@@ -27,10 +27,9 @@ public class MPlayerinteract : MonoBehaviour
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
-        Ray ray2 = cam2.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-        RaycastHit hit2;
 
-        if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer) || Physics.Raycast(ray2, out hit2, rayDistance, interactableLayer))
+
+        if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
             MInteractable interactable = hit.collider.GetComponent<MInteractable>();
             if (interactable != null)
