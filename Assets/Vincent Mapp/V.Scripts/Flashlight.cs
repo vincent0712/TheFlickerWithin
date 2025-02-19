@@ -28,7 +28,7 @@ public class Flashlight : MonoBehaviour
     public float range = 10f;
     private Movement movement;
 
-    private TextMeshProUGUI batteryLifeText;
+    public TextMeshProUGUI batteryLifeText;
     private Camera cam;
 
     private void Start()
@@ -37,7 +37,7 @@ public class Flashlight : MonoBehaviour
         light.intensity = intensity;
         light.range = range;
         movement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
-        batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
+        //batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
         aud = gameObject.GetComponent<AudioSource>();
         flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
 
@@ -69,7 +69,7 @@ public class Flashlight : MonoBehaviour
         }
         if (!isOn)
             isFlickering = false;
-        batteryLifeText.text = "Battery: " + battery;
+        //batteryLifeText.text = "Battery: " + battery;
         light.intensity = isOn ? intensity : 0f;
 
 
