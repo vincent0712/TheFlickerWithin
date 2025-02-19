@@ -12,6 +12,7 @@ public class Fusebox : MonoBehaviour, MInteractable
     private void Start()
     {
         UpdateLights(); // Ensure lights are in the correct state at the start
+        onScreenText = FindObjectOfType<Onscreentext>();
     }
 
     public void SetLightLevel(int newLevel)
@@ -34,7 +35,7 @@ public class Fusebox : MonoBehaviour, MInteractable
     public void Interact()
     {
         onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
-        onScreenText = FindObjectOfType<Onscreentext>();
+
     }
 
 
