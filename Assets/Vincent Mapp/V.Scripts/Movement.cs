@@ -7,8 +7,6 @@ public class Movement : MonoBehaviour
     public float crouchSpeed = 1.5f;
     public float gravity = 9.8f;
 
-
-
     public bool canmove = true;
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
@@ -23,13 +21,10 @@ public class Movement : MonoBehaviour
     public bool isCrouching = false;
     public bool isHidden = false;
     public bool isMoving = false;
-    
-
 
     [Header("Fear Settings")]
     public float fear;
     public bool isSpotted = false;
-
 
     [Header("Headbob Settings")]
     public float bobFrequency = 10f;
@@ -51,7 +46,6 @@ public class Movement : MonoBehaviour
 
     void Start()
     {
-        //GetComponent<Camera>().GetComponent<AudioListener>().enabled = false;
         characterController = GetComponent<CharacterController>();
         cameraStartPos = playerCamera.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
@@ -62,17 +56,20 @@ public class Movement : MonoBehaviour
         if (!canmove)
             return;
         HandleLook();
-        HandleMovement();
+        
         HandleCrouch();
-        ApplyHeadbob();
+        //ApplyHeadbob();
         Fear();
     }
 
+    private void FixedUpdate()
+    {
+        HandleMovement();
+        ApplyHeadbob();
+    }
 
     void Fear()
     {
-
-
         if (isSpotted && fear < 10f)
         {
             fear += 3.5f * Time.deltaTime;
@@ -83,21 +80,10 @@ public class Movement : MonoBehaviour
         }
         heartbeat.volume = fear / 10;
         chaseMusic.volume = fear / 10;
-        if (!isSpotted && fear < 0.1)
+        if (!isSpotted && fear < 0.1f)
         {
             chaseMusic.volume = 0;
-
         }
-
-
-        
-
-
-
-
-
-
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -117,6 +103,7 @@ public class Movement : MonoBehaviour
             isCrouching = isHidden;
         }
     }
+
     void HandleLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -131,7 +118,7 @@ public class Movement : MonoBehaviour
 
     void HandleMovement()
     {
-        if(characterController.velocity.magnitude > 0.15 && !isCrouching)
+        if (characterController.velocity.magnitude > 0.15f && !isCrouching)
         {
             isMoving = true;
         }
@@ -139,20 +126,21 @@ public class Movement : MonoBehaviour
         {
             isMoving = false;
         }
+
         float speed = isCrouching ? crouchSpeed : walkSpeed;
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
+        Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * speed * Time.deltaTime;
 
         if (characterController.isGrounded)
         {
             moveDirection.y = 0f;
-            moveDirection = move * speed;
+            moveDirection = move;
         }
 
         moveDirection.y -= gravity * Time.deltaTime;
-        characterController.Move(moveDirection * Time.deltaTime);
+        characterController.Move(moveDirection);
     }
 
     void HandleCrouch()

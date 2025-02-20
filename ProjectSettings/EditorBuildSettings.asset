@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/Public Map(DONT EDIT)/StartMenu.unity
     guid: 4462806606bb8d24c93b054f84ae0bf2
+  - enabled: 1
+    path: Assets/Public Map(DONT EDIT)/Main.unity
+    guid: e62b8cab60f00854db86ba219b4ce604
   - enabled: 1
     path: Assets/Jonathan Mapp/Scene.J/JonathanScene.unity
     guid: 739563af45b347944960ce8e1058f5bb
@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Public Map(DONT EDIT)/Settings.unity
     guid: 2b694718e94a62b44b99fd8b8c2efd19
   - enabled: 1
-    path: Assets/Public Map(DONT EDIT)/Main.unity
-    guid: e62b8cab60f00854db86ba219b4ce604
+    path: Assets/Scenes/SampleScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

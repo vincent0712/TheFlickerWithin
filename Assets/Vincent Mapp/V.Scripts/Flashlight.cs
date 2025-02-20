@@ -89,6 +89,11 @@ public class Flashlight : MonoBehaviour
 
         GoToPoint();
     }
+
+    private void FixedUpdate()
+    {
+        GoToPoint();
+    }
     private bool IsInLineOfSight(Vector3 observerPosition, Vector3 observerForward, Vector3 targetPosition)
     {
         // Calculate the direction from the observer to the target

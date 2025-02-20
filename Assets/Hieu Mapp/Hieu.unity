@@ -1595,7 +1595,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &491680183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2128,6 +2128,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: codepad
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 326e74f10c237b1498e003915b6eed3c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3333605788646058164, guid: 326e74f10c237b1498e003915b6eed3c,
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -2316,7 +2321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &759928767
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2973,7 +2978,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &876972643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6577,7 +6582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1844111712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6826,7 +6831,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1913802136
 MonoBehaviour:
   m_ObjectHideFlags: 0
