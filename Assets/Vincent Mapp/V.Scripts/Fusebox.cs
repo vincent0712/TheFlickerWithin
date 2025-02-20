@@ -34,7 +34,15 @@ public class Fusebox : MonoBehaviour, MInteractable
     }
     public void Interact()
     {
-        onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
+        if(PuzzlesCompleted < 4)
+            onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
+
+        if(PuzzlesCompleted == 4)
+        {
+            onScreenText.ShowText("You Win!", 2f);
+        }
+
+
 
     }
 

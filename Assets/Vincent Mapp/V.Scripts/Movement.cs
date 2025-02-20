@@ -51,6 +51,7 @@ public class Movement : MonoBehaviour
 
     void Start()
     {
+        //GetComponent<Camera>().GetComponent<AudioListener>().enabled = false;
         characterController = GetComponent<CharacterController>();
         cameraStartPos = playerCamera.localPosition;
         Cursor.lockState = CursorLockMode.Locked;

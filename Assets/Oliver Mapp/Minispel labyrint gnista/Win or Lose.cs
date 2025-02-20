@@ -8,17 +8,14 @@ public class WinorLose : MonoBehaviour
 {
     public GameObject[] VadSkaViDöda;
     public Puzzlehandeler puzzlehandeler;
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Enemy")
-        {
-            Debug.Log("Lossé");
-            Thread.Sleep(1000);
 
-            foreach (GameObject obj in VadSkaViDöda)
-            {
-                puzzlehandeler.game.SetActive(false);
-            }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("loose"))
+        {
+            puzzlehandeler.Turnoffgame();
+            Debug.LogError("Error: Trigger detected with " + Time.time);
         }
     }
 }

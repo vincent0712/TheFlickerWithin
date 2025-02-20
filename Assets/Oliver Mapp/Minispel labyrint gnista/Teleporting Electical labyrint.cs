@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,7 +11,10 @@ public class Electrical_Labyrint : MonoBehaviour
     public Vector3[] teleportPositions; 
     private bool isTeleporting = false;
     protected NavMeshAgent nav;
-    private bool canMove = true; 
+    private bool canMove = true;
+    public GameObject gnistaSpawn;
+    public Timeer timer;
+    public Puzzlehandeler puzzlehandler;
 
     void Start()
     {
@@ -18,8 +22,15 @@ public class Electrical_Labyrint : MonoBehaviour
 
         if (nav == null)
         {
-            Debug.LogError("NavMeshAgent är inte tillagd på objektet!");
+            //Debug.LogError("NavMeshAgent är inte tillagd på objektet!");
         }
+    }
+
+    private void OnEnable()
+    {
+        gameObject.transform.position = gnistaSpawn.transform.position;
+        timer.timeRemaining = timer.duration;
+        
     }
 
     void Update()
@@ -36,6 +47,12 @@ public class Electrical_Labyrint : MonoBehaviour
                 MoveTo(target.position);
             }
         }
+
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+        if (distance <= 20f)
+            puzzlehandler.Turnoffgame();
+            
+
     }
 
     // Funktion för att röra sig till målet

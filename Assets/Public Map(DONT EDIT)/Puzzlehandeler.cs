@@ -5,6 +5,7 @@ public class Puzzlehandeler : MonoBehaviour, MInteractable
     public GameObject game;
 
     public bool isgameon = false;
+
     public Camera playercamera;
     public Camera gamecamera;
 
@@ -17,10 +18,8 @@ public class Puzzlehandeler : MonoBehaviour, MInteractable
 
     public void Interact()
     {
-        if (timer.win == true)
-            return;
 
-        if (!isgameon)
+        if (!isgameon && timer.win == false)
         {
             movememt.canmove = false;
             playercamera.gameObject.SetActive(false);
@@ -38,5 +37,14 @@ public class Puzzlehandeler : MonoBehaviour, MInteractable
         }
 
 
+    }
+
+    public void Turnoffgame()
+    {
+        movememt.canmove = true;
+        playercamera.gameObject.SetActive(true);
+        game.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        isgameon = false;
     }
 }

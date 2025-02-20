@@ -35,19 +35,19 @@ public class Placeobstical : MonoBehaviour
         if (obstacles.Length >= 2)
         {
             
-            Debug.Log("Max 2 objekt är redan placerade!");
+            //Debug.Log("Max 2 objekt är redan placerade!");
             return;
         }
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        Debug.Log("Place obstical funktion activ");
+        //Debug.Log("Place obstical funktion activ");
 
         if (Physics.Raycast(ray, out hit))
         {
             Instantiate(cut, hit.point, cut.GetComponent<Transform>().rotation);
-            Debug.Log("Placerar cut");
-            Debug.Log("Placerade objektet. Nuvarande antal: " + (obstacles.Length + 1));
+            //Debug.Log("Placerar cut");
+            //Debug.Log("Placerade objektet. Nuvarande antal: " + (obstacles.Length + 1));
         }
         GameObject[] objects = GameObject.FindGameObjectsWithTag("cut");
         int count = objects.Length;
@@ -56,14 +56,14 @@ public class Placeobstical : MonoBehaviour
         {
             cuters2.SetActive(false);
             cuters1.SetActive(false);
-            Debug.Log("Hej1");
+            //Debug.Log("Hej1");
 
         }
         else if (count == 1)
         {
             cuters2.SetActive(true);
             cuters1.SetActive(false);
-            Debug.Log("Hej2");
+            //Debug.Log("Hej2");
         }
     }
 
@@ -76,13 +76,13 @@ public class Placeobstical : MonoBehaviour
         {
             cuters1.SetActive(true);
             cuters2.SetActive(true);
-            Debug.Log("Reset cuters");
+            //Debug.Log("Reset cuters");
         }
         else if (count == 1)
         {
             cuters2.SetActive(true);
             cuters1.SetActive(false);
-            Debug.Log("Hej2");
+            //Debug.Log("Hej2");
         }
     }
 }

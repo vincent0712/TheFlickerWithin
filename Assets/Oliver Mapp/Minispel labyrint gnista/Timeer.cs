@@ -7,13 +7,14 @@ using UnityEngine.UI;
 
 public class Timeer : MonoBehaviour
 {
-    public int duration = 30;
+    public int duration = 25;
     public int timeRemaining;
     public bool isCountingDown = false;
     public TextMeshProUGUI timerTxT;
     public bool gameOver = false;
     private Fusebox fuse;
     public bool win = false;
+    public Puzzlehandeler puzzlehandeler;
 
     private void Start()
     {
@@ -47,6 +48,7 @@ public class Timeer : MonoBehaviour
             gameOver = true;
             win = true;
             fuse.PuzzlesCompleted++;
+            puzzlehandeler.Turnoffgame();
         }
     }
 }

@@ -12,6 +12,10 @@ TagManager:
   - Enemy
   - fl
   - cam2
+  - room
+  - monster
+  - table
+  - loose
   layers:
   - Default
   - TransparentFX
