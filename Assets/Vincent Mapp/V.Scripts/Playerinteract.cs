@@ -18,6 +18,8 @@ public class Playerinteract : MonoBehaviour
         {
             Interact();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+            RestartDoorBalls();
     }
 
     public void Interact()
@@ -31,7 +33,7 @@ public class Playerinteract : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer) || Physics.Raycast(ray2, out hit2, rayDistance, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            MInteractable interactable = hit.collider.GetComponent<MInteractable>();
             if (interactable != null)
             {
                 Debug.Log(interactable);
@@ -39,4 +41,19 @@ public class Playerinteract : MonoBehaviour
             }
         }
     }
+
+    public void RestartDoorBalls()
+    {
+        float interactRage = 2f;
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRage);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPCInteractable npcInteractable))
+            {
+                npcInteractable.Interact();
+
+            }
+        }
+    }
+
 }

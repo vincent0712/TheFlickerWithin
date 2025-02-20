@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HStick : MonoBehaviour, IInteractable
+public class HStick : MonoBehaviour, MInteractable
 {
     //private CapsuleCollider c;
     private MeshRenderer mesh;
