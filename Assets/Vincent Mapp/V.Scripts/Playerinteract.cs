@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Playerinteract : MonoBehaviour
@@ -12,6 +13,9 @@ public class Playerinteract : MonoBehaviour
     public float rayDistance = 6f;
     public LayerMask interactableLayer;
 
+    public NPCInteractable npcinteract;
+    public float interactdis = 5f;
+    public GameObject player;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E) && caninteract)
@@ -44,15 +48,10 @@ public class Playerinteract : MonoBehaviour
 
     public void RestartDoorBalls()
     {
-        float interactRage = 2f;
-        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRage);
-        foreach (Collider collider in colliderArray)
+        if (interactDistance < Vector3.Distance(transform.position, player.transform.position))
         {
-            if (collider.TryGetComponent(out NPCInteractable npcInteractable))
-            {
-                npcInteractable.Interact();
-
-            }
+            Debug.Log("asdhasjdhakjdhasjd");
+            npcinteract.Interact();
         }
     }
 

@@ -11,6 +11,7 @@ public class NPCInteractable : MonoBehaviour
     {
         startPosition = ball.transform.position;
         startRotation = ball.transform.rotation;
+        Debug.Log("sadajd");
 
     }
 

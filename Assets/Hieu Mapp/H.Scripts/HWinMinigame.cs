@@ -15,6 +15,8 @@ public class HWinMinigame : MonoBehaviour
         if (collision.gameObject.name == "RealWinHole" && CanGetPoint)
         {
             Debug.Log("You win");
+            fuse.PuzzlesCompleted++;
+            CanGetPoint = false;
         }
     }
 }

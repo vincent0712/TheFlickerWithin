@@ -20,7 +20,7 @@ public class Keypad : MonoBehaviour
     
     private void Start()
     {
-        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
 
         playerInput = "";
 
@@ -40,8 +40,8 @@ public class Keypad : MonoBehaviour
         {
             if(playerInput == code && CanGetPoint)
             {
-                //fuse.PuzzlesCompleted++;
-                //CanGetPoint = false;
+                fuse.PuzzlesCompleted++;
+                CanGetPoint = false;
 
                 Debug.Log("Hehe");
                 playerInput = "";

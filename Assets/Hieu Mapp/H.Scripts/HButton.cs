@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class HButton : MonoBehaviour, IInteractable
+public class HButton : MonoBehaviour, MInteractable
 {
     public int keyNumber;
 
