@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 using UnityEngine.SceneManagement;
 
 public class Fusebox : MonoBehaviour, MInteractable
@@ -10,6 +11,7 @@ public class Fusebox : MonoBehaviour, MInteractable
 
     public GameObject[] lights; // Assign your light GameObjects in the Inspector
     public int PuzzlesCompleted = 0;  // Integer value controlling the lights
+    public Animation fade;
 
     private void Start()
     {
@@ -51,6 +53,12 @@ public class Fusebox : MonoBehaviour, MInteractable
     private IEnumerator swapscene()
     {
         yield return new WaitForSeconds(3f);
+        StartCoroutine(wait("StartMenu"));
+    }
+    public IEnumerator wait(string name)
+    {
+        fade.Play("fadeout");
+        yield return new WaitForSeconds(1f);
         SceneManager.LoadScene("StartMenu");
     }
 
