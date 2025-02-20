@@ -11,8 +11,6 @@ public class HPlayerInteract : MonoBehaviour, HInteract
     public float rayDistance = 6f;
     public LayerMask interactableLayer;
 
-    ReturnToStart rt;
-
 
     void Update()
     {
