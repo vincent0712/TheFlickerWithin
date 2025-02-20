@@ -6,6 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class buttenMenu : MonoBehaviour
 {
+
+    private void Awake()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void MoveToScene(string scene)
     {
         SceneManager.LoadScene(scene);

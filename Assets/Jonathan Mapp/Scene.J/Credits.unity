@@ -515,7 +515,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "- Vinsent J\xF6nsson\n\n- Oliver Di Lorenzo\n\n- Jonathan Mellberg\n\n-
+  m_text: "- Vincent J\xF6nsson\n\n- Oliver Di Lorenzo\n\n- Jonathan Mellberg\n\n-
     Hieu Ph\xF9ng"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

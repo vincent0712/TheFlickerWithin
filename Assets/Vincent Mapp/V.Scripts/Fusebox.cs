@@ -1,6 +1,8 @@
+using System.Collections;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Fusebox : MonoBehaviour, MInteractable
 {
@@ -40,11 +42,18 @@ public class Fusebox : MonoBehaviour, MInteractable
         if(PuzzlesCompleted == 4)
         {
             onScreenText.ShowText("You Win!", 2f);
+            StartCoroutine(swapscene());
         }
 
 
 
     }
+    private IEnumerator swapscene()
+    {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("StartMenu");
+    }
+
 
 
 }
