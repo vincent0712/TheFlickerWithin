@@ -19,6 +19,10 @@ public class MPlayerinteract : MonoBehaviour
             
             Interact();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RestartDoorBalls();
+        }
     }
 
     public void Interact()
@@ -35,6 +39,19 @@ public class MPlayerinteract : MonoBehaviour
             if (interactable != null)
             {
                 interactable.Interact();
+            }
+        }
+    }
+    public void RestartDoorBalls()
+    {
+        float interactRage = 2f;
+        Collider[] colliderArray = Physics.OverlapSphere(transform.position, interactRage);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPCInteractable npcInteractable))
+            {
+                npcInteractable.Interact();
+
             }
         }
     }
