@@ -7,20 +7,24 @@ using UnityEngine.UI;
 
 public class Timeer : MonoBehaviour
 {
-    public int duration = 40;
+    public int duration = 30;
     public int timeRemaining;
     public bool isCountingDown = false;
     public TextMeshProUGUI timerTxT;
     public bool gameOver = false;
+    private Fusebox fuse;
+    public bool win = false;
 
     private void Start()
     {
+        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
         timerTxT.text = duration.ToString();
     }
     private void Update()
     {
 
         if (!isCountingDown)
+
         {
             isCountingDown = true;
             timeRemaining = duration;
@@ -41,6 +45,8 @@ public class Timeer : MonoBehaviour
         {
             isCountingDown = false;
             gameOver = true;
+            win = true;
+            fuse.PuzzlesCompleted++;
         }
     }
 }

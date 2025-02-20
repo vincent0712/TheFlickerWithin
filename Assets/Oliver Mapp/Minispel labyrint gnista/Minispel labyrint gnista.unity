@@ -2050,11 +2050,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 872960925}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.23
-  m_Speed: 150
-  m_Acceleration: 250
+  m_Radius: 0.16
+  m_Speed: 175
+  m_Acceleration: 350
   avoidancePriority: 50
-  m_AngularSpeed: 250
+  m_AngularSpeed: 350
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
@@ -4248,9 +4248,9 @@ MeshFilter:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1202309025}
   - {fileID: 734988244}
   - {fileID: 463975608}
+  - {fileID: 1202309025}
   - {fileID: 1355211678}
   - {fileID: 594244118}
   - {fileID: 872960931}

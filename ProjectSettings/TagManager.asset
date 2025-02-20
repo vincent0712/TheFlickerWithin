@@ -9,6 +9,9 @@ TagManager:
   - fuse
   - Undefined
   - fp
+  - Enemy
+  - fl
+  - cam2
   layers:
   - Default
   - TransparentFX
