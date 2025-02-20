@@ -1491,7 +1491,7 @@ MonoBehaviour:
   - {fileID: 8556521999886657978}
   - {fileID: 7848292187891366418}
   - {fileID: 4469102154391209168}
-  PuzzlesCompleted: 0
+  PuzzlesCompleted: 1
 --- !u!114 &3148458516714259647
 MonoBehaviour:
   m_ObjectHideFlags: 0
