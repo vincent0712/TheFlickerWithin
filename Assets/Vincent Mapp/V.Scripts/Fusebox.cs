@@ -33,7 +33,7 @@ public class Fusebox : MonoBehaviour, MInteractable
 
     public IEnumerator startText()
     {
-        onScreenText.ShowText("Complete The puzzles To Fix The Fuse Box", 4f);
+        onScreenText.ShowText("Complete Puzzles To Fix The Fuse Box", 4f);
         yield return new WaitForSeconds(6);
         onScreenText.ShowText("Fix The Fuse Box To Light Up The House", 4f);
 
