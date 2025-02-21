@@ -12,11 +12,17 @@ public class Fusebox : MonoBehaviour, MInteractable
     public GameObject[] lights; // Assign your light GameObjects in the Inspector
     public int PuzzlesCompleted = 0;  // Integer value controlling the lights
     public Animation fade;
+    public Light sun;
+
+    private AudioSource au;
 
     private void Start()
     {
         UpdateLights(); // Ensure lights are in the correct state at the start
         onScreenText = FindObjectOfType<Onscreentext>();
+        au = gameObject.GetComponent<AudioSource>();
+
+        StartCoroutine(startText());
     }
 
     public void SetLightLevel(int newLevel)
@@ -24,6 +30,15 @@ public class Fusebox : MonoBehaviour, MInteractable
         PuzzlesCompleted = Mathf.Clamp(newLevel, 0, lights.Length); // Clamp between 0 and max lights
         UpdateLights();
     }
+
+    public IEnumerator startText()
+    {
+        onScreenText.ShowText("Complete The puzzles To Fix The Fuse Box", 4f);
+        yield return new WaitForSeconds(6);
+        onScreenText.ShowText("Fix The Fuse Box To Light Up The House", 4f);
+
+    }
+    
 
     public void Update()
     {
@@ -43,7 +58,9 @@ public class Fusebox : MonoBehaviour, MInteractable
 
         if(PuzzlesCompleted == 4)
         {
+            au.Play();
             onScreenText.ShowText("You Win!", 2f);
+            sun.enabled = true;
             StartCoroutine(swapscene());
         }
 

@@ -15,11 +15,13 @@ public class Timeer : MonoBehaviour
     private Fusebox fuse;
     public bool win = false;
     public Puzzlehandeler puzzlehandeler;
+    private AudioSource fuseaudio;
 
     private void Start()
     {
         fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
         timerTxT.text = duration.ToString();
+        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -48,6 +50,7 @@ public class Timeer : MonoBehaviour
             gameOver = true;
             win = true;
             fuse.PuzzlesCompleted++;
+            fuseaudio.Play();
             puzzlehandeler.Turnoffgame();
         }
     }

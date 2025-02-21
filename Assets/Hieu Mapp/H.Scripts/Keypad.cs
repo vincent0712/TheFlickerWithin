@@ -16,11 +16,14 @@ public class Keypad : MonoBehaviour
     private string playerInput;
     private Fusebox fuse;
     private bool CanGetPoint = true;
-    
-    
+
+    private AudioSource fuseaudio;
+
+
     private void Start()
     {
         fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
 
         playerInput = "";
 
@@ -42,6 +45,7 @@ public class Keypad : MonoBehaviour
             {
                 fuse.PuzzlesCompleted++;
                 CanGetPoint = false;
+                fuseaudio.Play();
 
                 Debug.Log("Hehe");
                 playerInput = "";
