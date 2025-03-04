@@ -52,8 +52,14 @@ public class Flashlight : MonoBehaviour
         transform.rotation = flashlightPoint.rotation;
     }
 
+    private void FixedUpdate()
+    {
+        GoToPoint();
+    }
+
     private void Update()
     {
+        //GoToPoint();
         if (movement.isSpotted)
         {
             StartCoroutine(FlickerLoop());
@@ -87,13 +93,9 @@ public class Flashlight : MonoBehaviour
 
         }
 
-        GoToPoint();
+        //GoToPoint();
     }
 
-    private void FixedUpdate()
-    {
-        GoToPoint();
-    }
     private bool IsInLineOfSight(Vector3 observerPosition, Vector3 observerForward, Vector3 targetPosition)
     {
         // Calculate the direction from the observer to the target
