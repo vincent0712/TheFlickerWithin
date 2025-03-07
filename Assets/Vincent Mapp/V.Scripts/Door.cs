@@ -29,6 +29,7 @@ public class Door : MonoBehaviour, MInteractable
         {
             
             isOpen = !isOpen;
+            au.pitch = Random.Range(0.8f, 1.2f);
             au.Play();
             StartCoroutine(RotateDoor());
         }

@@ -48,11 +48,22 @@ public class Movement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         cameraStartPos = playerCamera.localPosition;
-        Cursor.lockState = CursorLockMode.Locked;
+        canmove = false;
     }
 
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = true;
+            canmove = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            canmove = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
         if (!canmove)
             return;
         HandleLook();
@@ -64,6 +75,8 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!canmove)
+            return;
         HandleMovement();
         ApplyHeadbob();
     }

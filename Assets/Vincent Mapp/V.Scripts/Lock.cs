@@ -8,13 +8,18 @@ public class Lock : MonoBehaviour, MInteractable
 {
     // Start is called before the first frame update
     public GameObject minigame;
-    public MPlayermovement player;
+    public Movement player;
+
+    public void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
+    }
     public void Interact()
     {
         
         minigame.SetActive(true);
         player.canmove = false;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         
 
     }

@@ -75,7 +75,7 @@ public class Flashlight : MonoBehaviour
         }
         if (!isOn)
             isFlickering = false;
-        //batteryLifeText.text = "Battery: " + battery;
+        batteryLifeText.text = "Battery: " + battery;
         light.intensity = isOn ? intensity : 0f;
 
 

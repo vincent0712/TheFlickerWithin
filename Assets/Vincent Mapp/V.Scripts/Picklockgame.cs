@@ -25,21 +25,42 @@ public class Picklockgame : MonoBehaviour
 
     // Boolean to indicate if the lock picking is fully complete
     public bool complete = false;
+    private bool isgameon = false;
 
     // Reference to the door script to unlock
-    public Mdoor door;
-    public MPlayermovement player;
+    public Door door;
+    public Movement player;
+    private AudioSource au;
+    public GameObject lockobj;
 
     void Start()
     {
         
+        au = gameObject.GetComponent<AudioSource>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
         SetRandomTargetPosition();
         playerPinSlider.value = 0.5f;
+        gameObject.SetActive(false);
     }
 
+
+    private void OnEnable()
+    {
+        SetRandomTargetPosition();
+        currentPin = 1;
+        isgameon = true;
+    }
     void Update()
     {
         if (complete) return;
+
+        if(Input.GetKeyDown(KeyCode.E) && isgameon)
+        {
+            gameObject.SetActive(false);
+            player.canmove = true;
+            isgameon = false;
+
+        }
 
         if (currentPin == 1)
             MoveTargetPin(targetPinSlider);
@@ -90,14 +111,18 @@ public class Picklockgame : MonoBehaviour
 
         if (success)
         {
+            au.pitch = Random.Range(0.8f, 1.2f);
+            au.Play();
             //Debug.Log($"Pin {currentPin} picked successfully!");
             currentPin++;
+
 
             if (currentPin > 3)
             {
                 complete = true;
                 gameObject.SetActive(false);
                 player.canmove = true;
+                lockobj.SetActive(false);
                 //Debug.Log("All pins picked! Lock successfully picked!");
 
                 // Unlock the door
