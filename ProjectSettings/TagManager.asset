@@ -16,6 +16,8 @@ TagManager:
   - monster
   - table
   - loose
+  - Lockgame
+  - closet
   layers:
   - Default
   - TransparentFX

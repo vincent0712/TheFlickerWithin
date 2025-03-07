@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Movement : MonoBehaviour
 {
@@ -6,18 +7,21 @@ public class Movement : MonoBehaviour
     public float walkSpeed = 2.5f;
     public float crouchSpeed = 1.5f;
     public float gravity = 9.8f;
-
     public bool canmove = true;
+
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
     public Transform playerCamera;
     private float verticalRotation = 0f;
 
     [Header("Crouch Settings")]
-    public float crouchHeight = 1f;
-    public float standingHeight = 2f;
+    public float crouchCameraHeight = 0.5f; // Lowered camera height when crouching
+    public float standingCameraHeight = 1.5f; // Default camera height
     public float crouchTransitionSpeed = 8f;
     private CharacterController characterController;
+    private Coroutine crouchRoutine;
+    private bool userCrouching = false; // Tracks manual crouch state
+
     public bool isCrouching = false;
     public bool isHidden = false;
     public bool isMoving = false;
@@ -48,28 +52,17 @@ public class Movement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         cameraStartPos = playerCamera.localPosition;
+        Cursor.lockState = CursorLockMode.Locked;
         canmove = false;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = true;
-            canmove = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            canmove = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
         if (!canmove)
             return;
+
         HandleLook();
-        
         HandleCrouch();
-        //ApplyHeadbob();
         Fear();
     }
 
@@ -104,7 +97,12 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = true;
-            isCrouching = isHidden;
+            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            crouchRoutine = StartCoroutine(CrouchTransition(true)); // Force crouch
+        }
+        else if (other.CompareTag("closet"))
+        {
+            isHidden = true;
         }
     }
 
@@ -113,9 +111,15 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = false;
-            isCrouching = isHidden;
+            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching)); // Restore previous state
+        }
+        else if (other.CompareTag("closet"))
+        {
+            isHidden = false;
         }
     }
+
 
     void HandleLook()
     {
@@ -160,11 +164,28 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl) && !isHidden)
         {
-            isCrouching = !isCrouching;
+            userCrouching = !userCrouching;
+            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching));
+        }
+    }
+
+    IEnumerator CrouchTransition(bool crouching)
+    {
+        isCrouching = crouching;
+        float time = 0f;
+        Vector3 startPos = playerCamera.localPosition;
+        Vector3 targetPos = new Vector3(startPos.x, crouching ? crouchCameraHeight : standingCameraHeight, startPos.z);
+
+        while (time < 1f)
+        {
+            time += Time.deltaTime * crouchTransitionSpeed;
+            playerCamera.localPosition = Vector3.Lerp(startPos, targetPos, time);
+            yield return null;
         }
 
-        float targetHeight = isCrouching ? crouchHeight : standingHeight;
-        characterController.height = Mathf.Lerp(characterController.height, targetHeight, Time.deltaTime * crouchTransitionSpeed);
+        playerCamera.localPosition = targetPos; // Ensure exact position is set
+        cameraStartPos = targetPos; // Fix for head bobbing interference
     }
 
     void ApplyHeadbob()
@@ -174,7 +195,7 @@ public class Movement : MonoBehaviour
             float currentBobFrequency = isCrouching ? crouchBobFrequency : bobFrequency;
             headbobTimer += Time.deltaTime * currentBobFrequency;
             float bobOffset = Mathf.Sin(headbobTimer) * bobAmount;
-            playerCamera.localPosition = cameraStartPos + new Vector3(0, bobOffset, 0);
+            playerCamera.localPosition = new Vector3(cameraStartPos.x, playerCamera.localPosition.y + bobOffset, cameraStartPos.z);
 
             if (Mathf.Sin(headbobTimer) < -0.99f && !footstepPlayed)
             {
