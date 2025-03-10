@@ -7,7 +7,13 @@ public class Movement : MonoBehaviour
     public float walkSpeed = 2.5f;
     public float crouchSpeed = 1.5f;
     public float gravity = 9.8f;
+    public float runspeed = 5f;
     public bool canmove = true;
+    public bool isrunning = false;
+    public float stamina = 25f;
+    public float staminaDrain = 1f;
+    public float staminaRegen = 1f;
+
 
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
@@ -144,9 +150,24 @@ public class Movement : MonoBehaviour
             isMoving = false;
         }
 
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f)
+        {
+            isrunning = true;
+        }
+        else if (!Input.GetKey(KeyCode.LeftShift))
+        {
+            isrunning = false;
+        }
+
         float speed = isCrouching ? crouchSpeed : walkSpeed;
+
+        if(!isCrouching)
+            speed = isrunning ? runspeed : walkSpeed;
+
+        HandleStamina();
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+
 
         Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * speed * Time.deltaTime;
 
@@ -160,6 +181,17 @@ public class Movement : MonoBehaviour
         characterController.Move(moveDirection);
     }
 
+    void HandleStamina()
+    {
+        if (isrunning)
+        {
+            stamina -= staminaDrain * Time.deltaTime;
+        }
+        else if (!isrunning)
+        {
+            stamina += staminaRegen * Time.deltaTime;
+        }
+    }
     void HandleCrouch()
     {
         if (Input.GetKeyDown(KeyCode.LeftControl) && !isHidden)

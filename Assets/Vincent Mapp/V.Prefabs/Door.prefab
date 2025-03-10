@@ -1879,7 +1879,7 @@ MonoBehaviour:
   targetPinSlider2: {fileID: 5356922605487573702}
   targetPinSlider: {fileID: 3534749786786115741}
   playerPinSlider: {fileID: 3534749786786115741}
-  targetMoveSpeed: 0.5
+  targetMoveSpeed: 1
   targetRange: 0.05
   complete: 0
   door: {fileID: 159472415463385808}
