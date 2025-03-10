@@ -39059,7 +39059,12 @@ MonoBehaviour:
   walkSpeed: 2.5
   crouchSpeed: 1.5
   gravity: 9.8
+  runspeed: 5
   canmove: 1
+  isrunning: 0
+  stamina: 25
+  staminaDrain: 5
+  staminaRegen: 1
   mouseSensitivity: 1.4
   playerCamera: {fileID: 691379517}
   crouchCameraHeight: -0.65
