@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TMPro.EditorUtilities;
 
 public class Movement : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class Movement : MonoBehaviour
     public bool isCrouching = false;
     public bool isHidden = false;
     public bool isMoving = false;
+
 
     [Header("Fear Settings")]
     public float fear;
@@ -150,9 +152,21 @@ public class Movement : MonoBehaviour
             isMoving = false;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f)
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
         {
-            isrunning = true;
+            if(stamina > 0.1f)
+            {
+                isrunning = true;
+
+            }
+            else
+            {
+                isrunning = false;
+            }
+
+            
+
+
         }
         else if (!Input.GetKey(KeyCode.LeftShift))
         {
@@ -161,13 +175,13 @@ public class Movement : MonoBehaviour
 
         float speed = isCrouching ? crouchSpeed : walkSpeed;
 
-        if(!isCrouching)
+        if(!isCrouching && stamina > 0)
             speed = isrunning ? runspeed : walkSpeed;
 
-        HandleStamina();
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
+        HandleStamina();
 
         Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * speed * Time.deltaTime;
 
@@ -183,14 +197,16 @@ public class Movement : MonoBehaviour
 
     void HandleStamina()
     {
-        if (isrunning)
+        if (isrunning && stamina > 0.1f)
         {
             stamina -= staminaDrain * Time.deltaTime;
+            
         }
         else if (!isrunning)
         {
             stamina += staminaRegen * Time.deltaTime;
         }
+
     }
     void HandleCrouch()
     {
@@ -201,6 +217,7 @@ public class Movement : MonoBehaviour
             crouchRoutine = StartCoroutine(CrouchTransition(userCrouching));
         }
     }
+
 
     IEnumerator CrouchTransition(bool crouching)
     {
