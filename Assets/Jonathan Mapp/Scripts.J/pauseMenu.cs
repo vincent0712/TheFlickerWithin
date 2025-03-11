@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.WSA;
 
 public class pauseMenu : MonoBehaviour
 {
@@ -31,13 +32,15 @@ public class pauseMenu : MonoBehaviour
     {
         pausePanal.SetActive(true);
         isPaused = true;
+        UnityEngine.Cursor.visible = true;
         Time.timeScale = 0;
     }
 
-    private void ResumeGame()
+    public void ResumeGame()
     {
         pausePanal.SetActive(false);
         isPaused = false;
+        UnityEngine.Cursor.visible = false;
         Time.timeScale = 1;
     }
 }
