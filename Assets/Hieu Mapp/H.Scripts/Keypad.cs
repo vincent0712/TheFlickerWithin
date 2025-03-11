@@ -1,4 +1,6 @@
 
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -13,10 +15,11 @@ public class Keypad : MonoBehaviour
     public TextMeshPro playerAnswer;
     public TextMeshPro tmpText;
     public float password;
+    public bool canplay = true;
 
     private string code;
     private string playerInput;
-    private Fusebox fuse;
+    //private Fusebox fuse;
     private bool CanGetPoint = true;
 
     private AudioSource fuseaudio;
@@ -24,12 +27,24 @@ public class Keypad : MonoBehaviour
 
     private void Start()
     {
-        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
-        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        //fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
 
         playerInput = "";
 
-        password = (int)UnityEngine.Random.Range(1000f, 9999f);
+        while(true)
+        {
+            password = (int)UnityEngine.Random.Range(1000, 9999);
+
+            if (password == 6969)
+            {
+                Debug.Log("Hihihih");
+                password = (int)UnityEngine.Random.Range(1000, 9999);
+                continue;
+            }
+            else
+                break;
+        }
         tmpText.text = password.ToString();
         code = password.ToString();
 
@@ -50,9 +65,15 @@ public class Keypad : MonoBehaviour
         {
             if(playerInput == code && CanGetPoint)
             {
-                fuse.PuzzlesCompleted++;
+                if (playerInput == "6969")
+                {
+                    Debug.Log("RR");
+                    audioSource.PlayOneShot(music);
+                }
+
+                //fuse.PuzzlesCompleted++;
                 CanGetPoint = false;
-                fuseaudio.Play();
+                //fuseaudio.Play();
 
                 Debug.Log("Hehe");
                 playerInput = "Success";
@@ -60,8 +81,15 @@ public class Keypad : MonoBehaviour
                 playerAnswer.text = playerInput;
                 playerInput = "";
             }
+
             else
             {
+                if (playerInput == "6969")
+                {
+                    Debug.Log("RR");
+                    audioSource.PlayOneShot(music);
+                }
+
                 Debug.Log("Nah");
                 playerInput = "Error";
                 audioSource.PlayOneShot(unsuccessSound);
@@ -70,9 +98,20 @@ public class Keypad : MonoBehaviour
             }
         }
 
-        if (number == "11")
+        if (number == "11" && canplay)
         {
+
             audioSource.PlayOneShot(music);
+            StartCoroutine(Wait());
         }
+    }
+
+    IEnumerator Wait()
+    {
+
+        canplay = false;
+        yield return new WaitForSeconds(9f);
+        canplay = true;
+
     }
 }
