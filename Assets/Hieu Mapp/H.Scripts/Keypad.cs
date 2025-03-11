@@ -7,23 +7,25 @@ public class Keypad : MonoBehaviour
     public AudioClip clickSound;
     public AudioClip successSound;
     public AudioClip unsuccessSound;
+    public AudioClip music;
     AudioSource audioSource;
 
+    public TextMeshPro playerAnswer;
     public TextMeshPro tmpText;
     public float password;
 
     private string code;
     private string playerInput;
-    private Fusebox fuse;
+    //private Fusebox fuse;
     private bool CanGetPoint = true;
 
-    private AudioSource fuseaudio;
+    //private AudioSource fuseaudio;
 
 
     private void Start()
     {
-        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
-        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        //fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
 
         playerInput = "";
 
@@ -38,25 +40,37 @@ public class Keypad : MonoBehaviour
     {
         audioSource.PlayOneShot(clickSound);
 
-        playerInput += number;
-        if(playerInput.Length >= 4)
+        if (number != "10" && number != "11" && playerInput.Length < 4)
+        {
+            playerInput += number;
+            playerAnswer.text = playerInput;
+        }    
+
+        if(number == "10")
         {
             if(playerInput == code && CanGetPoint)
             {
-                fuse.PuzzlesCompleted++;
+                //fuse.PuzzlesCompleted++;
                 CanGetPoint = false;
-                fuseaudio.Play();
+                //fuseaudio.Play();
 
                 Debug.Log("Hehe");
                 playerInput = "";
                 audioSource.PlayOneShot(successSound);
+                playerAnswer.text = playerInput;
             }
             else
             {
                 Debug.Log("Nah");
                 playerInput = "";
                 audioSource.PlayOneShot(unsuccessSound);
+                playerAnswer.text = playerInput;
             }
+        }
+
+        if (number == "11")
+        {
+            audioSource.PlayOneShot(music);
         }
     }
 }

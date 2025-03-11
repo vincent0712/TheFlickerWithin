@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class HWinMinigame : MonoBehaviour
 {
-    private Fusebox fuse;
+    //private Fusebox fuse;
     private bool CanGetPoint = true;
     private AudioSource fuseaudio;
 
     private void Start()
     {
-        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
-        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        //fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -17,7 +17,7 @@ public class HWinMinigame : MonoBehaviour
         if (collision.gameObject.name == "RealWinHole" && CanGetPoint)
         {
             //Debug.Log("You win");
-            fuse.PuzzlesCompleted++;
+            //fuse.PuzzlesCompleted++;
             fuseaudio.Play();
             CanGetPoint = false;
         }

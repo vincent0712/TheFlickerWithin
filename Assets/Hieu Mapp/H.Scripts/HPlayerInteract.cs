@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HPlayerInteract : MonoBehaviour, HInteract
+public class HPlayerInteract : MonoBehaviour, MInteractable
 {
     public Camera cam;
     public float interactDistance = 3f;
@@ -33,7 +33,7 @@ public class HPlayerInteract : MonoBehaviour, HInteract
 
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            MInteractable interactable = hit.collider.GetComponent<MInteractable>();
             if (interactable != null)
             {
                 Debug.Log(interactable);
