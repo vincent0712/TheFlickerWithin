@@ -16,16 +16,16 @@ public class Keypad : MonoBehaviour
 
     private string code;
     private string playerInput;
-    //private Fusebox fuse;
+    private Fusebox fuse;
     private bool CanGetPoint = true;
 
-    //private AudioSource fuseaudio;
+    private AudioSource fuseaudio;
 
 
     private void Start()
     {
-        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
-        //fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
 
         playerInput = "";
 
@@ -50,9 +50,9 @@ public class Keypad : MonoBehaviour
         {
             if(playerInput == code && CanGetPoint)
             {
-                //fuse.PuzzlesCompleted++;
+                fuse.PuzzlesCompleted++;
                 CanGetPoint = false;
-                //fuseaudio.Play();
+                fuseaudio.Play();
 
                 Debug.Log("Hehe");
                 playerInput = "";
