@@ -55,16 +55,18 @@ public class Keypad : MonoBehaviour
                 //fuseaudio.Play();
 
                 Debug.Log("Hehe");
-                playerInput = "";
+                playerInput = "Success";
                 audioSource.PlayOneShot(successSound);
                 playerAnswer.text = playerInput;
+                playerInput = "";
             }
             else
             {
                 Debug.Log("Nah");
-                playerInput = "";
+                playerInput = "Error";
                 audioSource.PlayOneShot(unsuccessSound);
                 playerAnswer.text = playerInput;
+                playerInput = "";
             }
         }
 
