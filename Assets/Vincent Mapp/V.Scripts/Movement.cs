@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro.EditorUtilities;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
@@ -10,10 +11,16 @@ public class Movement : MonoBehaviour
     public float gravity = 9.8f;
     public float runspeed = 5f;
     public bool canmove = true;
-    public bool isrunning = false;
-    public float stamina = 25f;
+
+
+    [Header("Sprint")]
+    public float stamina = 10f;
+    public float maxStamina = 10f;
     public float staminaDrain = 1f;
     public float staminaRegen = 1f;
+    public bool isrunning = false;
+    public Image staminabar;
+    private bool canrun = true;
 
 
     [Header("Mouse Look")]
@@ -32,6 +39,7 @@ public class Movement : MonoBehaviour
     public bool isCrouching = false;
     public bool isHidden = false;
     public bool isMoving = false;
+    private bool canregenstamina = true;
 
 
     [Header("Fear Settings")]
@@ -41,6 +49,7 @@ public class Movement : MonoBehaviour
     [Header("Headbob Settings")]
     public float bobFrequency = 10f;
     public float crouchBobFrequency = 5f;
+    public float runfrequency = 10f;
     public float bobAmount = 0.05f;
     private float headbobTimer = 0;
     private Vector3 cameraStartPos;
@@ -143,45 +152,27 @@ public class Movement : MonoBehaviour
 
     void HandleMovement()
     {
-        if (characterController.velocity.magnitude > 0.15f && !isCrouching)
-        {
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
-        }
+        isMoving = characterController.velocity.magnitude > 0.15f && !isCrouching;
 
-        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f)
         {
-            if(stamina > 0.1f)
-            {
+            if(canrun)
                 isrunning = true;
 
-            }
-            else
-            {
-                isrunning = false;
-            }
-
-            
-
-
         }
-        else if (!Input.GetKey(KeyCode.LeftShift))
+        else
         {
             isrunning = false;
         }
 
         float speed = isCrouching ? crouchSpeed : walkSpeed;
-
-        if(!isCrouching && stamina > 0)
+        if (!isCrouching && stamina > 0)
+        {
             speed = isrunning ? runspeed : walkSpeed;
+        }
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-
-        HandleStamina();
 
         Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * speed * Time.deltaTime;
 
@@ -193,6 +184,8 @@ public class Movement : MonoBehaviour
 
         moveDirection.y -= gravity * Time.deltaTime;
         characterController.Move(moveDirection);
+
+        HandleStamina();
     }
 
     void HandleStamina()
@@ -200,13 +193,25 @@ public class Movement : MonoBehaviour
         if (isrunning && stamina > 0.1f)
         {
             stamina -= staminaDrain * Time.deltaTime;
-            
+            if (stamina <= 0.1f)
+            {
+                stamina = 0.1f; // Prevent stamina from going below the threshold
+                isrunning = false; // Stop running if stamina is too low
+                canrun = false;
+                
+                if (canregenstamina)
+                {
+                    StartCoroutine(runCD());
+                }
+            }
         }
-        else if (!isrunning)
+        else if (!isrunning && stamina < maxStamina && canregenstamina)
         {
             stamina += staminaRegen * Time.deltaTime;
+            stamina = Mathf.Min(stamina, maxStamina); // Ensure stamina doesn't exceed max
         }
 
+        staminabar.fillAmount = stamina/10;
     }
     void HandleCrouch()
     {
@@ -218,7 +223,13 @@ public class Movement : MonoBehaviour
         }
     }
 
-
+    IEnumerator runCD()
+    {
+        canregenstamina = false;
+        yield return new WaitForSeconds(3f);
+        canregenstamina = true;
+        canrun = true;
+    }
     IEnumerator CrouchTransition(bool crouching)
     {
         isCrouching = crouching;
@@ -242,6 +253,8 @@ public class Movement : MonoBehaviour
         if (characterController.isGrounded && characterController.velocity.magnitude > 0.1f)
         {
             float currentBobFrequency = isCrouching ? crouchBobFrequency : bobFrequency;
+            if (!isCrouching && isrunning)
+                currentBobFrequency = runfrequency;
             headbobTimer += Time.deltaTime * currentBobFrequency;
             float bobOffset = Mathf.Sin(headbobTimer) * bobAmount;
             playerCamera.localPosition = new Vector3(cameraStartPos.x, playerCamera.localPosition.y + bobOffset, cameraStartPos.z);
