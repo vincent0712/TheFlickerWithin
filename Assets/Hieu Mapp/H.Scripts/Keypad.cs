@@ -12,6 +12,7 @@ public class Keypad : MonoBehaviour
     public AudioClip music;
     AudioSource audioSource;
 
+    private MonsterAI monster;
     public TextMeshPro playerAnswer;
     public TextMeshPro tmpText;
     public float password;
@@ -19,7 +20,7 @@ public class Keypad : MonoBehaviour
 
     private string code;
     private string playerInput;
-    //private Fusebox fuse;
+    private Fusebox fuse;
     private bool CanGetPoint = true;
 
     private AudioSource fuseaudio;
@@ -27,8 +28,9 @@ public class Keypad : MonoBehaviour
 
     private void Start()
     {
-        //fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
-        //fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
+        monster = GameObject.FindGameObjectWithTag("monster").GetComponent<MonsterAI>();
 
         playerInput = "";
 
@@ -69,11 +71,13 @@ public class Keypad : MonoBehaviour
                 {
                     Debug.Log("RR");
                     audioSource.PlayOneShot(music);
+                    monster.HearSound(gameObject.transform.position,1f);
                 }
 
-                //fuse.PuzzlesCompleted++;
+                fuse.PuzzlesCompleted++;
                 CanGetPoint = false;
-                //fuseaudio.Play();
+                fuseaudio.Play();
+                monster.HearSound(gameObject.transform.position,1f);
 
                 Debug.Log("Hehe");
                 playerInput = "Success";

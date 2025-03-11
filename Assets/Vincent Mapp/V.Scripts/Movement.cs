@@ -21,6 +21,7 @@ public class Movement : MonoBehaviour
     public bool isrunning = false;
     public Image staminabar;
     private bool canrun = true;
+    
 
 
     [Header("Mouse Look")]
@@ -58,6 +59,7 @@ public class Movement : MonoBehaviour
     [Header("Footstep Sounds")]
     public AudioClip[] footstepSounds;
     public AudioSource footstepAudioSource;
+    private MonsterAI monster;
 
     [Header("Audio")]
     public AudioSource heartbeat;
@@ -68,6 +70,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        monster = GameObject.FindGameObjectWithTag("monster").GetComponent<MonsterAI>();
         cameraStartPos = playerCamera.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
         canmove = false;
@@ -281,6 +284,24 @@ public class Movement : MonoBehaviour
         if (footstepSounds.Length > 0 && footstepAudioSource)
         {
             footstepAudioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Length)]);
+            if (isCrouching)
+            {
+                monster.HearSound(gameObject.transform.position, 0.1f);
+
+            }
+            else if (!isCrouching)
+            {
+                if (isrunning)
+                {
+                    monster.HearSound(gameObject.transform.position, 0.55f);
+
+
+                }
+                else
+                {
+                    monster.HearSound(gameObject.transform.position, 0.45f);
+                }
+            }
         }
     }
 }
