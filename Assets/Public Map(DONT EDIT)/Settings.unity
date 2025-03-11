@@ -3043,6 +3043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc3bf697f0372a4897d4449d43c2463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fade: {fileID: 0}
 --- !u!4 &1384870112
 Transform:
   m_ObjectHideFlags: 0
@@ -3067,7 +3068,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1384870110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fc4de07feb758247a7a7c92217278b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 77dbd321dde75be448c2a20dfcc06209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: b54a6fdfa1915754eb84180bc650f323, type: 2}
