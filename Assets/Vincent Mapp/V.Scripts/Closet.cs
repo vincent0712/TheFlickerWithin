@@ -18,13 +18,16 @@ public class Closet : MonoBehaviour
         if (!isopen)
         {
             anim.Play("opencloset");
-            col.enabled = false;
+            
+            //col.enabled = false;
+            col.center = new Vector3(-1.93f, -3f, -5.6f);
 
         }
         else if (isopen)
         {
             anim.Play("closecloset");
-            col.enabled = true;
+            //col.enabled = true;
+            col.center = new Vector3(-1.93f, 1.36f, -5.6f);
         }
         au.pitch = Random.Range(0.85f, 1.15f);
         au.Play();

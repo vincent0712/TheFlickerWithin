@@ -46,6 +46,7 @@ public class Mcamswitch : MonoBehaviour
     {
         // Initialize camera position
         videocamera.transform.position = camStartingPoint.position;
+
         DisableNightVision();
 
         // Retrieve and store default post-processing values
@@ -53,7 +54,7 @@ public class Mcamswitch : MonoBehaviour
         {
             if (vol.profile.TryGet(out lensDistortion))
                 defaultLensDistortion = lensDistortion.intensity.value;
-
+            lensDistortion.active = false;
 
             if (vol.profile.TryGet(out vignette))
                 defaultVignetteIntensity = vignette.intensity.value;
@@ -135,6 +136,7 @@ public class Mcamswitch : MonoBehaviour
                 if (vol.profile.TryGet(out filmgrain))
                 {
                     filmgrain.intensity.value = 1f;
+                    lensDistortion.active = true;
                 }
 
                 
@@ -169,6 +171,7 @@ public class Mcamswitch : MonoBehaviour
                 if (vol.profile.TryGet(out filmgrain))
                 {
                     filmgrain.intensity.value = 0.8f;
+                    lensDistortion.active = false;
                 }
             }
         }

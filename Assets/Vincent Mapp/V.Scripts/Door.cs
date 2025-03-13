@@ -1,54 +1,91 @@
-// Script: Door.cs
 using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
 
 public class Door : MonoBehaviour, MInteractable
 {
-    public float openAngle = 90f;          
-    public float openSpeed = 2f;          
-    public bool isOpen = false;           
-    private AudioSource au;
-    public bool islocked = false;
+    public float openAngle = 90f;
+    public float openSpeed = 2f;
+    public bool isOpen = false;
+    public bool isLocked = false;
 
-    private Quaternion closedRotation;    
-    private Quaternion openRotation;       
-    private bool isAnimating = false;      
+    private AudioSource audioSource;
+    private Quaternion closedRotation;
+    private Quaternion openRotation;
+    private bool isAnimating = false;
+    private NavMeshObstacle navObstacle;
 
     void Start()
     {
-        
-        au = gameObject.GetComponent<AudioSource>();
+        navObstacle = GetComponent<NavMeshObstacle>();
+        audioSource = GetComponent<AudioSource>();
         closedRotation = transform.rotation;
         openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0f, openAngle, 0f));
     }
 
     public void Interact()
     {
-        if (islocked)
+        if (isLocked)
+        {
+            navObstacle.enabled = true;
             return;
+        }
+
+        navObstacle.enabled = false;
         if (!isAnimating)
         {
-            
-            isOpen = !isOpen;
-            au.pitch = Random.Range(0.8f, 1.2f);
-            au.Play();
-            StartCoroutine(RotateDoor());
+            ToggleDoor();
         }
     }
 
-    private System.Collections.IEnumerator RotateDoor()
+    private void ToggleDoor()
     {
-        isAnimating = true; 
+        if (isOpen)
+            CloseDoor();
+        else
+            OpenDoor();
+    }
 
-        Quaternion targetRotation = isOpen ? openRotation : closedRotation;
+    private void OpenDoor()
+    {
+        isOpen = true;
+        PlaySound();
+        StartCoroutine(RotateDoor(openRotation));
+    }
 
-        
+    private void CloseDoor()
+    {
+        isOpen = false;
+        PlaySound();
+        StartCoroutine(RotateDoor(closedRotation));
+    }
+
+    private void PlaySound()
+    {
+        audioSource.pitch = Random.Range(0.8f, 1.2f);
+        audioSource.Play();
+    }
+
+    private IEnumerator RotateDoor(Quaternion targetRotation)
+    {
+        isAnimating = true;
+
         while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * openSpeed);
             yield return null;
         }
 
-        transform.rotation = targetRotation; 
-        isAnimating = false; 
+        transform.rotation = targetRotation;
+        isAnimating = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("ads");
+        if (other.CompareTag("monster") && !isOpen && !isAnimating)
+        {
+            OpenDoor();
+        }
     }
 }

@@ -128,7 +128,7 @@ public class Picklockgame : MonoBehaviour
                 // Unlock the door
                 if (door != null)
                 {
-                    door.islocked = false;
+                    door.isLocked = false;
                     //Debug.Log("Door is now unlocked.");
                 }
                 else
