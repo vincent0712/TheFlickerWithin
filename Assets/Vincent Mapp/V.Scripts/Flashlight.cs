@@ -21,7 +21,7 @@ public class Flashlight : MonoBehaviour
 
     private bool isTargetInSight = false; // Track if the target is in line of sight
 
-    public int battery = 100; // Battery as an integer
+    //public int battery = 100; // Battery as an integer
     public float followSpeed = 2f;
     public float rotateSpeed = 7f;
     public float intensity = 5f;
@@ -42,7 +42,7 @@ public class Flashlight : MonoBehaviour
         flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
 
         // Start the battery drain coroutine
-        StartCoroutine(DrainBattery());
+        //StartCoroutine(DrainBattery());
     }
 
     private void OnEnable()
@@ -75,14 +75,14 @@ public class Flashlight : MonoBehaviour
         }
         if (!isOn)
             isFlickering = false;
-        batteryLifeText.text = "Battery: " + battery;
+        //batteryLifeText.text = "Battery: " + battery;
         light.intensity = isOn ? intensity : 0f;
 
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             aud.Play();
-            isOn = !isOn && battery > 0;
+            isOn = !isOn; //&& battery > 0;
             
             
         }
@@ -125,7 +125,7 @@ public class Flashlight : MonoBehaviour
         return true;
     }
 
-    private IEnumerator DrainBattery()
+    /*private IEnumerator DrainBattery()
     {
         while (true)
         {
@@ -141,7 +141,7 @@ public class Flashlight : MonoBehaviour
             }
         }
     }
-
+    */
     private void GoToPoint()
     {
         // Move towards the target's position

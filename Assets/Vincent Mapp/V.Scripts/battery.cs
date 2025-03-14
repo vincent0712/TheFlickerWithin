@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class battery : MonoBehaviour, MInteractable
 {
-    private Flashlight flashlight;
+    private Mcamswitch flashlight;
 
     private void Start()
     {
-        flashlight = GameObject.FindGameObjectWithTag("fl").GetComponent<Flashlight>();
+        flashlight = GameObject.FindGameObjectWithTag("fl").GetComponent<Mcamswitch>();
     }
 
     public void Interact()

@@ -1,4 +1,6 @@
 using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -11,6 +13,9 @@ public class Mcamswitch : MonoBehaviour
     public Camera playerCamera;
     public GameObject flashlight;
     public MeshRenderer monster;
+    public TextMeshProUGUI batterytext;
+    public bool camison = false;
+    public float battery = 100f;
 
     // Transforms
     public Transform camStartingPoint;
@@ -44,8 +49,10 @@ public class Mcamswitch : MonoBehaviour
 
     void Start()
     {
+
         // Initialize camera position
         videocamera.transform.position = camStartingPoint.position;
+        StartCoroutine(BatteryDrainLoop());
 
         DisableNightVision();
 
@@ -80,8 +87,29 @@ public class Mcamswitch : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning)
         {
             StartCoroutine(SwapCameraWithEffects());
+            
         }
     }
+
+    private IEnumerator BatteryDrainLoop()
+    {
+        while (true) // Run forever
+        {
+            yield return new WaitForSeconds(1f); // Wait for 1 second
+            if (camison && battery > 0)
+            {
+                battery -= 1;
+                batterytext.text = "Battery: " + battery;
+                batterytext.enabled = true; // Show text when camera is on
+            }
+            else
+            {
+                batterytext.enabled = false; // Hide text when camera is off
+            }
+        }
+    }
+
+
 
     private IEnumerator SwapCameraWithEffects()
     {
@@ -93,10 +121,19 @@ public class Mcamswitch : MonoBehaviour
         if (isCamAtTarget)
         {
             EnableNightVision();
+            camison = true;
+            
+        }
+        else
+        {
+            camison = false;
+            
         }
 
         isTransitioning = false;
     }
+
+
 
     private IEnumerator MoveCamera()
     {
@@ -120,7 +157,8 @@ public class Mcamswitch : MonoBehaviour
     {
         isNightVision = true;
         videocamera.SetActive(false);
-        monster.enabled = !isNightVision;
+        batterytext.enabled = isNightVision;
+        //monster.enabled = !isNightVision;
 
         if (nightvisionlight != null)
             nightvisionlight.intensity = 15f;
@@ -155,7 +193,8 @@ public class Mcamswitch : MonoBehaviour
     {
         videocamera.SetActive(true);
         isNightVision = false;
-        monster.enabled = !isNightVision;
+        batterytext.enabled = isNightVision;
+        //monster.enabled = !isNightVision;
 
         if (nightvisionlight != null)
             nightvisionlight.intensity = 0f;
