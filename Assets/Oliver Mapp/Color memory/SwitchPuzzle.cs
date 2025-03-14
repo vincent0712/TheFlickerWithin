@@ -1,70 +1,74 @@
+﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwitchPuzzle : MonoBehaviour
 {
     public Switch[] switches; // Array av switch-objekt
-    public bool[] correctCombination = { false, false, false, false, false, true }; // R�tt kombination
+    public bool[] correctCombination = { true, false, false, true, false, true }; // Rätt kombination
     private bool victory;
-    int W = 0;
-    public bool  BigLamp;
+    public GameObject BigLamp;
     public GameObject[] SmallLamps;
-    //rivate Fusebox fuse;
-    private bool CanGetPoint = true;
+    public Material onMaterial;
+    public Material offMaterial;
+    public TMP_Text errorText; // Text UI-komponent
 
     void Start()
     {
-        //Fuse = GameObject.FindGameObjectsWithTag("Fuse").GetComponent<Fuse>;
-        //switches = FindObjectsOfType<Switch>(); // Hitta alla switchar i scenen
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0)) // När användaren klickar
         {
+            int wrongCount = 0; // Räkna antalet fel
+
             for (int i = 0; i < switches.Length; i++)
             {
-                // Kolla om switchens aktiva/inaktiva status matchar correctCombination
-                if (switches[i].IsOn != correctCombination[i])
+                if (switches[i].IsOn != correctCombination[i]) // Om lampan är fel
                 {
-                    Debug.Log($"Hej {i}");
-                    //return; // Avbryt om en enda switch �r fel
-                    W = 0;
-                }
+                    wrongCount++; // Öka felräknaren
 
-                else if (switches[i].IsOn == correctCombination[i])
+                    // Uppdatera material på lamporna
+                    Renderer lampRenderer = SmallLamps[i].GetComponent<Renderer>();
+                    if (lampRenderer != null)
+                    {
+                        lampRenderer.material = switches[i].IsOn ? onMaterial : offMaterial;
+                    }
+                }
+                else // Om lampan är korrekt
                 {
-                    //Debug.Log("Victory!"); // Alla switchar �r r�tt
-                    victory = true;
-                    W++;
+                    // Uppdatera material på lamporna
+                    Renderer lampRenderer = SmallLamps[i].GetComponent<Renderer>();
+                    if (lampRenderer != null)
+                    {
+                        lampRenderer.material = switches[i].IsOn ? onMaterial : offMaterial;
+                    }
                 }
             }
-            if (victory == true && W == 6)
+
+            // Uppdatera texten för felaktiga lampor
+            if (errorText != null)
+            {
+                errorText.text = wrongCount + " :are wrong"; // Visar antal felaktiga
+            }
+
+            // Kontrollera om spelet är klart
+            int correctCount = 0;
+            for (int i = 0; i < switches.Length; i++)
+            {
+                if (switches[i].IsOn == correctCombination[i]) // Om lampan är korrekt
+                {
+                    correctCount++;
+                }
+            }
+
+            if (correctCount == switches.Length) // Om alla är korrekta
             {
                 Debug.Log("U win");
-                BigLamp = true;
-
+                BigLamp.SetActive(true); // Tänd BigLamp
+                victory = true;
             }
         }
-    }
-
-    /*void OnMouseDown()
-    {
-        CheckWinCondition();
-    }*/
-
-    public void CheckWinCondition()
-    {
-        for (int i = 0; i < switches.Length; i++)
-        {
-            // Kolla om switchens aktiva/inaktiva status matchar correctCombination
-            if (switches[i] == correctCombination[i])
-            {
-                Debug.Log("Hej");
-                return; // Avbryt om en enda switch �r fel
-
-            }
-        }
-        Debug.Log("Victory!"); // Alla switchar �r r�tt
     }
 }
-
