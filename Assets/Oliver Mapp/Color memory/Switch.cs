@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Switch : MonoBehaviour
+public class Switch : MonoBehaviour, MInteractable
 {
     public bool IsOn = false; 
     public SwitchPuzzle puzzle; 
@@ -8,9 +8,14 @@ public class Switch : MonoBehaviour
     public delegate void SwitchToggled();
     public event SwitchToggled OnSwitchToggled;
 
-    void OnMouseDown()
+
+
+    public void Interact()
     {
+        if (puzzle.victory)
+            return;
         ToggleSwitch();
+        puzzle.Interactwithpuzzle();
     }
 
     void ToggleSwitch()
