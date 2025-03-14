@@ -22,7 +22,7 @@ public class Fusebox : MonoBehaviour, MInteractable
         onScreenText = FindObjectOfType<Onscreentext>();
         au = gameObject.GetComponent<AudioSource>();
 
-        StartCoroutine(startText());
+        //StartCoroutine(startText());
     }
 
     public void SetLightLevel(int newLevel)

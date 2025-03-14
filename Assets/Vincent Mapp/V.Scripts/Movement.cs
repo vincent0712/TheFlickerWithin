@@ -283,6 +283,7 @@ public class Movement : MonoBehaviour
     {
         if (footstepSounds.Length > 0 && footstepAudioSource)
         {
+            footstepAudioSource.pitch = Random.Range(0.54f, 0.55f);
             footstepAudioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Length)]);
             if (isCrouching)
             {
