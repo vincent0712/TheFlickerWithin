@@ -157,7 +157,7 @@ public class Movement : MonoBehaviour
     {
         isMoving = characterController.velocity.magnitude > 0.15f && !isCrouching;
 
-        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f)
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f && isMoving)
         {
             if(canrun)
                 isrunning = true;
@@ -193,7 +193,7 @@ public class Movement : MonoBehaviour
 
     void HandleStamina()
     {
-        if (isrunning && stamina > 0.1f)
+        if (isrunning && stamina > 0.1f && isMoving)
         {
             stamina -= staminaDrain * Time.deltaTime;
             if (stamina <= 0.1f)

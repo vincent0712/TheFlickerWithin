@@ -7,6 +7,7 @@ public class ClockPuzzle : MonoBehaviour, MInteractable
     public bool canopen = true;
     public Animation anim;
     private AudioSource au;
+    public GameObject text;
 
 
     private void Start()
@@ -45,6 +46,7 @@ public class ClockPuzzle : MonoBehaviour, MInteractable
         au.Play();
         StartCoroutine(WaitForAnimation("clockclose"));
         Destroy(GetComponent<Outline>());
+        text.SetActive(false);
     }
     private System.Collections.IEnumerator WaitForAnimation(string animationName)
     {
