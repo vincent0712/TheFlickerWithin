@@ -772,7 +772,7 @@ MonoBehaviour:
   openAngle: 90
   openSpeed: 2
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!65 &2641365437102332861
 BoxCollider:
   m_ObjectHideFlags: 0
