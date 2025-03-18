@@ -9,8 +9,8 @@ public class HStick : MonoBehaviour, MInteractable
     private Renderer rend;
     private CapsuleCollider cap;
 
-    public Color color = Color.red;
-    public Color orgCol = Color.green;
+    public Color color;
+    public Color orgColn;
 
     bool isvis = false;
     private int count;
@@ -22,6 +22,7 @@ public class HStick : MonoBehaviour, MInteractable
         mesh = gameObject.GetComponent<MeshRenderer>();
         cap = gameObject.GetComponent<CapsuleCollider>();
         rend = gameObject.GetComponent<Renderer>();
+        rend.material.color = orgColn;
     }
 
 
@@ -37,15 +38,16 @@ public class HStick : MonoBehaviour, MInteractable
         {
 
             cap.enabled = true;
-            rend.material.color = orgCol;
-            //mesh.enabled = true;
+            rend.material.color = color;
+            // mesh.enabled = true;
             isvis = true;
         }
 
         else if (isvis == true)
         {
             cap.enabled = false;
-            rend.material.color = color;
+            rend.material.color = orgColn;
+
             //mesh.enabled = false;
             isvis = false;
         }

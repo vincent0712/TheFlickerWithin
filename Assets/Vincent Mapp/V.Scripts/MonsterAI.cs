@@ -8,21 +8,25 @@ public class MonsterAI : MonoBehaviour
     public enum State { Roaming, Chasing, Searching, Investigating }
     public State currentState = State.Roaming;
 
-    public Transform player;
-    public float visionRange = 15f;
-    public float fieldOfView = 60f;
-    public float hearingRange = 25f;
-    public float chaseSpeed = 5f;
-    public float roamSpeed = 2f;
-    public float searchTime = 5f;
-    public float investigateTime = 3f;
+    [SerializeField] private Transform player;
+    [SerializeField] private float baseVisionRange = 15f;
+    [SerializeField] private float crouchingVisionRange = 5f;
+    [SerializeField] private float fieldOfView = 60f;
+    [SerializeField] private float hearingRange = 25f;
+    [SerializeField] private float chaseSpeed = 5f;
+    [SerializeField] private float roamSpeed = 2f;
+    [SerializeField] private float searchTime = 5f;
+    [SerializeField] private float investigateTime = 3f;
+    [SerializeField] private float roamRadius = 10f;
+    [SerializeField] private float roamWaitTimeMin = 10f;
+    [SerializeField] private float roamWaitTimeMax = 15f;
+    [SerializeField] private Transform[] pointsOfInterest;
 
     private Movement movement;
-
-    public Transform[] pointsOfInterest;
     private NavMeshAgent agent;
     private Vector3 lastKnownPosition;
     private bool searching = false;
+    private float currentVisionRange;
 
     void Start()
     {
@@ -34,7 +38,7 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         DebugVisionAndHearing();
-        checkplayer();
+        CheckPlayer();
 
         if (CanSeePlayer())
         {
@@ -53,9 +57,9 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    void checkplayer()
+    void CheckPlayer()
     {
-        visionRange = movement.isCrouching ? 5f : 15f;
+        currentVisionRange = movement.isCrouching ? crouchingVisionRange : baseVisionRange;
     }
 
     public void HearSound(Vector3 soundPosition, float soundStrength)
@@ -88,16 +92,16 @@ public class MonsterAI : MonoBehaviour
             }
             else
             {
-                Vector3 randomDirection = Random.insideUnitSphere * 10f;
+                Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
                 randomDirection += transform.position;
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomDirection, out hit, 10f, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
                 {
                     agent.SetDestination(hit.position);
                 }
             }
             agent.speed = roamSpeed;
-            yield return new WaitForSeconds(Random.Range(5, 10));
+            yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
         }
     }
 
@@ -129,10 +133,10 @@ public class MonsterAI : MonoBehaviour
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, directionToPlayer);
 
-        if (Vector3.Distance(transform.position, player.position) < visionRange && angle < fieldOfView / 2)
+        if (Vector3.Distance(transform.position, player.position) < currentVisionRange && angle < fieldOfView / 2)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, directionToPlayer, out hit, visionRange))
+            if (Physics.Raycast(transform.position, directionToPlayer, out hit, currentVisionRange))
             {
                 if (hit.transform == player)
                 {
@@ -154,10 +158,10 @@ public class MonsterAI : MonoBehaviour
 
     void DebugVisionAndHearing()
     {
-        Debug.DrawRay(transform.position, transform.forward * visionRange, Color.blue);
+        Debug.DrawRay(transform.position, transform.forward * currentVisionRange, Color.blue);
 
-        Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward * visionRange;
-        Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward * visionRange;
+        Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward * currentVisionRange;
+        Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward * currentVisionRange;
 
         Debug.DrawRay(transform.position, leftLimit, Color.green);
         Debug.DrawRay(transform.position, rightLimit, Color.green);

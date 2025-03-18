@@ -22,7 +22,7 @@ public class Fusebox : MonoBehaviour, MInteractable
         onScreenText = FindObjectOfType<Onscreentext>();
         au = gameObject.GetComponent<AudioSource>();
 
-        StartCoroutine(startText());
+        //StartCoroutine(startText());
     }
 
     public void SetLightLevel(int newLevel)
@@ -53,10 +53,10 @@ public class Fusebox : MonoBehaviour, MInteractable
     }
     public void Interact()
     {
-        if(PuzzlesCompleted < 4)
+        if(PuzzlesCompleted < 5)
             onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
 
-        if(PuzzlesCompleted == 4)
+        if(PuzzlesCompleted == 5)
         {
             au.Play();
             onScreenText.ShowText("You Win!", 2f);

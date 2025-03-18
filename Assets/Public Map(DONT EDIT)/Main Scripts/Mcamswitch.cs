@@ -16,6 +16,7 @@ public class Mcamswitch : MonoBehaviour
     public TextMeshProUGUI batterytext;
     public bool camison = false;
     public float battery = 100f;
+    public bool isCameraUnlocked;
 
     // Transforms
     public Transform camStartingPoint;
@@ -84,7 +85,7 @@ public class Mcamswitch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning)
+        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked)
         {
             StartCoroutine(SwapCameraWithEffects());
             
