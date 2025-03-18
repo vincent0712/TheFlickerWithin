@@ -12,7 +12,7 @@ public class tutorial : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !anim.isPlaying)
+        if (Input.GetKeyDown(KeyCode.Space) && !anim.isPlaying && isshowing)
         {
             fadeout();
 
@@ -29,6 +29,7 @@ public class tutorial : MonoBehaviour
         isshowing = false;
         move = GameObject.FindAnyObjectByType<Movement>();
         move.canmove = true;
+        isshowing = false;
         
 
     }
@@ -37,6 +38,7 @@ public class tutorial : MonoBehaviour
         anim.Play("tutorialfadein");
         move = GameObject.FindAnyObjectByType<Movement>();
         move.canmove = false;
+        isshowing = true;
         
 
     }

@@ -66,7 +66,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 38d45133004c1cd4192c728feccad109,
         type: 3}
       propertyPath: m_Name
-      value: camerapickup 1
+      value: camerapickup
       objectReference: {fileID: 0}
     - target: {fileID: 9181683226690783094, guid: 38d45133004c1cd4192c728feccad109,
         type: 3}
@@ -147,3 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 607bf019c3001ba4e9bef77e3780b640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  au: {fileID: 0}
+  audioPrefab: {fileID: 856473438286158936, guid: e910762411ab6c74ea522d704bb63609,
+    type: 3}
