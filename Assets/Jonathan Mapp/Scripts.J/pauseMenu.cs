@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.WSA;
 
 public class pauseMenu : MonoBehaviour
 {
@@ -32,7 +31,7 @@ public class pauseMenu : MonoBehaviour
     {
         pausePanal.SetActive(true);
         isPaused = true;
-        UnityEngine.Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
         Time.timeScale = 0;
     }
 
@@ -40,7 +39,7 @@ public class pauseMenu : MonoBehaviour
     {
         pausePanal.SetActive(false);
         isPaused = false;
-        UnityEngine.Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1;
     }
 }

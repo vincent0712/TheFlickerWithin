@@ -34,6 +34,7 @@ public class HPlayerInteract : MonoBehaviour, MInteractable
         if (Physics.Raycast(ray, out hit, rayDistance, interactableLayer))
         {
             MInteractable interactable = hit.collider.GetComponent<MInteractable>();
+
             if (interactable != null)
             {
                 Debug.Log(interactable);

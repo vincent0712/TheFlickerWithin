@@ -2,31 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HPickup : MonoBehaviour
+public class HPickup : MonoBehaviour, MInteractable
 {
-    bool isHolding = false;
-    [SerializeField]
-    float throwForce = 0f;
-    [SerializeField]
-    float maxDistance = 3f;
-    float distance;
+    [SerializeField] public Transform holdArea;
+    private GameObject heldObj;
+    private Rigidbody heldObjRb;
 
-    HTempParent hTempParent;
-    Rigidbody rb;
 
-    Vector3 objectPos;
+    [SerializeField] private float pickupRange = 5f;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Update()
     {
-        rb = GetComponent<Rigidbody>();
-        hTempParent = HTempParent.Instance;
-
+        
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Interact()
     {
-
+        if(heldObj == null)
+        {
+            if(transform.gameObject.tag == "Ring")
+            {
+                heldObj = gameObject;
+                heldObjRb = gameObject.GetComponent<Rigidbody>();
+                Debug.Log(heldObj);
+                //heldObjRb.useGravity = false;
+                //heldObjRb.drag = 10;
+            }
+        }
     }
 }
