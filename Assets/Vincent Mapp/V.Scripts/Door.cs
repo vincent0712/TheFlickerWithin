@@ -21,6 +21,16 @@ public class Door : MonoBehaviour, MInteractable
         audioSource = GetComponent<AudioSource>();
         closedRotation = transform.rotation;
         openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0f, openAngle, 0f));
+
+        if (isLocked)
+        {
+            navObstacle.enabled = true;
+            
+        }
+        else if (!isLocked)
+        {
+            navObstacle.enabled = false;
+        }
     }
 
     public void Interact()
