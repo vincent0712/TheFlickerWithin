@@ -732,6 +732,7 @@ GameObject:
   - component: {fileID: 2641365437102332861}
   - component: {fileID: 7926559526768542046}
   - component: {fileID: -4580981184100010897}
+  - component: {fileID: 35910314709064850}
   m_Layer: 3
   m_Name: Door
   m_TagString: Untagged
@@ -907,6 +908,24 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0.36}
   m_TimeToStationary: 0.5
+--- !u!114 &35910314709064850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828582447377447374}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &1940997535228830212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2012,6 +2031,7 @@ GameObject:
   - component: {fileID: 119147215187973244}
   - component: {fileID: 6015527645603393629}
   - component: {fileID: 1816973888711754508}
+  - component: {fileID: 2771721502831435155}
   m_Layer: 3
   m_Name: lock
   m_TagString: Untagged
@@ -2122,6 +2142,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigame: {fileID: 8228456122437352660}
   player: {fileID: 0}
+--- !u!114 &2771721502831435155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8245274892431492803}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &8976553450038190719
 GameObject:
   m_ObjectHideFlags: 0

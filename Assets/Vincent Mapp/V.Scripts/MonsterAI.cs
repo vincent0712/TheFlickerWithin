@@ -33,6 +33,15 @@ public class MonsterAI : MonoBehaviour
         movement = player.GetComponent<Movement>();
         agent = GetComponent<NavMeshAgent>();
         StartCoroutine(Roam());
+
+        GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("points");
+
+        // Convert the GameObjects array to a Transforms array
+        pointsOfInterest = new Transform[gameObjectsWithTag.Length];
+        for (int i = 0; i < gameObjectsWithTag.Length; i++)
+        {
+            pointsOfInterest[i] = gameObjectsWithTag[i].transform;
+        }
     }
 
     void Update()
@@ -85,10 +94,21 @@ public class MonsterAI : MonoBehaviour
     {
         while (currentState == State.Roaming)
         {
+            Vector3 destination;
+
             if (Random.value > 0.5f && pointsOfInterest.Length > 0)
             {
                 Transform randomPoint = pointsOfInterest[Random.Range(0, pointsOfInterest.Length)];
-                agent.SetDestination(randomPoint.position);
+                if (CanReachDestination(randomPoint.position))
+                {
+                    destination = randomPoint.position;
+                    Debug.Log("Going to: " + randomPoint.name);
+                }
+                else
+                {
+                    Debug.Log("Cannot reach " + randomPoint.name + ", choosing a new point.");
+                    continue; // Skip this iteration and try again
+                }
             }
             else
             {
@@ -97,13 +117,56 @@ public class MonsterAI : MonoBehaviour
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
                 {
-                    agent.SetDestination(hit.position);
+                    if (CanReachDestination(hit.position))
+                    {
+                        destination = hit.position;
+                    }
+                    else
+                    {
+                        Debug.Log("Random point unreachable, trying again.");
+                        continue; // Skip this iteration and try again
+                    }
+                }
+                else
+                {
+                    Debug.Log("Failed to sample NavMesh position, trying again.");
+                    continue; // Skip this iteration and try again
                 }
             }
+
+            agent.SetDestination(destination);
             agent.speed = roamSpeed;
+
+            // Wait until the agent reaches the destination
+            yield return new WaitUntil(() => HasReachedDestination());
+
+            // Wait before selecting a new destination
             yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
         }
     }
+
+    bool CanReachDestination(Vector3 destination)
+    {
+        NavMeshPath path = new NavMeshPath();
+        bool hasPath = agent.CalculatePath(destination, path);
+        return hasPath && path.status == NavMeshPathStatus.PathComplete;
+    }
+
+    bool HasReachedDestination()
+    {
+        if (!agent.pathPending) // Make sure path calculation is done
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) // Ensure agent has stopped moving
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     void StartSearching()
     {
@@ -123,6 +186,14 @@ public class MonsterAI : MonoBehaviour
         currentState = State.Roaming;
         searching = false;
         StartCoroutine(Roam());
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && Vector3.Distance(transform.position, player.position) < hearingRange)
+        {
+            currentState = State.Chasing;
+            agent.SetDestination(player.position);
+        }
     }
 
     bool CanSeePlayer()
@@ -147,14 +218,7 @@ public class MonsterAI : MonoBehaviour
         return false;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && Vector3.Distance(transform.position, player.position) < hearingRange)
-        {
-            currentState = State.Chasing;
-            agent.SetDestination(player.position);
-        }
-    }
+
 
     void DebugVisionAndHearing()
     {

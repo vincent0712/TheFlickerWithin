@@ -18,6 +18,7 @@ TagManager:
   - loose
   - Lockgame
   - closet
+  - points
   layers:
   - Default
   - TransparentFX

@@ -15,7 +15,7 @@ public class Closet : MonoBehaviour
 
     public void openclose()
     {
-        if (!isopen)
+        if (!isopen && !anim.isPlaying)
         {
             anim.Play("opencloset");
             
@@ -23,7 +23,7 @@ public class Closet : MonoBehaviour
             col.center = new Vector3(-1.93f, -3f, -5.6f);
 
         }
-        else if (isopen)
+        else if (isopen && !anim.isPlaying)
         {
             anim.Play("closecloset");
             //col.enabled = true;
