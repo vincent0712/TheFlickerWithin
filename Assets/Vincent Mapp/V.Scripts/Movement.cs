@@ -11,6 +11,8 @@ public class Movement : MonoBehaviour
     public float gravity = 9.8f;
     public float runspeed = 5f;
     public bool canmove = true;
+    public float currentSpeed = 0f; // Tracks speed for smooth acceleration
+    [SerializeField] private float acceleration = 8f; // Controls how quickly speed changes
 
 
     [Header("Sprint")]
@@ -41,6 +43,7 @@ public class Movement : MonoBehaviour
     public bool isHidden = false;
     public bool isMoving = false;
     private bool canregenstamina = true;
+    public bool isincloset = false;
 
 
     [Header("Fear Settings")]
@@ -117,11 +120,11 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table") && isCrouching)
         {
             isHidden = true;
-            //if (crouchRoutine != null) StopCoroutine(crouchRoutine);
-            //crouchRoutine = StartCoroutine(CrouchTransition(true)); // Force crouch
+
         }
         else if (other.CompareTag("closet"))
         {
+            isincloset = true;
             isHidden = true;
         }
     }
@@ -131,11 +134,11 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = false;
-            //if (crouchRoutine != null) StopCoroutine(crouchRoutine);
-            //crouchRoutine = StartCoroutine(CrouchTransition(userCrouching)); // Restore previous state
+
         }
         else if (other.CompareTag("closet"))
         {
+            isincloset = false;
             isHidden = false;
         }
     }
@@ -155,33 +158,32 @@ public class Movement : MonoBehaviour
 
     void HandleMovement()
     {
-        isMoving = characterController.velocity.magnitude > 0.15f && !isCrouching;
+        isMoving = characterController.velocity.magnitude > 0.1f && !isCrouching;
 
         if (Input.GetKey(KeyCode.LeftShift) && !isCrouching && stamina > 0.1f && isMoving)
         {
-            if(canrun)
+            if (canrun)
                 isrunning = true;
-
         }
         else
         {
             isrunning = false;
         }
 
-        float speed = isCrouching ? crouchSpeed : walkSpeed;
-        if (!isCrouching && stamina > 0)
-        {
-            speed = isrunning ? runspeed : walkSpeed;
-        }
+        // Acceleration-based speed change
+        float targetSpeed = isCrouching ? crouchSpeed : (isrunning ? runspeed : walkSpeed);
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
 
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
 
-        Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * speed * Time.deltaTime;
+        Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized * currentSpeed * Time.deltaTime;
 
         if (characterController.isGrounded)
         {
-            moveDirection.y = 0f;
+            if (moveDirection.y < 0)
+                moveDirection.y = -1f;
+
             moveDirection = move;
         }
 
@@ -191,6 +193,7 @@ public class Movement : MonoBehaviour
         HandleStamina();
     }
 
+
     void HandleStamina()
     {
         if (isrunning && stamina > 0.1f && isMoving)
@@ -198,8 +201,8 @@ public class Movement : MonoBehaviour
             stamina -= staminaDrain * Time.deltaTime;
             if (stamina <= 0.1f)
             {
-                stamina = 0.1f; // Prevent stamina from going below the threshold
-                isrunning = false; // Stop running if stamina is too low
+                stamina = 0.1f;
+                isrunning = false;
                 canrun = false;
                 
                 if (canregenstamina)
@@ -211,7 +214,7 @@ public class Movement : MonoBehaviour
         else if (!isrunning && stamina < maxStamina && canregenstamina)
         {
             stamina += staminaRegen * Time.deltaTime;
-            stamina = Mathf.Min(stamina, maxStamina); // Ensure stamina doesn't exceed max
+            stamina = Mathf.Min(stamina, maxStamina);
         }
 
         staminabar.fillAmount = stamina/10;
@@ -221,8 +224,8 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
 
-            // Prevent standing up if ishidden is true
-            if (userCrouching && isHidden)
+
+            if (userCrouching && isHidden && !isincloset)
                 return;
 
             if (!isCrouching)
@@ -252,13 +255,15 @@ public class Movement : MonoBehaviour
         while (time < 1f)
         {
             time += Time.deltaTime * crouchTransitionSpeed;
-            playerCamera.localPosition = Vector3.Lerp(startPos, targetPos, time);
+            float t = Mathf.SmoothStep(0f, 1f, time);
+            playerCamera.localPosition = Vector3.Lerp(startPos, targetPos, t);
             yield return null;
         }
 
-        playerCamera.localPosition = targetPos; // Ensure exact position is set
-        cameraStartPos = targetPos; // Fix for head bobbing interference
+        playerCamera.localPosition = targetPos;
+        cameraStartPos = targetPos;
     }
+
 
 
     IEnumerator runCD()
@@ -277,9 +282,11 @@ public class Movement : MonoBehaviour
             float currentBobFrequency = isCrouching ? crouchBobFrequency : bobFrequency;
             if (!isCrouching && isrunning)
                 currentBobFrequency = runfrequency;
+
             headbobTimer += Time.deltaTime * currentBobFrequency;
             float bobOffset = Mathf.Sin(headbobTimer) * bobAmount;
-            playerCamera.localPosition = new Vector3(cameraStartPos.x, playerCamera.localPosition.y + bobOffset, cameraStartPos.z);
+
+            playerCamera.localPosition = new Vector3(cameraStartPos.x, cameraStartPos.y + bobOffset, cameraStartPos.z);
 
             if (Mathf.Sin(headbobTimer) < -0.99f && !footstepPlayed)
             {
@@ -294,15 +301,17 @@ public class Movement : MonoBehaviour
         else
         {
             headbobTimer = 0;
-            playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, cameraStartPos, Time.deltaTime * 5f);
+            float t = Mathf.SmoothStep(0f, 1f, Time.deltaTime * 5f); // Smooth transition
+            playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, cameraStartPos, t);
         }
     }
+
 
     void PlayFootstepSound()
     {
         if (footstepSounds.Length > 0 && footstepAudioSource)
         {
-            footstepAudioSource.pitch = Random.Range(0.54f, 0.55f);
+            footstepAudioSource.pitch = Random.Range(0.5f, 0.55f);
             footstepAudioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Length)]);
             if (isCrouching)
             {
