@@ -114,7 +114,7 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("table"))
+        if (other.CompareTag("table") && isCrouching)
         {
             isHidden = true;
             //if (crouchRoutine != null) StopCoroutine(crouchRoutine);
@@ -220,19 +220,28 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
+
+            // Prevent standing up if ishidden is true
+            if (userCrouching && isHidden)
+                return;
+
+            if (!isCrouching)
+            {
+                characterController.height = 0.6f;
+            }
+            else if (isCrouching)
+            {
+                characterController.height = 1.15f;
+            }
             userCrouching = !userCrouching;
-            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+
+            if (crouchRoutine != null)
+                StopCoroutine(crouchRoutine);
+
             crouchRoutine = StartCoroutine(CrouchTransition(userCrouching));
         }
     }
 
-    IEnumerator runCD()
-    {
-        canregenstamina = false;
-        yield return new WaitForSeconds(3f);
-        canregenstamina = true;
-        canrun = true;
-    }
     IEnumerator CrouchTransition(bool crouching)
     {
         isCrouching = crouching;
@@ -250,6 +259,16 @@ public class Movement : MonoBehaviour
         playerCamera.localPosition = targetPos; // Ensure exact position is set
         cameraStartPos = targetPos; // Fix for head bobbing interference
     }
+
+
+    IEnumerator runCD()
+    {
+        canregenstamina = false;
+        yield return new WaitForSeconds(3f);
+        canregenstamina = true;
+        canrun = true;
+    }
+
 
     void ApplyHeadbob()
     {
