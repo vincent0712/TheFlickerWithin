@@ -40108,8 +40108,8 @@ MonoBehaviour:
   isSpotted: 0
   bobFrequency: 10
   crouchBobFrequency: 8
-  runfrequency: 17
-  bobAmount: 0.006
+  runfrequency: 15
+  bobAmount: 0.008
   footstepSounds:
   - {fileID: 8300000, guid: 5d838cbe1419d6b4f99ec29cf0575534, type: 3}
   - {fileID: 8300000, guid: ceaef5453dc1b9841b7f07528ab3b1f7, type: 3}
