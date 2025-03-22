@@ -117,8 +117,8 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = true;
-            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
-            crouchRoutine = StartCoroutine(CrouchTransition(true)); // Force crouch
+            //if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            //crouchRoutine = StartCoroutine(CrouchTransition(true)); // Force crouch
         }
         else if (other.CompareTag("closet"))
         {
@@ -131,8 +131,8 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = false;
-            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
-            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching)); // Restore previous state
+            //if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            //crouchRoutine = StartCoroutine(CrouchTransition(userCrouching)); // Restore previous state
         }
         else if (other.CompareTag("closet"))
         {
@@ -218,7 +218,7 @@ public class Movement : MonoBehaviour
     }
     void HandleCrouch()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !isHidden)
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             userCrouching = !userCrouching;
             if (crouchRoutine != null) StopCoroutine(crouchRoutine);
@@ -287,7 +287,7 @@ public class Movement : MonoBehaviour
             footstepAudioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Length)]);
             if (isCrouching)
             {
-                monster.HearSound(gameObject.transform.position, 0.1f);
+                //monster.HearSound(gameObject.transform.position, 0.1f);
 
             }
             else if (!isCrouching)

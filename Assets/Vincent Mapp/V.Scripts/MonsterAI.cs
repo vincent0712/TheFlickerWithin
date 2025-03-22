@@ -96,7 +96,7 @@ public class MonsterAI : MonoBehaviour
         {
             Vector3 destination;
 
-            if (Random.value > 0.5f && pointsOfInterest.Length > 0)
+            if (Random.value > 0.35f && pointsOfInterest.Length > 0)
             {
                 Transform randomPoint = pointsOfInterest[Random.Range(0, pointsOfInterest.Length)];
                 if (CanReachDestination(randomPoint.position))
@@ -183,8 +183,16 @@ public class MonsterAI : MonoBehaviour
     IEnumerator Search()
     {
         yield return new WaitForSeconds(searchTime);
+        Transform randomPoint = pointsOfInterest[Random.Range(0, pointsOfInterest.Length)];
+        Vector3 destination;
+        destination = randomPoint.position;
+        agent.SetDestination(destination);
+        agent.speed = roamSpeed;
+        Debug.Log("Going to: " + randomPoint.name);
+
         currentState = State.Roaming;
         searching = false;
+
         StartCoroutine(Roam());
     }
     private void OnTriggerEnter(Collider other)
