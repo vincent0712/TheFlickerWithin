@@ -217,7 +217,7 @@ public class Movement : MonoBehaviour
             stamina = Mathf.Min(stamina, maxStamina);
         }
 
-        staminabar.fillAmount = stamina/10;
+        staminabar.fillAmount = stamina/maxStamina;
     }
     void HandleCrouch()
     {
