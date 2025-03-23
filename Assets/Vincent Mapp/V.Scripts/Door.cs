@@ -8,15 +8,18 @@ public class Door : MonoBehaviour, MInteractable
     public float openSpeed = 2f;
     public bool isOpen = false;
     public bool isLocked = false;
+    public AudioClip Doorshake;
 
     private AudioSource audioSource;
     private Quaternion closedRotation;
     private Quaternion openRotation;
     private bool isAnimating = false;
     private NavMeshObstacle navObstacle;
+    private Animation anim;
 
     void Start()
     {
+        anim = gameObject.GetComponent<Animation>();
         navObstacle = GetComponent<NavMeshObstacle>();
         audioSource = GetComponent<AudioSource>();
         closedRotation = transform.rotation;
@@ -38,6 +41,13 @@ public class Door : MonoBehaviour, MInteractable
         if (isLocked)
         {
             navObstacle.enabled = true;
+            if (!anim.isPlaying)
+            {
+                anim.Play("doorshake");
+                audioSource.pitch = Random.Range(0.8f, 1.2f);
+                audioSource.PlayOneShot(Doorshake);
+            }
+
             return;
         }
 

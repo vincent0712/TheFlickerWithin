@@ -733,6 +733,7 @@ GameObject:
   - component: {fileID: 7926559526768542046}
   - component: {fileID: -4580981184100010897}
   - component: {fileID: 35910314709064850}
+  - component: {fileID: 7401722589826636383}
   m_Layer: 3
   m_Name: Door
   m_TagString: Untagged
@@ -774,6 +775,7 @@ MonoBehaviour:
   openSpeed: 2
   isOpen: 0
   isLocked: 1
+  Doorshake: {fileID: 8300000, guid: 770b36fdee1136c4db587a7bc8df07d4, type: 3}
 --- !u!65 &2641365437102332861
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -926,6 +928,23 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!111 &7401722589826636383
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828582447377447374}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: fdcf530b05d12924481a959a86373957, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &1940997535228830212
 GameObject:
   m_ObjectHideFlags: 0
