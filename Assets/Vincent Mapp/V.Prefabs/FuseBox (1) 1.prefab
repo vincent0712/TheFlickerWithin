@@ -1366,7 +1366,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2004102543051716239, guid: f1f4c781bd5395244a9f4b1c9a18cb2c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3175575209334133366}
   m_SourcePrefab: {fileID: 100100000, guid: f1f4c781bd5395244a9f4b1c9a18cb2c, type: 3}
 --- !u!4 &2578890335843821711 stripped
 Transform:
@@ -1374,6 +1378,29 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3697982034633098426}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2918859999110820405 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2004102543051716239, guid: f1f4c781bd5395244a9f4b1c9a18cb2c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3697982034633098426}
+  m_PrefabAsset: {fileID: 0}
+--- !u!111 &3175575209334133366
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2918859999110820405}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: 5e70144d084b918478b7a43d076e1c20, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1001 &9162529254982459516
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1494,6 +1521,7 @@ MonoBehaviour:
   PuzzlesCompleted: 1
   fade: {fileID: 0}
   sun: {fileID: 0}
+  LeverAnimation: {fileID: 3175575209334133366}
 --- !u!114 &3148458516714259647
 MonoBehaviour:
   m_ObjectHideFlags: 0
