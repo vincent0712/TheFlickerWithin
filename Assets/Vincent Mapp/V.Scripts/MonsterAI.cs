@@ -256,8 +256,5 @@ public class MonsterAI : MonoBehaviour
         Debug.DrawRay(transform.position, Vector3.right * hearingRange, Color.red);
     }
 
-    public void playfootstep()
-    {
-        Debug.Log("footstep");
-    }
+
 }
