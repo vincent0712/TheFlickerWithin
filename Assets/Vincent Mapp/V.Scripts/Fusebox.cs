@@ -13,11 +13,13 @@ public class Fusebox : MonoBehaviour, MInteractable
     public int PuzzlesCompleted = 0;  // Integer value controlling the lights
     public Animation fade;
     public Light sun;
+    public Animation LeverAnimation;
 
     private AudioSource au;
 
     private void Start()
     {
+
         UpdateLights(); // Ensure lights are in the correct state at the start
         onScreenText = FindObjectOfType<Onscreentext>();
         au = gameObject.GetComponent<AudioSource>();
@@ -61,6 +63,7 @@ public class Fusebox : MonoBehaviour, MInteractable
             au.Play();
             onScreenText.ShowText("You Win!", 2f);
             sun.enabled = true;
+            LeverAnimation.Play("levelpull");
             StartCoroutine(swapscene());
         }
 

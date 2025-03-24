@@ -44861,6 +44861,11 @@ PrefabInstance:
       propertyPath: fade
       value: 
       objectReference: {fileID: 645542321}
+    - target: {fileID: 6184809632909544196, guid: eacd702bdb4bfd3438ed696dc1ef228e,
+        type: 3}
+      propertyPath: PuzzlesCompleted
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8351571595253751085, guid: eacd702bdb4bfd3438ed696dc1ef228e,
         type: 3}
       propertyPath: m_Name
