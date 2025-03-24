@@ -27,6 +27,8 @@ public class MonsterAI : MonoBehaviour
     private Vector3 lastKnownPosition;
     private bool searching = false;
     private float currentVisionRange;
+    public Animator anim;
+    public float speed;
 
     void Start()
     {
@@ -46,8 +48,11 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
+        speed = agent.velocity.magnitude;
         DebugVisionAndHearing();
         CheckPlayer();
+        UpdateAnimations();
+
 
         if (CanSeePlayer())
         {
@@ -66,6 +71,20 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
+    void UpdateAnimations()
+    {
+        
+
+        if(currentState == State.Roaming && speed > 0.1f)
+        {
+            anim.SetBool("walking", true);
+        }
+        else if(currentState == State.Roaming && speed < 0.1f)
+        {
+            anim.SetBool("walking", false);
+            anim.SetBool("idleing", true);
+        }
+    }
     void CheckPlayer()
     {
         currentVisionRange = movement.isCrouching ? crouchingVisionRange : baseVisionRange;

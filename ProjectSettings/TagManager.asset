@@ -19,6 +19,7 @@ TagManager:
   - Lockgame
   - closet
   - points
+  - bed
   layers:
   - Default
   - TransparentFX

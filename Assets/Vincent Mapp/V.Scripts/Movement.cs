@@ -38,6 +38,7 @@ public class Movement : MonoBehaviour
     private CharacterController characterController;
     private Coroutine crouchRoutine;
     private bool userCrouching = false; // Tracks manual crouch state
+    public float laydownheight = 0.1f;
 
     public bool isCrouching = false;
     public bool isHidden = false;
@@ -126,6 +127,11 @@ public class Movement : MonoBehaviour
         {
             isincloset = true;
             isHidden = true;
+        }
+        else if(other.CompareTag("bed"))
+        {
+            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
+            crouchRoutine = StartCoroutine(CrouchTransition(true, false)); // Force crouch
         }
     }
 
@@ -241,11 +247,11 @@ public class Movement : MonoBehaviour
             if (crouchRoutine != null)
                 StopCoroutine(crouchRoutine);
 
-            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching));
+            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching, false));
         }
     }
 
-    IEnumerator CrouchTransition(bool crouching)
+    IEnumerator CrouchTransition(bool crouching, bool laydown)
     {
         isCrouching = crouching;
         float time = 0f;
