@@ -28,7 +28,7 @@ public class MonsterAI : MonoBehaviour
     private bool searching = false;
     private float currentVisionRange;
     public Animator anim;
-    public float speed;
+
 
     void Start()
     {
@@ -48,7 +48,9 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
-        speed = agent.velocity.magnitude;
+        float speed = agent.velocity.magnitude;
+        anim.SetFloat("Speed", speed);
+
         DebugVisionAndHearing();
         CheckPlayer();
         UpdateAnimations();
@@ -75,15 +77,6 @@ public class MonsterAI : MonoBehaviour
     {
         
 
-        if(currentState == State.Roaming && speed > 0.1f)
-        {
-            anim.SetBool("walking", true);
-        }
-        else if(currentState == State.Roaming && speed < 0.1f)
-        {
-            anim.SetBool("walking", false);
-            anim.SetBool("idleing", true);
-        }
     }
     void CheckPlayer()
     {
@@ -261,5 +254,10 @@ public class MonsterAI : MonoBehaviour
         Debug.DrawRay(transform.position, Vector3.back * hearingRange, Color.red);
         Debug.DrawRay(transform.position, Vector3.left * hearingRange, Color.red);
         Debug.DrawRay(transform.position, Vector3.right * hearingRange, Color.red);
+    }
+
+    public void playfootstep()
+    {
+        Debug.Log("footstep");
     }
 }
