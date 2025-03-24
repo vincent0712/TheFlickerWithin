@@ -14,6 +14,7 @@ public class Fusebox : MonoBehaviour, MInteractable
     public Animation fade;
     public Light sun;
     public Animation LeverAnimation;
+    private bool canpull = true;
 
     private AudioSource au;
 
@@ -58,8 +59,9 @@ public class Fusebox : MonoBehaviour, MInteractable
         if(PuzzlesCompleted < 5)
             onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
 
-        if(PuzzlesCompleted == 5)
+        if(PuzzlesCompleted == 5 && canpull)
         {
+            canpull = false;
             au.Play();
             onScreenText.ShowText("You Win!", 2f);
             sun.enabled = true;
