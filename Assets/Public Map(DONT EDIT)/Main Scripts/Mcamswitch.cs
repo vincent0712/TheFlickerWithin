@@ -18,7 +18,8 @@ public class Mcamswitch : MonoBehaviour
     public bool camison = false;
     public float battery = 100f;
     public bool isCameraUnlocked;
-    public changepainting paintingScript;
+
+
 
     // Transforms
     public Transform camStartingPoint;
@@ -120,11 +121,14 @@ public class Mcamswitch : MonoBehaviour
         isTransitioning = true;
 
         DisableNightVision();
+        
         yield return StartCoroutine(MoveCamera());
 
         if (isCamAtTarget)
         {
+            
             EnableNightVision();
+            FindObjectOfType<paintingtoggle>().TogglePaintings(true);
             camison = true;
             
         }
@@ -167,8 +171,9 @@ public class Mcamswitch : MonoBehaviour
 
 
 
+
         if (nightvisionlight != null)
-            nightvisionlight.intensity = 5f;
+            nightvisionlight.intensity = 2.5f;
 
         if (vol != null)
         {
@@ -183,7 +188,9 @@ public class Mcamswitch : MonoBehaviour
                 {
                     filmgrain.intensity.value = 1f;
                     lensDistortion.active = true;
-                    paintingScript.tunoff();
+                    
+
+
 
                 }
 
@@ -201,6 +208,7 @@ public class Mcamswitch : MonoBehaviour
 
     private void DisableNightVision()
     {
+        FindObjectOfType<paintingtoggle>().TogglePaintings(false);
         videocamera.SetActive(true);
         isNightVision = false;
         batterytext.enabled = isNightVision;
@@ -224,7 +232,8 @@ public class Mcamswitch : MonoBehaviour
 
                     filmgrain.intensity.value = 0.8f;
                     lensDistortion.active = false;
-                    paintingScript.turnon();
+                    
+
                 }
             }
         }

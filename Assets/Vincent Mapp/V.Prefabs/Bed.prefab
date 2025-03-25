@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 930849947101974213}
   - component: {fileID: 5000139262879983973}
+  - component: {fileID: -6376294111770595452}
   m_Layer: 0
   m_Name: Bed
   m_TagString: bed
@@ -54,6 +55,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5.957571, y: 1.6125185, z: 4.789957}
   m_Center: {x: 0.047852516, y: 1.1293304, z: -0.038283348}
+--- !u!208 &-6376294111770595452
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5255329277883297477}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2.675, y: 1.34, z: 2.445}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 1.24, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &5009612000043260458
 PrefabInstance:
   m_ObjectHideFlags: 0

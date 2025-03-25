@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using TMPro.EditorUtilities;
 using UnityEngine.UI;
 
 public class Movement : MonoBehaviour

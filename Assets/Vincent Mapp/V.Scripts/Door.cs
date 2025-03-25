@@ -36,6 +36,17 @@ public class Door : MonoBehaviour, MInteractable
         }
     }
 
+    public void Update()
+    {
+        if (isLocked)
+        {
+            navObstacle.enabled = true;
+        }
+        else if (!isLocked)
+        {
+            navObstacle.enabled = false;
+        }
+    }
     public void Interact()
     {
         if (isLocked)
@@ -102,8 +113,10 @@ public class Door : MonoBehaviour, MInteractable
 
     private void OnTriggerEnter(Collider other)
     {
+
+
         Debug.Log("ads");
-        if (other.CompareTag("monster") && !isOpen && !isAnimating)
+        if (other.CompareTag("monster") && !isOpen && !isAnimating && !isLocked)
         {
             OpenDoor();
         }

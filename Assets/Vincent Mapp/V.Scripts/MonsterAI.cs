@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -25,9 +26,10 @@ public class MonsterAI : MonoBehaviour
     private Movement movement;
     private NavMeshAgent agent;
     private Vector3 lastKnownPosition;
-    private bool searching = false;
+    public bool searching = false;
     private float currentVisionRange;
     public Animator anim;
+    public float spawnTimer = 15f;
 
 
     void Start()
@@ -44,7 +46,12 @@ public class MonsterAI : MonoBehaviour
         {
             pointsOfInterest[i] = gameObjectsWithTag[i].transform;
         }
+
+
+        
+
     }
+
 
     void Update()
     {
@@ -52,14 +59,34 @@ public class MonsterAI : MonoBehaviour
         anim.SetFloat("Speed", speed);
         CheckPlayer();
 
+        if (currentState == State.Chasing && movement.isHidden)
+        {
+            Debug.Log("Player is hidden, starting search...");
+            StartSearching();
+        }
+        else if (CanSeePlayer())
+        {
+            movement.isSpotted = true;
+            currentState = State.Chasing;
+            searching = false;  // Reset searching so it can trigger when losing sight
+            agent.speed = chaseSpeed;
+            agent.SetDestination(player.position);
+        }
+        else if (currentState == State.Chasing)
+        {
+            movement.isSpotted = false;
+            StartSearching();
+        }
+
         if (CanSeePlayer())
         {
             movement.isSpotted = true;
             currentState = State.Chasing;
+            searching = false;  // Reset searching so it can start again if needed
             agent.speed = chaseSpeed;
             agent.SetDestination(player.position);
         }
-        else
+        else if(!CanSeePlayer() && currentState == State.Chasing)
         {
             movement.isSpotted = false;
             if (currentState == State.Chasing)
@@ -73,6 +100,8 @@ public class MonsterAI : MonoBehaviour
     {
         currentVisionRange = movement.isCrouching ? crouchingVisionRange : baseVisionRange;
     }
+
+
 
     public void HearSound(Vector3 soundPosition, float soundStrength)
     {
@@ -110,25 +139,40 @@ public class MonsterAI : MonoBehaviour
 
             if (Random.value > 0.35f && pointsOfInterest.Length > 0)
             {
-                Transform randomPoint = pointsOfInterest[Random.Range(0, pointsOfInterest.Length)];
-                if (CanReachDestination(randomPoint.position))
+                List<Transform> farthestPoints = new List<Transform>();
+                List<float> distances = new List<float>();
+
+                foreach (Transform point in pointsOfInterest)
                 {
-                    destination = randomPoint.position;
-                    Debug.Log("Going to: " + randomPoint.name);
+                    float distance = Vector3.Distance(transform.position, point.position);
+                    if (CanReachDestination(point.position))
+                    {
+                        farthestPoints.Add(point);
+                        distances.Add(distance);
+                    }
+                }
+
+                if (farthestPoints.Count > 0)
+                {
+                    // Sort by distance descending
+                    var sortedPoints = farthestPoints.Zip(distances, (p, d) => new { Point = p, Distance = d })
+                                                     .OrderByDescending(pd => pd.Distance)
+                                                     .Take(3)
+                                                     .ToList();
+
+                    // Pick one randomly from the top 3
+                    Transform chosenPoint = sortedPoints[Random.Range(0, sortedPoints.Count)].Point;
+                    destination = chosenPoint.position;
+                    Debug.Log("Going to: " + chosenPoint.name);
                     agent.SetDestination(destination);
                     agent.speed = roamSpeed;
 
-                    // Wait until the agent reaches the destination
-
-
-                    // Wait before selecting a new destination
                     yield return new WaitUntil(() => HasReachedDestination());
                     yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
                 }
                 else
                 {
-                    //Debug.Log("Cannot reach " + randomPoint.name + ", choosing a new point.");
-                    continue; // Skip this iteration and try again
+                    continue; // No reachable point found, try again
                 }
             }
             else
@@ -144,58 +188,27 @@ public class MonsterAI : MonoBehaviour
                         agent.SetDestination(destination);
                         agent.speed = roamSpeed;
 
-                        // Wait until the agent reaches the destination
-
-
-                        // Wait before selecting a new destination
                         yield return new WaitUntil(() => HasReachedDestination());
-                        yield return new WaitForSeconds(Random.Range(4, 6));
+                        yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
                     }
                     else
                     {
-                        //Debug.Log("Random point unreachable, trying again.");
-                        continue; // Skip this iteration and try again
+                        continue; // Skip and try again
                     }
                 }
                 else
                 {
-                    //Debug.Log("Failed to sample NavMesh position, trying again.");
-                    continue; // Skip this iteration and try again
-                }
-            }
-
-
-        }
-    }
-
-    bool CanReachDestination(Vector3 destination)
-    {
-        NavMeshPath path = new NavMeshPath();
-        bool hasPath = agent.CalculatePath(destination, path);
-        return hasPath && path.status == NavMeshPathStatus.PathComplete;
-    }
-
-    bool HasReachedDestination()
-    {
-
-        if (!agent.pathPending) // Make sure path calculation is done
-        {
-            if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) // Ensure agent has stopped moving
-                {
-                    return true;
+                    continue; // Skip and try again
                 }
             }
         }
-        return false;
     }
-
 
     void StartSearching()
     {
         if (!searching)
         {
+            agent.speed = roamSpeed;
             searching = true;
             currentState = State.Searching;
             lastKnownPosition = player.position;
@@ -219,14 +232,7 @@ public class MonsterAI : MonoBehaviour
 
         StartCoroutine(Roam());
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && Vector3.Distance(transform.position, player.position) < hearingRange)
-        {
-            currentState = State.Chasing;
-            agent.SetDestination(player.position);
-        }
-    }
+
 
     bool CanSeePlayer()
     {
@@ -241,7 +247,7 @@ public class MonsterAI : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer, out hit, currentVisionRange))
             {
-                if (hit.transform == player)
+                if (hit.transform == player && !movement.isHidden)
                 {
                     return true;
                 }
@@ -249,5 +255,33 @@ public class MonsterAI : MonoBehaviour
         }
         return false;
     }
+
+    bool CanReachDestination(Vector3 destination)
+    {
+        NavMeshPath path = new NavMeshPath();
+        bool hasPath = agent.CalculatePath(destination, path);
+        return hasPath && path.status == NavMeshPathStatus.PathComplete;
+    }
+
+    bool HasReachedDestination()
+    {
+        if(currentState == State.Chasing && movement.isHidden)
+        {
+            return true;
+        }
+        if (!agent.pathPending) // Make sure path calculation is done
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) // Ensure agent has stopped moving
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
 }
