@@ -105,11 +105,11 @@ public class Mcamswitch : MonoBehaviour
             {
                 battery -= 1;
                 batterytext.text = "Battery: " + battery;
-                batterytext.enabled = true; // Show text when camera is on
+                
             }
             else
             {
-                batterytext.enabled = false; // Hide text when camera is off
+                
             }
         }
     }
@@ -129,6 +129,7 @@ public class Mcamswitch : MonoBehaviour
             
             EnableNightVision();
             FindObjectOfType<paintingtoggle>().TogglePaintings(true);
+            batterytext.enabled = true;
             camison = true;
             
         }
@@ -209,6 +210,7 @@ public class Mcamswitch : MonoBehaviour
     private void DisableNightVision()
     {
         FindObjectOfType<paintingtoggle>().TogglePaintings(false);
+        batterytext.enabled = false;
         videocamera.SetActive(true);
         isNightVision = false;
         batterytext.enabled = isNightVision;
