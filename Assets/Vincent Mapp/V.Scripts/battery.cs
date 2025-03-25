@@ -7,7 +7,7 @@ public class battery : MonoBehaviour, MInteractable
 
     private void Start()
     {
-        flashlight = GameObject.FindGameObjectWithTag("fl").GetComponent<Mcamswitch>();
+        flashlight = GameObject.FindGameObjectWithTag("Player").GetComponent<Mcamswitch>();
     }
 
     public void Interact()

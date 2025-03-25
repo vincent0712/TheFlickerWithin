@@ -13,6 +13,7 @@ public class Mcamswitch : MonoBehaviour
     public Camera playerCamera;
     public GameObject flashlight;
     public MeshRenderer monster;
+    public SkinnedMeshRenderer monsterrenderer;
     public TextMeshProUGUI batterytext;
     public bool camison = false;
     public float battery = 100f;
@@ -159,7 +160,7 @@ public class Mcamswitch : MonoBehaviour
         isNightVision = true;
         videocamera.SetActive(false);
         batterytext.enabled = isNightVision;
-        //monster.enabled = !isNightVision;
+        monsterrenderer.enabled = isNightVision;
 
         if (nightvisionlight != null)
             nightvisionlight.intensity = 15f;
@@ -195,7 +196,7 @@ public class Mcamswitch : MonoBehaviour
         videocamera.SetActive(true);
         isNightVision = false;
         batterytext.enabled = isNightVision;
-        //monster.enabled = !isNightVision;
+        monsterrenderer.enabled = isNightVision;
 
         if (nightvisionlight != null)
             nightvisionlight.intensity = 0f;
