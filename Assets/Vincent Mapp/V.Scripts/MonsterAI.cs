@@ -50,11 +50,7 @@ public class MonsterAI : MonoBehaviour
     {
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", speed);
-
-        DebugVisionAndHearing();
         CheckPlayer();
-        UpdateAnimations();
-
 
         if (CanSeePlayer())
         {
@@ -73,11 +69,6 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    void UpdateAnimations()
-    {
-        
-
-    }
     void CheckPlayer()
     {
         currentVisionRange = movement.isCrouching ? crouchingVisionRange : baseVisionRange;
@@ -86,21 +77,30 @@ public class MonsterAI : MonoBehaviour
     public void HearSound(Vector3 soundPosition, float soundStrength)
     {
         float effectiveHearingRange = hearingRange * soundStrength;
-
         if (Vector3.Distance(transform.position, soundPosition) < effectiveHearingRange)
         {
+            Debug.Log("Monster heard a noise and is investigating!");
+            StopAllCoroutines(); // Stop Roaming Coroutine
+            agent.ResetPath(); // Stop current movement
             currentState = State.Investigating;
             agent.SetDestination(soundPosition);
             StartCoroutine(Investigate());
         }
     }
 
+
     IEnumerator Investigate()
     {
+        Debug.Log("Monster is investigating...");
         yield return new WaitForSeconds(investigateTime);
-        currentState = State.Roaming;
-        StartCoroutine(Roam());
+
+        if (currentState == State.Investigating) // Ensures the state hasn't changed to chasing
+        {
+            currentState = State.Roaming;
+            StartCoroutine(Roam());
+        }
     }
+
 
     IEnumerator Roam()
     {
@@ -115,10 +115,19 @@ public class MonsterAI : MonoBehaviour
                 {
                     destination = randomPoint.position;
                     Debug.Log("Going to: " + randomPoint.name);
+                    agent.SetDestination(destination);
+                    agent.speed = roamSpeed;
+
+                    // Wait until the agent reaches the destination
+
+
+                    // Wait before selecting a new destination
+                    yield return new WaitUntil(() => HasReachedDestination());
+                    yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
                 }
                 else
                 {
-                    Debug.Log("Cannot reach " + randomPoint.name + ", choosing a new point.");
+                    //Debug.Log("Cannot reach " + randomPoint.name + ", choosing a new point.");
                     continue; // Skip this iteration and try again
                 }
             }
@@ -132,28 +141,30 @@ public class MonsterAI : MonoBehaviour
                     if (CanReachDestination(hit.position))
                     {
                         destination = hit.position;
+                        agent.SetDestination(destination);
+                        agent.speed = roamSpeed;
+
+                        // Wait until the agent reaches the destination
+
+
+                        // Wait before selecting a new destination
+                        yield return new WaitUntil(() => HasReachedDestination());
+                        yield return new WaitForSeconds(Random.Range(4, 6));
                     }
                     else
                     {
-                        Debug.Log("Random point unreachable, trying again.");
+                        //Debug.Log("Random point unreachable, trying again.");
                         continue; // Skip this iteration and try again
                     }
                 }
                 else
                 {
-                    Debug.Log("Failed to sample NavMesh position, trying again.");
+                    //Debug.Log("Failed to sample NavMesh position, trying again.");
                     continue; // Skip this iteration and try again
                 }
             }
 
-            agent.SetDestination(destination);
-            agent.speed = roamSpeed;
 
-            // Wait until the agent reaches the destination
-            yield return new WaitUntil(() => HasReachedDestination());
-
-            // Wait before selecting a new destination
-            yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
         }
     }
 
@@ -166,6 +177,7 @@ public class MonsterAI : MonoBehaviour
 
     bool HasReachedDestination()
     {
+
         if (!agent.pathPending) // Make sure path calculation is done
         {
             if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
@@ -200,7 +212,7 @@ public class MonsterAI : MonoBehaviour
         destination = randomPoint.position;
         agent.SetDestination(destination);
         agent.speed = roamSpeed;
-        Debug.Log("Going to: " + randomPoint.name);
+        //Debug.Log("Going to: " + randomPoint.name);
 
         currentState = State.Roaming;
         searching = false;
@@ -237,24 +249,5 @@ public class MonsterAI : MonoBehaviour
         }
         return false;
     }
-
-
-
-    void DebugVisionAndHearing()
-    {
-        Debug.DrawRay(transform.position, transform.forward * currentVisionRange, Color.blue);
-
-        Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2, 0) * transform.forward * currentVisionRange;
-        Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2, 0) * transform.forward * currentVisionRange;
-
-        Debug.DrawRay(transform.position, leftLimit, Color.green);
-        Debug.DrawRay(transform.position, rightLimit, Color.green);
-
-        Debug.DrawRay(transform.position, Vector3.forward * hearingRange, Color.red);
-        Debug.DrawRay(transform.position, Vector3.back * hearingRange, Color.red);
-        Debug.DrawRay(transform.position, Vector3.left * hearingRange, Color.red);
-        Debug.DrawRay(transform.position, Vector3.right * hearingRange, Color.red);
-    }
-
 
 }
