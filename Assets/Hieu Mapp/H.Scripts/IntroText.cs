@@ -22,6 +22,7 @@ public class IntroText : MonoBehaviour
 
     public IEnumerator startText()
     {
+        
         onScreenText.ShowText("It was a stormy, rain-drenched night", 3f);
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("The wind howled through the trees, rain lashed against the earth,", 4f);
@@ -94,7 +95,6 @@ public class IntroText : MonoBehaviour
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("I NEED TO TURN ON THE LIGHT.", 3f);
         yield return new WaitForSeconds(4);
-
 
         SceneManager.LoadScene("Main");
     }
