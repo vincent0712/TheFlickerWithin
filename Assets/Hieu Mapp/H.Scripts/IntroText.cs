@@ -10,6 +10,7 @@ public class IntroText : MonoBehaviour
     public AudioClip doorUnlocked;
     public AudioClip doorClose;
     public AudioClip flashlight;
+    public AudioClip heartBeat;
     AudioSource audioSource;
 
     private int timer = 0;
@@ -93,6 +94,7 @@ public class IntroText : MonoBehaviour
         onScreenText.ShowText("its flickering, water-damaged beam barely cutting through the suffocating blackness", 4f);
         yield return new WaitForSeconds(5);
         onScreenText.ShowText("My heart pounded", 3f);
+        audioSource.PlayOneShot(heartBeat);
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("The hair on my soaked skin rose", 3f);
         yield return new WaitForSeconds(4);
