@@ -18,6 +18,7 @@ public class Mcamswitch : MonoBehaviour
     public bool camison = false;
     public float battery = 100f;
     public bool isCameraUnlocked;
+    public changepainting paintingScript;
 
     // Transforms
     public Transform camStartingPoint;
@@ -57,6 +58,7 @@ public class Mcamswitch : MonoBehaviour
         StartCoroutine(BatteryDrainLoop());
 
         DisableNightVision();
+
 
         // Retrieve and store default post-processing values
         if (vol != null && vol.profile != null)
@@ -161,9 +163,12 @@ public class Mcamswitch : MonoBehaviour
         videocamera.SetActive(false);
         batterytext.enabled = isNightVision;
         monsterrenderer.enabled = isNightVision;
+        
+
+
 
         if (nightvisionlight != null)
-            nightvisionlight.intensity = 15f;
+            nightvisionlight.intensity = 5f;
 
         if (vol != null)
         {
@@ -173,10 +178,13 @@ public class Mcamswitch : MonoBehaviour
             {
                 colorAdjustments.active = true;
                 liftGammaGain.active = true;
+
                 if (vol.profile.TryGet(out filmgrain))
                 {
                     filmgrain.intensity.value = 1f;
                     lensDistortion.active = true;
+                    paintingScript.tunoff();
+
                 }
 
                 
@@ -197,6 +205,8 @@ public class Mcamswitch : MonoBehaviour
         isNightVision = false;
         batterytext.enabled = isNightVision;
         monsterrenderer.enabled = isNightVision;
+        
+
 
         if (nightvisionlight != null)
             nightvisionlight.intensity = 0f;
@@ -211,8 +221,10 @@ public class Mcamswitch : MonoBehaviour
                 liftGammaGain.active = false;
                 if (vol.profile.TryGet(out filmgrain))
                 {
+
                     filmgrain.intensity.value = 0.8f;
                     lensDistortion.active = false;
+                    paintingScript.turnon();
                 }
             }
         }

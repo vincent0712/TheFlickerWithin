@@ -74,6 +74,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        
         monster = GameObject.FindGameObjectWithTag("monster").GetComponent<MonsterAI>();
         cameraStartPos = playerCamera.localPosition;
         Cursor.lockState = CursorLockMode.Locked;
