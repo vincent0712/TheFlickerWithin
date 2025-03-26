@@ -128,7 +128,7 @@ public class Mcamswitch : MonoBehaviour
         {
             
             EnableNightVision();
-            FindObjectOfType<paintingtoggle>().TogglePaintings(true);
+            FindObjectOfType<PaintingToggle>().TogglePaintings(true);
             batterytext.enabled = true;
             camison = true;
             
@@ -174,7 +174,7 @@ public class Mcamswitch : MonoBehaviour
 
 
         if (nightvisionlight != null)
-            nightvisionlight.intensity = 2.5f;
+            nightvisionlight.intensity = 1.75f;
 
         if (vol != null)
         {
@@ -209,7 +209,7 @@ public class Mcamswitch : MonoBehaviour
 
     private void DisableNightVision()
     {
-        FindObjectOfType<paintingtoggle>().TogglePaintings(false);
+        FindObjectOfType<PaintingToggle>().TogglePaintings(false);
         batterytext.enabled = false;
         videocamera.SetActive(true);
         isNightVision = false;
