@@ -6,17 +6,20 @@ public class HCameraChange : MonoBehaviour
     public GameObject camPos2;
     public GameObject camPos3;
     public Camera cam;
+    public float transitionSpeed = 2.0f;
 
     private int count = 1;
+    private Vector3 targetPosition;
 
     void Start()
     {
-        cam.transform.position = camPos1.transform.position;
+        targetPosition = camPos1.transform.position;
+        cam.transform.position = targetPosition;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        cam.transform.position = Vector3.Lerp(cam.transform.position, targetPosition, Time.deltaTime * transitionSpeed);
         GoToRight();
         GoToLeft();
     }
@@ -27,19 +30,17 @@ public class HCameraChange : MonoBehaviour
         {
             if (count == 1)
             {
-                cam.transform.position = camPos2.transform.position;
+                targetPosition = camPos2.transform.position;
                 count++;
             }
-
             else if (count == 2)
             {
-                cam.transform.position = camPos3.transform.position;
+                targetPosition = camPos3.transform.position;
                 count++;
             }
-
             else
             {
-                cam.transform.position = camPos1.transform.position;
+                targetPosition = camPos1.transform.position;
                 count = 1;
             }
         }
@@ -51,19 +52,17 @@ public class HCameraChange : MonoBehaviour
         {
             if (count == 1)
             {
-                cam.transform.position = camPos3.transform.position;
+                targetPosition = camPos3.transform.position;
                 count = 3;
             }
-
             else if (count == 2)
             {
-                cam.transform.position = camPos1.transform.position;
+                targetPosition = camPos1.transform.position;
                 count--;
             }
-
             else
             {
-                cam.transform.position = camPos2.transform.position;
+                targetPosition = camPos2.transform.position;
                 count--;
             }
         }
