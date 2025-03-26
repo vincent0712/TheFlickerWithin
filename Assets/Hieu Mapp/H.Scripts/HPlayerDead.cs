@@ -7,7 +7,7 @@ public class HPlayerDead : MonoBehaviour
     {
         if(other.gameObject.tag == "monster")
         {
-            SceneManager.LoadScene("StartMenu");
+            SceneManager.LoadScene("Outro");
         }
     }
 }
