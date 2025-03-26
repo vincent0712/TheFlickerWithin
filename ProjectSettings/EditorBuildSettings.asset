@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Hieu Mapp/intro.unity
     guid: c73cce7afe05eae4da79a36a18a27f55
+  - enabled: 1
+    path: Assets/Hieu Mapp/RealCredit.unity
+    guid: ce94bdb5b8850e9449db8b665d0585f7
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
