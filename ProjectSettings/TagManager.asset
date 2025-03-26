@@ -23,6 +23,7 @@ TagManager:
   - MouseHole
   - MickyMouse
   - door
+  - handthing
   layers:
   - Default
   - TransparentFX

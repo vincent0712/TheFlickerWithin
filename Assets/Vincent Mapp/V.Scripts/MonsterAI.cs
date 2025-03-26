@@ -27,6 +27,7 @@ public class MonsterAI : MonoBehaviour
     public AudioClip[] monsterchasesound;
     public AudioClip[] monsterscreams;
     public Transform visionPoint;
+    public bool isendgame = false;
 
     private Movement movement;
     private NavMeshAgent agent;
@@ -65,6 +66,11 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
+
+        if (isendgame)
+        {
+            return;
+        }
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", speed);
         CheckPlayer();
