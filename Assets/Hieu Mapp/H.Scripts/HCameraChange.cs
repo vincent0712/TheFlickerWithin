@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class HCameraChange : MonoBehaviour
 {
+    AudioSource audio;
+    public AudioClip buttonClick;
+
     public GameObject camPos1;
     public GameObject camPos2;
     public GameObject camPos3;
@@ -13,6 +16,8 @@ public class HCameraChange : MonoBehaviour
 
     void Start()
     {
+        audio = GetComponent<AudioSource>();
+
         targetPosition = camPos1.transform.position;
         cam.transform.position = targetPosition;
     }
@@ -28,6 +33,7 @@ public class HCameraChange : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
+            audio.PlayOneShot(buttonClick);
             if (count == 1)
             {
                 targetPosition = camPos2.transform.position;
@@ -50,6 +56,7 @@ public class HCameraChange : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            audio.PlayOneShot(buttonClick);
             if (count == 1)
             {
                 targetPosition = camPos3.transform.position;
