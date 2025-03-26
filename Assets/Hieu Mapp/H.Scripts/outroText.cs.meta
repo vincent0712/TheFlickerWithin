@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b5a7f3d126dd2fb469652a6c3f532a2b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rain: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  - doorUnlocked: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  - doorClose: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  - flashlight: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  - heartBeat: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

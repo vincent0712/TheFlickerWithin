@@ -129,8 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 41063338}
   - component: {fileID: 41063339}
-  - component: {fileID: 41063340}
   - component: {fileID: 41063341}
+  - component: {fileID: 41063342}
   m_Layer: 0
   m_Name: scripthlder
   m_TagString: Untagged
@@ -168,23 +168,6 @@ MonoBehaviour:
   uiText: {fileID: 919059685}
   fadeInDuration: 1
   fadeOutDuration: 1
---- !u!114 &41063340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 41063336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91a2f2c9d6fd4324fbd361fe9fa95fd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rain: {fileID: 8300000, guid: aca8a3c37c978664aaf74d3eeefbff11, type: 3}
-  doorUnlocked: {fileID: 8300000, guid: 95c8e13ac71a63e40ae96be52896f09c, type: 3}
-  doorClose: {fileID: 8300000, guid: 51c2dbfa4a49a2941a25c20260842f5a, type: 3}
-  flashlight: {fileID: 8300000, guid: 768b297e5933ad546b187f8905cc9133, type: 3}
-  pound: {fileID: 8300000, guid: c72e5b416106c5d4298748dd7a709417, type: 3}
 --- !u!82 &41063341
 AudioSource:
   m_ObjectHideFlags: 0
@@ -282,6 +265,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &41063342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41063336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a7f3d126dd2fb469652a6c3f532a2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rain: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  doorUnlocked: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  doorClose: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  flashlight: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
+  heartBeat: {fileID: 8300000, guid: 0d81df3b34fbfcb46ab8c215d5666d9b, type: 3}
 --- !u!1 &325763592
 GameObject:
   m_ObjectHideFlags: 0
