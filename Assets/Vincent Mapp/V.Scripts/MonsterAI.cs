@@ -26,6 +26,7 @@ public class MonsterAI : MonoBehaviour
     public AudioClip[] monsterroamsounds;
     public AudioClip[] monsterchasesound;
     public AudioClip[] monsterscreams;
+    public Transform visionPoint;
 
     private Movement movement;
     private NavMeshAgent agent;
@@ -279,13 +280,15 @@ public class MonsterAI : MonoBehaviour
         if (movement.isHidden)
             return false;
 
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        // Use visionPoint instead of monsterEyes
+        Vector3 visionOrigin = visionPoint.position;
+        Vector3 directionToPlayer = (player.position - visionOrigin).normalized;
         float angle = Vector3.Angle(transform.forward, directionToPlayer);
 
-        if (Vector3.Distance(transform.position, player.position) < currentVisionRange && angle < fieldOfView / 2)
+        if (Vector3.Distance(visionOrigin, player.position) < currentVisionRange && angle < fieldOfView / 2)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, directionToPlayer, out hit, currentVisionRange))
+            if (Physics.Raycast(visionOrigin, directionToPlayer, out hit, currentVisionRange))
             {
                 if (hit.transform == player && !movement.isHidden)
                 {
@@ -295,6 +298,7 @@ public class MonsterAI : MonoBehaviour
         }
         return false;
     }
+
 
     bool CanReachDestination(Vector3 destination)
     {
