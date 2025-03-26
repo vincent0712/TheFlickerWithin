@@ -33,37 +33,47 @@ public class IntroText : MonoBehaviour
     public IEnumerator startText()
     {
         audioSource.PlayOneShot(rain);
-        onScreenText.ShowText("It was a stormy, rain-drenched night", 3f);
+        onScreenText.ShowText("A storm raged as I stumbled through mud and roots, cold biting my skin", 4f);
+        yield return new WaitForSeconds(5);
+        onScreenText.ShowText("Then—through the downpour", 3f);
         yield return new WaitForSeconds(4);
-        onScreenText.ShowText("The wind howled through the trees, rain lashed against the earth,", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("and thunder cracked through the darkened forest like a beast roaring in the distance", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("I stumbled through the trench, my boots sinking into pockets of wet mud and water,", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("tangled in the ancient, gnarled roots of towering pine trees", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("The cold bit at my skin as I tripped over myself, scratching my arms and legs on jagged branches", 5f);
-        yield return new WaitForSeconds(6);
-        onScreenText.ShowText("Then, in the distance, something emerged from the darkness—a structure,", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("barely visible through the relentless downpour", 3f);
-        yield return new WaitForSeconds(4);
-        onScreenText.ShowText("Hope surged through me", 3f);
-        yield return new WaitForSeconds(4);
-        onScreenText.ShowText("Shelter", 2f);
+        onScreenText.ShowText("I see", 2f);
         yield return new WaitForSeconds(3);
-        onScreenText.ShowText("Protection", 2f);
+        onScreenText.ShowText("A cabin", 2f);
         yield return new WaitForSeconds(3);
-        onScreenText.ShowText("Maybe even salvation", 3f);
+        onScreenText.ShowText("A hope", 2f);
+        yield return new WaitForSeconds(3);
+        onScreenText.ShowText("A shelter", 2f);
+        yield return new WaitForSeconds(3);
+        onScreenText.ShowText("I pounded on the door", 3f);
         yield return new WaitForSeconds(4);
-        onScreenText.ShowText("With the last reserves of strength left in my bodies, I pushed forward", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("As I neared, the dim outline sharpened into an old wooden cabin,", 4f);
-        yield return new WaitForSeconds(5);
-        onScreenText.ShowText("its frame warped with age, abandoned for years—or so it seemed", 4f);
+        onScreenText.ShowText("A movement", 2f);
         yield return new WaitForSeconds(3);
-        onScreenText.ShowText("Desperation took hold", 3f);
+        onScreenText.ShowText("A flicker of light", 3f);
+        yield return new WaitForSeconds(4);
+        onScreenText.ShowText("A click", 2f);
+        audioSource.PlayOneShot(doorUnlocked);
+        onScreenText.ShowText("I stumbled inside, drenched and trembling,", 3f);
+        yield return new WaitForSeconds(4);
+        onScreenText.ShowText("slamming the door shut behind me as if to trap the storm outside", 4f);
+        audioSource.Stop();
+        audioSource.PlayOneShot(doorClose);
+        yield return new WaitForSeconds(3);
+        onScreenText.ShowText("Inside, darkness swallowed me", 3f);
+        yield return new WaitForSeconds(4);
+        audioSource.PlayOneShot(flashlight);
+        onScreenText.ShowText("My flashlight flickered", 3f);
+        yield return new WaitForSeconds(4);
+        audioSource.PlayOneShot(heartBeat);
+        onScreenText.ShowText("Dread seized me", 3f);
+        yield return new WaitForSeconds(4);
+        onScreenText.ShowText("I was not alone", 3f);
+        yield return new WaitForSeconds(4);
+        onScreenText.ShowText("I needed to turn on the light", 3f);
+        yield return new WaitForSeconds(4);
+        
+        
+        /*onScreenText.ShowText("Desperation took hold", 3f);
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("I lunged at the heavy wooden door, pounding against it, my voices hoarse from screaming for help", 5f);
         yield return new WaitForSeconds(6);
@@ -110,7 +120,7 @@ public class IntroText : MonoBehaviour
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("I NEED TO TURN ON THE LIGHT.", 3f);
         yield return new WaitForSeconds(4);
-
+        */
         SceneManager.LoadScene("Main");
     }
 }
