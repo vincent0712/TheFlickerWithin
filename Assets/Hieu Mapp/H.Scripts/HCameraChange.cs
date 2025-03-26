@@ -8,6 +8,7 @@ public class HCameraChange : MonoBehaviour
     public GameObject camPos1;
     public GameObject camPos2;
     public GameObject camPos3;
+    public GameObject camPos4;
     public Camera cam;
     public float transitionSpeed = 2.0f;
 
@@ -44,6 +45,11 @@ public class HCameraChange : MonoBehaviour
                 targetPosition = camPos3.transform.position;
                 count++;
             }
+            else if (count == 3)
+            {
+                targetPosition = camPos4.transform.position;
+                count++;
+            }
             else
             {
                 targetPosition = camPos1.transform.position;
@@ -59,17 +65,22 @@ public class HCameraChange : MonoBehaviour
             audio.PlayOneShot(buttonClick);
             if (count == 1)
             {
-                targetPosition = camPos3.transform.position;
-                count = 3;
+                targetPosition = camPos4.transform.position;
+                count = 4;
             }
             else if (count == 2)
             {
                 targetPosition = camPos1.transform.position;
                 count--;
             }
-            else
+            else if(count == 3)
             {
                 targetPosition = camPos2.transform.position;
+                count--;
+            }
+            else
+            {
+                targetPosition = camPos3.transform.position;
                 count--;
             }
         }
