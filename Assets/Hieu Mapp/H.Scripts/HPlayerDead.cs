@@ -17,12 +17,12 @@ public class HPlayerDead : MonoBehaviour
     {
         if(other.gameObject.tag == "monster")
         {
-<<<<<<< HEAD
+            SceneManager.LoadScene("Outro");
             StartCoroutine(kill());
             
-=======
-            SceneManager.LoadScene("Outro");
->>>>>>> efce5190ce6268c00ee87a05b05ed308f020d6ab
+
+            
+
         }
     }
 
