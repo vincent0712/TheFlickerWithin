@@ -20,14 +20,14 @@ public class paintingtoggle : MonoBehaviour
 public class Painting
 {
     public Renderer paintingRenderer; // The renderer of the painting (assign in Inspector)
-    public Material material1; // First material
-    public Material material2; // Second material
+    public Material NormalMaterial; // First material
+    public Material Cameramaterial; // Second material
 
     public void ToggleMaterial(bool useFirst)
     {
         if (paintingRenderer != null)
         {
-            paintingRenderer.material = useFirst ? material1 : material2;
+            paintingRenderer.material = useFirst ? Cameramaterial : NormalMaterial;
         }
     }
 }

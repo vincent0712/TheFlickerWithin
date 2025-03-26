@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 public class MonsterAI : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float roamWaitTimeMin = 10f;
     [SerializeField] private float roamWaitTimeMax = 15f;
     [SerializeField] private Transform[] pointsOfInterest;
+    public AudioClip[] monsterroamsounds;
+    public AudioClip[] monsterchasesound;
+    public AudioClip[] monsterscreams;
 
     private Movement movement;
     private NavMeshAgent agent;
@@ -30,6 +34,10 @@ public class MonsterAI : MonoBehaviour
     private float currentVisionRange;
     public Animator anim;
     public float spawnTimer = 15f;
+    public AudioSource au;
+
+    private Coroutine soundCoroutine;
+    private State lastState; // Keep track of the last state
 
 
     void Start()
@@ -48,9 +56,10 @@ public class MonsterAI : MonoBehaviour
         }
 
 
-        
+        HandleSounds();
 
     }
+
 
 
     void Update()
@@ -58,6 +67,12 @@ public class MonsterAI : MonoBehaviour
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", speed);
         CheckPlayer();
+
+        if (currentState != lastState) // Detect when state changes
+        {
+            HandleSounds(); // Restart sounds when state changes
+            lastState = currentState; // Update last known state
+        }
 
         if (currentState == State.Chasing && movement.isHidden)
         {
@@ -68,33 +83,58 @@ public class MonsterAI : MonoBehaviour
         {
             movement.isSpotted = true;
             currentState = State.Chasing;
-            searching = false;  // Reset searching so it can trigger when losing sight
+            searching = false;
             agent.speed = chaseSpeed;
             agent.SetDestination(player.position);
         }
-        else if (currentState == State.Chasing)
+        else if (!CanSeePlayer() && currentState == State.Chasing)
         {
             movement.isSpotted = false;
             StartSearching();
         }
+    }
 
-        if (CanSeePlayer())
+    void HandleSounds()
+    {
+        if (soundCoroutine != null)
         {
-            movement.isSpotted = true;
-            currentState = State.Chasing;
-            searching = false;  // Reset searching so it can start again if needed
-            agent.speed = chaseSpeed;
-            agent.SetDestination(player.position);
+            StopCoroutine(soundCoroutine); // Stop any ongoing sound coroutine
         }
-        else if(!CanSeePlayer() && currentState == State.Chasing)
+
+        soundCoroutine = StartCoroutine(PlaySound());
+    }
+
+    IEnumerator PlaySound()
+    {
+        while (true) // Keep checking state
         {
-            movement.isSpotted = false;
-            if (currentState == State.Chasing)
+            if (!au.isPlaying) // Play a new sound only when audio stops
             {
-                StartSearching();
+                AudioClip[] soundArray = null;
+
+                if (currentState == State.Roaming || currentState == State.Searching || currentState == State.Investigating)
+                {
+                    soundArray = monsterroamsounds;
+                    au.pitch = 1f;
+                }
+                else if (currentState == State.Chasing)
+                {
+                    soundArray = monsterchasesound;
+                    au.pitch = 0.85f;
+                }
+
+                if (soundArray != null && soundArray.Length > 0)
+                {
+                    int randomIndex = Random.Range(0, soundArray.Length);
+                    au.clip = soundArray[randomIndex];
+                    au.Play();
+                }
             }
+
+            yield return new WaitForSeconds(1f); // Keep checking state changes
         }
     }
+
 
     void CheckPlayer()
     {
