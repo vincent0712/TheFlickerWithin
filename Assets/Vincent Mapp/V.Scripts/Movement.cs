@@ -67,7 +67,7 @@ public class Movement : MonoBehaviour
     [Header("Audio")]
     public AudioSource heartbeat;
     public AudioSource chaseMusic;
-
+    public Flashlight flashlightt;
     private Vector3 moveDirection;
 
     void Start()
@@ -100,11 +100,13 @@ public class Movement : MonoBehaviour
 
     void Fear()
     {
+
+        flashlightt.isFlickering = isSpotted;
         if (isSpotted && fear < 10f)
         {
             fear += 3.5f * Time.deltaTime;
         }
-        if (!isSpotted && fear > 0f)
+        else if (!isSpotted && fear > 0f)
         {
             fear -= 2.5f * Time.deltaTime;
         }

@@ -4,49 +4,37 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    public Light light;
+    public Light flashlight;  // Renamed from "light" to avoid conflicts
     public bool isOn = true;
-    public bool isFlickering = false; // Flickering state
+    public bool isreallyon = true;
+    public bool isFlickering = false;
     private AudioSource aud;
     private Transform flashlightPoint;
 
     public bool canflicker = true;
     public float distanceMultiplier = 1f;
-    public float smoothSpeed = 5f;
+    public float followSpeed = 5f;
+    public float rotateSpeed = 5f;
 
-
-    public float fieldOfViewAngle = 90f; // Field of view angle
-    public float maxViewDistance = 15f; // Maximum viewing distance
-    public LayerMask obstacleLayer; // LayerMask for obstacles
-    public Transform observer; // The observer (e.g., enemy or camera)
-    public Transform target; // The target (e.g., player)
-
-    private bool isTargetInSight = false; // Track if the target is in line of sight
-
-
-    //public int battery = 100; // Battery as an integer
-    public float followSpeed = 2f;
-    public float rotateSpeed = 7f;
     public float intensity = 5f;
     public float range = 10f;
     private Movement movement;
 
     public TextMeshProUGUI batteryLifeText;
     private Camera cam;
-    
+
     private void Start()
     {
-
         cam = Camera.main;
-        light.intensity = intensity;
-        light.range = range;
+        flashlight.intensity = intensity;  // Ensure light is initialized
+        flashlight.range = range;
         movement = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
-        //batteryLifeText = GetComponentInChildren<TextMeshProUGUI>();
         aud = gameObject.GetComponent<AudioSource>();
         flashlightPoint = GameObject.FindGameObjectWithTag("fp").transform;
-
-        // Start the battery drain coroutine
-        //StartCoroutine(DrainBattery());
+        aud.Play();
+        isreallyon = !isreallyon;
+        isOn = isreallyon;
+        flashlight.intensity = isreallyon ? intensity : 0f;  // Correctly update light intensity
     }
 
     private void OnEnable()
@@ -63,40 +51,20 @@ public class Flashlight : MonoBehaviour
 
     private void Update()
     {
-        //GoToPoint();
-        if (movement.isSpotted)
-        {
-            StartCoroutine(FlickerLoop());
-        }
-            
-
-
-        if (isFlickering && light.intensity > 0f && isOn)
-        {
-            if (!canflicker)
-                return;
-            StartCoroutine(FlickerLoop());
-        }
-        if (!isOn)
-            isFlickering = false;
-        //batteryLifeText.text = "Battery: " + battery;
-        light.intensity = isOn ? intensity : 0f;
-
-
+        // Toggle flashlight when right mouse button is pressed
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             aud.Play();
-            isOn = !isOn; //&& battery > 0;
-            
-            
+            isreallyon = !isreallyon;
+            isOn = isreallyon;
+            flashlight.intensity = isreallyon ? intensity : 0f;  // Correctly update light intensity
         }
 
-        if (Input.GetKeyDown(KeyCode.M)) // Toggle flicker for testing
+        // Handle flickering if spotted
+        if (movement.isSpotted && isreallyon && canflicker && !isFlickering)
         {
-            isFlickering = !isFlickering; // Start or stop flickering
-
+            StartCoroutine(FlickerLoop());
         }
-
     }
 
     private void GoToPoint()
@@ -108,38 +76,19 @@ public class Flashlight : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, flashlightPoint.rotation, rotateSpeed * Time.deltaTime);
     }
 
-
-
-
-    private float Rnd(float min, float max)
-    {
-        return Random.Range(min, max);
-    }
-
     private IEnumerator FlickerLoop()
     {
-
-
+        isFlickering = true;
         float originalIntensity = intensity;
 
-        while (isFlickering) // Loop as long as isFlickering is true
+        while (movement.isSpotted && isreallyon)
         {
-            float randomDelay = Rnd(0.05f, 0.3f); // Random delay between flickers
-
-            // Randomize intensity or turn off completely
-            if (Random.value > 0.5f)
-            {
-                light.intensity = Random.Range(originalIntensity * 0.5f, originalIntensity); // Dimmed light
-            }
-            else
-            {
-                light.intensity = 0f; // Light off
-            }
-
-            yield return new WaitForSeconds(randomDelay); // Wait for the random delay
+            float randomDelay = Random.Range(0.05f, 0.1f);
+            flashlight.intensity = (Random.value > 0.5f) ? Random.Range(originalIntensity * 0.5f, originalIntensity) : 0f;
+            yield return new WaitForSeconds(randomDelay);
         }
 
-        // Restore flashlight to original state when flickering stops
-        light.intensity = originalIntensity;
+        flashlight.intensity = isreallyon ? intensity : 0f;  // Ensure flashlight returns to correct state
+        isFlickering = false;
     }
 }

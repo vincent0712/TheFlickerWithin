@@ -12,7 +12,7 @@ public class HCameraChange : MonoBehaviour
     public Camera cam;
     public float transitionSpeed = 2.0f;
 
-    private int count = 1;
+    public int count = 1;
     private Vector3 targetPosition;
 
     void Start()
@@ -26,63 +26,56 @@ public class HCameraChange : MonoBehaviour
     void Update()
     {
         cam.transform.position = Vector3.Lerp(cam.transform.position, targetPosition, Time.deltaTime * transitionSpeed);
-        GoToRight();
-        GoToLeft();
+
     }
 
-    private void GoToRight()
+    public void GoToRight()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        audio.PlayOneShot(buttonClick);
+        if (count == 1)
         {
-            audio.PlayOneShot(buttonClick);
-            if (count == 1)
-            {
-                targetPosition = camPos2.transform.position;
-                count++;
-            }
-            else if (count == 2)
-            {
-                targetPosition = camPos3.transform.position;
-                count++;
-            }
-            else if (count == 3)
-            {
-                targetPosition = camPos4.transform.position;
-                count++;
-            }
-            else
-            {
-                targetPosition = camPos1.transform.position;
-                count = 1;
-            }
+            targetPosition = camPos2.transform.position;
+            count++;
+        }
+        else if (count == 2)
+        {
+            targetPosition = camPos3.transform.position;
+            count++;
+        }
+        else if (count == 3)
+        {
+            targetPosition = camPos4.transform.position;
+            count++;
+        }
+        else if(count == 4)
+        {
+            targetPosition = camPos1.transform.position;
+            count = 1;
         }
     }
 
-    private void GoToLeft()
+    public void GoToLeft()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        audio.PlayOneShot(buttonClick);
+        if (count == 1)
         {
-            audio.PlayOneShot(buttonClick);
-            if (count == 1)
-            {
-                targetPosition = camPos4.transform.position;
-                count = 4;
-            }
-            else if (count == 2)
-            {
-                targetPosition = camPos1.transform.position;
-                count--;
-            }
-            else if(count == 3)
-            {
-                targetPosition = camPos2.transform.position;
-                count--;
-            }
-            else
-            {
-                targetPosition = camPos3.transform.position;
-                count--;
-            }
+            targetPosition = camPos4.transform.position;
+            count = 4;
+        }
+        else if (count == 2)
+        {
+            targetPosition = camPos1.transform.position;
+            count--;
+        }
+        else if (count == 3)
+        {
+            targetPosition = camPos2.transform.position;
+            count--;
+        }
+        else if (count == 4)
+        {
+            targetPosition = camPos3.transform.position;
+            count--;
         }
     }
 }

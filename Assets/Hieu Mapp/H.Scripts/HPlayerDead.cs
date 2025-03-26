@@ -8,8 +8,8 @@ public class HPlayerDead : MonoBehaviour
     public GameObject endgamemonster;
     private GameObject monster;
     public GameObject player;
-    public GameObject maincam;
-    public GameObject endcam;
+    public GameObject endgame;
+    public Transform point;
 
 
     public void Start()
@@ -21,24 +21,18 @@ public class HPlayerDead : MonoBehaviour
         if(other.gameObject.tag == "monster")
         {
 
-            StartCoroutine(endgame());
-            
+            Instantiate(endgamemonster, point.transform.position, point.transform.rotation);
+            player.SetActive(false);
+            monster.SetActive(false);
 
-            
+            Instantiate(endgame);
+
+
+
 
         }
     }
-    IEnumerator endgame()
-    {
-        Instantiate(endgamemonster, monster.transform.position, monster.transform.rotation);
-        player.SetActive(false);
-        monster.SetActive(false);
 
 
-        //maincam.active = false;
-        //endcam.active = true;
-        yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene("StartMenu");
 
-    }
 }

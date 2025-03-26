@@ -27,6 +27,7 @@ public class MonsterAI : MonoBehaviour
     public AudioClip[] monsterchasesound;
     public AudioClip[] monsterscreams;
     public Transform visionPoint;
+    public BoxCollider chasecollider;
 
 
     private Movement movement;
@@ -142,6 +143,21 @@ public class MonsterAI : MonoBehaviour
     void CheckPlayer()
     {
         currentVisionRange = movement.isCrouching ? crouchingVisionRange : baseVisionRange;
+
+        if (movement.isHidden)
+        {
+            movement.isSpotted = false;
+            
+        }
+
+        if (currentState == State.Chasing)
+        {
+            chasecollider.enabled = true;
+        }
+        else if (currentState != State.Chasing)
+        {
+            chasecollider.enabled = false;
+        }
     }
 
 
