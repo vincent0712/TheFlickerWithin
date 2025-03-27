@@ -45,6 +45,7 @@ public class Mcamswitch : MonoBehaviour
     public AudioSource nightVisionToggleSound;
     private bool isNightVision = false;
     public Light nightvisionlight;
+    private bool canuse = true;
 
     // Movement and Timing
     public float moveTime = 1f;
@@ -89,11 +90,13 @@ public class Mcamswitch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked)
+        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked && canuse)
         {
             StartCoroutine(SwapCameraWithEffects());
             
         }
+
+
     }
 
     private IEnumerator BatteryDrainLoop()
