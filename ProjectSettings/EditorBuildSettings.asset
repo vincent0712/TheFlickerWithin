@@ -30,7 +30,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Hieu Mapp/intro.unity
+    path: Assets/Public Map(DONT EDIT)/intro.unity
     guid: c73cce7afe05eae4da79a36a18a27f55
+  - enabled: 1
+    path: Assets/Public Map(DONT EDIT)/Outro.unity
+    guid: cf19c6a504a72b54fb578a5998dae9b2
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

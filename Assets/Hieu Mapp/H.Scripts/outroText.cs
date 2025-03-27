@@ -27,10 +27,8 @@ public class outroText : MonoBehaviour
     public IEnumerator startText()
     {
         audioSource.PlayOneShot(rain);
-        onScreenText.ShowText("\"And God said, Let there be light: and there was light.\"", 4f);
+        onScreenText.ShowText("And God said, Let there be light:        and there was light:     Genesis 1:3 \r\n", 4f);
         yield return new WaitForSeconds(5);
-        onScreenText.ShowText("Genesis 1:3 \r\n", 2f);
-        yield return new WaitForSeconds(3);
         onScreenText.ShowText("With those words,", 3f);
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("darkness and evil were cast away,", 3f);
@@ -39,6 +37,6 @@ public class outroText : MonoBehaviour
         yield return new WaitForSeconds(4);
         onScreenText.ShowText("the light flickered to life once more.", 3f);
         yield return new WaitForSeconds(4);
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("RealCredit");
     }
 }
