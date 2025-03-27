@@ -75,13 +75,13 @@ public class Fusebox : MonoBehaviour, MInteractable
     private IEnumerator swapscene()
     {
         yield return new WaitForSeconds(3f);
-        StartCoroutine(wait("StartMenu"));
+        StartCoroutine(wait("Outro"));
     }
     public IEnumerator wait(string name)
     {
         fade.Play("fadeout");
         yield return new WaitForSeconds(1f);
-        SceneManager.LoadScene("StartMenu");
+        SceneManager.LoadScene("Outro");
     }
 
 
