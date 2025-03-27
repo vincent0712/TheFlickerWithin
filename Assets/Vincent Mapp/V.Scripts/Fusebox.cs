@@ -15,6 +15,7 @@ public class Fusebox : MonoBehaviour, MInteractable
     public GameObject[] finnishlights;
     public Animation LeverAnimation;
     private bool canpull = true;
+    
 
     private AudioSource au;
 

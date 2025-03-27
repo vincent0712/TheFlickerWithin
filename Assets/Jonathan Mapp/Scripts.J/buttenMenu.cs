@@ -8,12 +8,15 @@ public class buttenMenu : MonoBehaviour
 {
 
     public Animation fade;
+    public AudioSource au;
     private void Awake()
     {
+        
         Cursor.lockState = CursorLockMode.None;
     }
     public void MoveToScene(string scene)
     {
+        au.Play();
         StartCoroutine(wait(scene));
 
     }

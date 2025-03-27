@@ -22,6 +22,10 @@ public class Movement : MonoBehaviour
     public bool isrunning = false;
     public Image staminabar;
     private bool canrun = true;
+
+    public AudioClip normalbreath;
+    public AudioClip runningbreath;
+    public AudioSource breating;
     
 
 
@@ -100,8 +104,8 @@ public class Movement : MonoBehaviour
 
     void Fear()
     {
-
         flashlightt.isFlickering = isSpotted;
+
         if (isSpotted && fear < 10f)
         {
             fear += 3.5f * Time.deltaTime;
@@ -110,13 +114,25 @@ public class Movement : MonoBehaviour
         {
             fear -= 2.5f * Time.deltaTime;
         }
+
         heartbeat.volume = fear / 10;
         chaseMusic.volume = fear / 10;
+
         if (!isSpotted && fear < 0.1f)
         {
             chaseMusic.volume = 0;
         }
+
+        // Check if the running state has changed and update the breathing clip
+        AudioClip newClip = isrunning ? runningbreath : normalbreath;
+
+        if (breating.clip != newClip)  // Avoid unnecessary reassignments
+        {
+            breating.clip = newClip;
+            breating.Play();  // Restart playback to prevent it from stopping
+        }
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -323,7 +339,10 @@ public class Movement : MonoBehaviour
             footstepAudioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Length)]);
             if (isCrouching)
             {
-                //monster.HearSound(gameObject.transform.position, 0.1f);
+                if (!isHidden)
+                {
+                    monster.HearSound(gameObject.transform.position, 0.35f);
+                }
 
             }
             else if (!isCrouching)
@@ -339,6 +358,7 @@ public class Movement : MonoBehaviour
                     monster.HearSound(gameObject.transform.position, 0.45f);
                 }
             }
+
         }
     }
 }

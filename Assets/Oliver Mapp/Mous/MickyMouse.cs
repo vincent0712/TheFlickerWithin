@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class MickyMouse : MonoBehaviour
 {
@@ -11,15 +13,30 @@ public class MickyMouse : MonoBehaviour
     private NavMeshAgent agent;
     private Vector3 randomTarget;
     private bool fleeing = false;
+    private bool canplaysound = true;
+    private AudioSource au;
+    public MonsterAI monster;
 
     void Start()
     {
+        au = gameObject.GetComponent<AudioSource>();
         agent = GetComponent<NavMeshAgent>();
         SetRandomTarget();
     }
 
     void Update()
     {
+
+
+        if(fleeing && canplaysound)
+        {
+
+            au.pitch = Random.Range(0.85f, 1.15f);
+            au.Play();
+            monster.HearSound(gameObject.transform.position, 0.45f);
+            canplaysound = false;
+        }
+
         if (Vector3.Distance(transform.position, player.position) < detectionRange)
         {
             fleeing = true;
@@ -28,6 +45,7 @@ public class MickyMouse : MonoBehaviour
         }
         else if (!fleeing && agent.remainingDistance < 0.5f)
         {
+
             SetRandomTarget();
             agent.SetDestination(randomTarget);
         }
@@ -81,6 +99,7 @@ public class MickyMouse : MonoBehaviour
             Transform newHole = mouseHoles[Random.Range(0, mouseHoles.Count)];
             agent.Warp(newHole.position);
             fleeing = false;
+            canplaysound = true;
             SetRandomTarget();
         }
     }
