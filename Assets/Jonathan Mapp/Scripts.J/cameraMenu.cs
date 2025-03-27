@@ -11,6 +11,7 @@ public class cameraMenu : MonoBehaviour
     void Start()
     {
         playerCamera = Camera.main.transform;
+        playerCamera.rotation = Quaternion.identity;
         Cursor.lockState = CursorLockMode.Confined;
     }
 
