@@ -15,7 +15,10 @@ public class settingsMenu : MonoBehaviour
 
     private void Start()
     {
+        /*
         resolutions = Screen.resolutions;
+        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, Screen.fullScreen);
+
 
         resolutionDropdown.ClearOptions();
 
@@ -40,6 +43,8 @@ public class settingsMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolution;
         resolutionDropdown.RefreshShownValue();
+
+        */
     }
 
     public void SetResolution(int resolutionIndex)

@@ -9,10 +9,10 @@ public class Fusebox : MonoBehaviour, MInteractable
 {
     private Onscreentext onScreenText; // Reference to OnScreenText script
 
-    public GameObject[] lights; // Assign your light GameObjects in the Inspector
     public int PuzzlesCompleted = 0;  // Integer value controlling the lights
     public Animation fade;
-    public Light sun;
+    public GameObject[] lightsonfusebox;
+    public GameObject[] finnishlights;
     public Animation LeverAnimation;
     private bool canpull = true;
 
@@ -30,7 +30,7 @@ public class Fusebox : MonoBehaviour, MInteractable
 
     public void SetLightLevel(int newLevel)
     {
-        PuzzlesCompleted = Mathf.Clamp(newLevel, 0, lights.Length); // Clamp between 0 and max lights
+        PuzzlesCompleted = Mathf.Clamp(newLevel, 0, lightsonfusebox.Length); // Clamp between 0 and max lights
         UpdateLights();
     }
 
@@ -49,29 +49,36 @@ public class Fusebox : MonoBehaviour, MInteractable
     }
     private void UpdateLights()
     {
-        for (int i = 0; i < lights.Length; i++)
+        for (int i = 0; i < lightsonfusebox.Length; i++)
         {
-            lights[i].SetActive(i < PuzzlesCompleted); // Activate if index is within the level range
+            lightsonfusebox[i].SetActive(i < PuzzlesCompleted); // Activate if index is within the level range
         }
     }
     public void Interact()
     {
-        if(PuzzlesCompleted < 5)
+        if (PuzzlesCompleted < 5)
+        {
             onScreenText.ShowText("Fuze Box Needs More Power!", 2f);
+            return; // Stop execution if conditions are not met
+        }
 
-        if(PuzzlesCompleted == 5 && canpull)
+        if (PuzzlesCompleted == 5 && canpull)
         {
             canpull = false;
             au.Play();
             onScreenText.ShowText("You Win!", 2f);
-            sun.enabled = true;
+
+            // Turn on the lights
+            for (int i = 0; i < finnishlights.Length; i++)
+            {
+                finnishlights[i].gameObject.SetActive(true); // Correct way to enable GameObjects
+            }
+
             LeverAnimation.Play("levelpull");
             StartCoroutine(swapscene());
         }
-
-
-
     }
+
     private IEnumerator swapscene()
     {
         yield return new WaitForSeconds(3f);

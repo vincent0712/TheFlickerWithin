@@ -24,6 +24,14 @@ public class IntroText : MonoBehaviour
         StartCoroutine(startText());
     }
 
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            SceneManager.LoadScene("Main");
+        }
+    }
     public IEnumerator startText()
     {
         audioSource.PlayOneShot(rain);
