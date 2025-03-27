@@ -146,21 +146,24 @@ public class Mcamswitch : MonoBehaviour
 
     private IEnumerator MoveCamera()
     {
-        Vector3 start = isCamAtTarget ? camTargetPoint.position : camStartingPoint.position;
-        Vector3 end = isCamAtTarget ? camStartingPoint.position : camTargetPoint.position;
+        Transform parentCamera = videocamera.transform.parent; // Get the main player's camera
+        Vector3 start = isCamAtTarget ? camTargetPoint.localPosition : camStartingPoint.localPosition;
+        Vector3 end = isCamAtTarget ? camStartingPoint.localPosition : camTargetPoint.localPosition;
         float elapsedTime = 0f;
 
         while (elapsedTime < moveTime)
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / moveTime;
-            videocamera.transform.position = Vector3.Lerp(start, end, progress);
+            videocamera.transform.localPosition = Vector3.Lerp(start, end, progress); // Move locally
             yield return null;
         }
 
-        videocamera.transform.position = end;
+        videocamera.transform.localPosition = end; // Set final position
         isCamAtTarget = !isCamAtTarget;
     }
+
+
 
     private void EnableNightVision()
     {
