@@ -38,6 +38,7 @@ public class MonsterAI : MonoBehaviour
     public Animator anim;
     public float spawnTimer = 15f;
     public AudioSource au;
+    public Flashlight flashlight;
 
     private Coroutine soundCoroutine;
     private State lastState; // Keep track of the last state
@@ -147,18 +148,26 @@ public class MonsterAI : MonoBehaviour
         if (movement.isHidden)
         {
             movement.isSpotted = false;
-            
         }
 
         if (currentState == State.Chasing)
         {
             chasecollider.enabled = true;
+            if (flashlight != null && flashlight.gameObject.activeInHierarchy)
+            {
+                flashlight.StartFlickering(true);  // Force flicker
+            }
         }
-        else if (currentState != State.Chasing)
+        else
         {
             chasecollider.enabled = false;
+            if (flashlight != null && flashlight.gameObject.activeInHierarchy)
+            {
+                flashlight.StopFlickering();
+            }
         }
     }
+
 
 
 

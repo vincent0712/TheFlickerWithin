@@ -142,9 +142,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.45
-  m_Range: 2.75
+  m_Color: {r: 1, g: 0.6273585, b: 0.6273585, a: 1}
+  m_Intensity: 0.3
+  m_Range: 6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -892,7 +892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   au: {fileID: 5020386546269094029}
-  delay: 2.75
+  delay: 2.9
   blood: {fileID: 3481479579073137088}
 --- !u!82 &5020386546269094029
 AudioSource:

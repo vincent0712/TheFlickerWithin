@@ -16,6 +16,8 @@ public class Fusebox : MonoBehaviour, MInteractable
     public Animation LeverAnimation;
     private bool canpull = true;
     public GameObject monster;
+    private bool hasspawnedmonster = false;
+    
     
 
     private AudioSource au;
@@ -27,7 +29,9 @@ public class Fusebox : MonoBehaviour, MInteractable
         onScreenText = FindObjectOfType<Onscreentext>();
         au = gameObject.GetComponent<AudioSource>();
 
-        //StartCoroutine(startText());
+        //monster.SetActive(false);
+
+        StartCoroutine(startText());
     }
 
     public void SetLightLevel(int newLevel)
@@ -38,9 +42,10 @@ public class Fusebox : MonoBehaviour, MInteractable
 
     public IEnumerator startText()
     {
-        onScreenText.ShowText("Complete Puzzles To Fix The Fuse Box", 4f);
-        yield return new WaitForSeconds(6);
-        onScreenText.ShowText("Fix The Fuse Box To Light Up The House", 4f);
+        yield return new WaitForSeconds(1f);
+        monster.SetActive(false);
+
+
 
     }
     
@@ -55,6 +60,14 @@ public class Fusebox : MonoBehaviour, MInteractable
         {
             lightsonfusebox[i].SetActive(i < PuzzlesCompleted); // Activate if index is within the level range
         }
+
+        if(PuzzlesCompleted == 1 && !hasspawnedmonster)
+        {
+            monster.SetActive(true);
+            hasspawnedmonster = true;
+        }
+
+
     }
     public void Interact()
     {
