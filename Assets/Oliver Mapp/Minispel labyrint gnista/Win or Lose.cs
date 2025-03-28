@@ -7,7 +7,7 @@ using UnityEngine;
 public class WinorLose : MonoBehaviour
 {
     public GameObject[] VadSkaViDöda;
-    public Puzzlehandeler puzzlehandeler;
+    public pusslehandeler puzzlehandeler;
 
 
     void OnTriggerEnter(Collider other)

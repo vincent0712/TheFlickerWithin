@@ -14,7 +14,7 @@ public class Timeer : MonoBehaviour
     public bool gameOver = false;
     private Fusebox fuse;
     public bool win = false;
-    public Puzzlehandeler puzzlehandeler;
+    public pusslehandeler puzzlehandeler;
     private AudioSource fuseaudio;
 
     private void Start()

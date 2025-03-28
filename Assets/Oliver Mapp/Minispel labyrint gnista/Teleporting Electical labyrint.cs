@@ -14,7 +14,7 @@ public class Electrical_Labyrint : MonoBehaviour
     private bool canMove = true;
     public GameObject gnistaSpawn;
     public Timeer timer;
-    public Puzzlehandeler puzzlehandler;
+    public pusslehandeler puzzlehandler;
 
     void Start()
     {
