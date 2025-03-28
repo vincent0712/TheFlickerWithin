@@ -18585,11 +18585,11 @@ Transform:
   m_GameObject: {fileID: 449965204}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.20522909, z: -0, w: 0.978714}
-  m_LocalPosition: {x: -18.651, y: 0.745, z: 22.421}
-  m_LocalScale: {x: 0.1835134, y: 0.0068469997, z: 0.28441098}
+  m_LocalPosition: {x: -72.651, y: 0.745, z: 19.421}
+  m_LocalScale: {x: 0.18351339, y: 0.0068469997, z: 0.28441095}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 952709181}
   m_LocalEulerAnglesHint: {x: 0, y: -23.686, z: 0}
 --- !u!1001 &450812066
 PrefabInstance:
@@ -42621,6 +42621,7 @@ Transform:
   - {fileID: 1530321050}
   - {fileID: 425047715}
   - {fileID: 1685395019}
+  - {fileID: 449965208}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &952709182
@@ -54929,7 +54930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e12b20a97bec4b810d99ef65b6cb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endgamemonster: {fileID: 2178828076758012903, guid: c9d07528b6596c848b5411b25a5992b3,
+  endgamemonster: {fileID: 3203468241824508003, guid: 499fde3af48ec1c4ab1e3b1673f7e046,
     type: 3}
   player: {fileID: 1294164668}
   endgame: {fileID: 4653385264451801196, guid: 98011855bf06ba948ae9000ac4ce1fb2, type: 3}
@@ -61336,6 +61337,11 @@ PrefabInstance:
       objectReference: {fileID: 645542321}
     - target: {fileID: 6184809632909544196, guid: eacd702bdb4bfd3438ed696dc1ef228e,
         type: 3}
+      propertyPath: monster
+      value: 
+      objectReference: {fileID: 1555445456}
+    - target: {fileID: 6184809632909544196, guid: eacd702bdb4bfd3438ed696dc1ef228e,
+        type: 3}
       propertyPath: sun.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -64751,9 +64757,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Battery:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6c5e2c11c905f0b42bc5c48cb36e18cc, type: 2}
-  m_sharedMaterial: {fileID: -2900469671991718826, guid: 6c5e2c11c905f0b42bc5c48cb36e18cc,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
+  m_sharedMaterial: {fileID: 2140474, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -64783,7 +64788,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 3
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -90696,4 +90701,3 @@ SceneRoots:
   - {fileID: 1445755132}
   - {fileID: 22003257}
   - {fileID: 1217673625}
-  - {fileID: 449965208}

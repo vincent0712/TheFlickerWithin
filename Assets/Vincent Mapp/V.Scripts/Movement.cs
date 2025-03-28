@@ -341,7 +341,7 @@ public class Movement : MonoBehaviour
             {
                 if (!isHidden)
                 {
-                    monster.HearSound(gameObject.transform.position, 0.35f);
+                    monster.HearSound(gameObject.transform.position, 0.45f);
                 }
 
             }
@@ -355,7 +355,7 @@ public class Movement : MonoBehaviour
                 }
                 else
                 {
-                    monster.HearSound(gameObject.transform.position, 0.45f);
+                    monster.HearSound(gameObject.transform.position, 0.65f);
                 }
             }
 

@@ -46,6 +46,7 @@ public class Mcamswitch : MonoBehaviour
     private bool isNightVision = false;
     public Light nightvisionlight;
     private bool canuse = true;
+    private Onscreentext onScreenText;
 
     // Movement and Timing
     public float moveTime = 1f;
@@ -54,7 +55,7 @@ public class Mcamswitch : MonoBehaviour
 
     void Start()
     {
-
+        onScreenText = FindObjectOfType<Onscreentext>();
         // Initialize camera position
         videocamera.transform.position = camStartingPoint.position;
         StartCoroutine(BatteryDrainLoop());
@@ -90,13 +91,31 @@ public class Mcamswitch : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked && canuse)
+
+        if (battery > 0 && !canuse)
         {
-            StartCoroutine(SwapCameraWithEffects());
-            
+            canuse = true;
+        }
+        if (battery <= 0)
+        {
+            battery = 0;
+            canuse = false; // Prevent using camera when battery is 0
+
+            if (camison && !isTransitioning)
+            {
+                StartCoroutine(SwapCameraWithEffects()); // Force camera down
+            }
         }
 
-
+        if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked && canuse)
+        {
+            
+            StartCoroutine(SwapCameraWithEffects());
+        }
+        else if (Input.GetKeyDown(KeyCode.Q) && !isTransitioning && isCameraUnlocked && !canuse)
+        {
+            onScreenText.ShowText("Out Of Battery!", 2f);
+        }
     }
 
     private IEnumerator BatteryDrainLoop()
@@ -108,42 +127,40 @@ public class Mcamswitch : MonoBehaviour
             {
                 battery -= 1;
                 batterytext.text = "Battery: " + battery;
-                
-            }
-            else
-            {
-                
+
+                if (battery <= 0)
+                {
+                    battery = 0;
+                    canuse = false;
+                    StartCoroutine(SwapCameraWithEffects()); // Force camera down immediately
+                }
             }
         }
     }
-
-
 
     private IEnumerator SwapCameraWithEffects()
     {
         isTransitioning = true;
-
         DisableNightVision();
-        
+
         yield return StartCoroutine(MoveCamera());
 
-        if (isCamAtTarget)
+        if (isCamAtTarget && battery > 0)
         {
-            
             EnableNightVision();
             FindObjectOfType<PaintingToggle>().TogglePaintings(true);
             batterytext.enabled = true;
             camison = true;
-            
         }
         else
         {
             camison = false;
-            
+            canuse = battery > 0; // Only allow usage if battery is not empty
         }
 
         isTransitioning = false;
     }
+
 
 
 

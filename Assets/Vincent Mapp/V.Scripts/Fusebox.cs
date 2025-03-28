@@ -15,6 +15,7 @@ public class Fusebox : MonoBehaviour, MInteractable
     public GameObject[] finnishlights;
     public Animation LeverAnimation;
     private bool canpull = true;
+    public GameObject monster;
     
 
     private AudioSource au;
@@ -68,6 +69,7 @@ public class Fusebox : MonoBehaviour, MInteractable
             canpull = false;
             au.Play();
             onScreenText.ShowText("You Win!", 2f);
+            monster.SetActive(false);
 
             // Turn on the lights
             for (int i = 0; i < finnishlights.Length; i++)
