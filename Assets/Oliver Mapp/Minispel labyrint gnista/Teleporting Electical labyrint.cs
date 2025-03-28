@@ -15,6 +15,7 @@ public class Electrical_Labyrint : MonoBehaviour
     public GameObject gnistaSpawn;
     public Timeer timer;
     public pusslehandeler puzzlehandler;
+    public Transform start;
 
     void Start()
     {
@@ -77,8 +78,8 @@ public class Electrical_Labyrint : MonoBehaviour
         }
 
         // Välj en slumpmässig teleportposition från teleportPositions
-        Vector3 teleportPosition = teleportPositions[Random.Range(0, teleportPositions.Length)];
-        transform.position = teleportPosition;
+        
+        transform.position = start.transform.position;
 
         nav.enabled = false;
         nav.enabled = true;
