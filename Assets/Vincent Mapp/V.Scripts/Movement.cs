@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
+
 public class Movement : MonoBehaviour
 {
     [Header("Movement Settings")]
@@ -22,6 +23,7 @@ public class Movement : MonoBehaviour
     public bool isrunning = false;
     public Image staminabar;
     private bool canrun = true;
+    private bool canstand = true;
 
     public AudioClip normalbreath;
     public AudioClip runningbreath;
@@ -47,7 +49,9 @@ public class Movement : MonoBehaviour
     public bool isHidden = false;
     public bool isMoving = false;
     private bool canregenstamina = true;
+    private bool isInNoStandZone = false;
     public bool isincloset = false;
+
 
 
     [Header("Fear Settings")]
@@ -80,7 +84,7 @@ public class Movement : MonoBehaviour
         
         monster = GameObject.FindGameObjectWithTag("monster").GetComponent<MonsterAI>();
         cameraStartPos = playerCamera.localPosition;
-        Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         canmove = false;
     }
 
@@ -139,17 +143,22 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table") && isCrouching)
         {
             isHidden = true;
-
         }
         else if (other.CompareTag("closet"))
         {
             isincloset = true;
             isHidden = true;
         }
-        else if(other.CompareTag("bed"))
+        else if (other.CompareTag("nostandzone")) // Player enters No-Stand Zone
         {
-            if (crouchRoutine != null) StopCoroutine(crouchRoutine);
-            crouchRoutine = StartCoroutine(CrouchTransition(true, false)); // Force crouch
+            isInNoStandZone = true;
+            if (!isCrouching)
+            {
+                characterController.height = 0.6f; // Force crouch
+                if (crouchRoutine != null)
+                    StopCoroutine(crouchRoutine);
+                crouchRoutine = StartCoroutine(CrouchTransition(true, false));
+            }
         }
     }
 
@@ -158,12 +167,18 @@ public class Movement : MonoBehaviour
         if (other.CompareTag("table"))
         {
             isHidden = false;
-
         }
         else if (other.CompareTag("closet"))
         {
             isincloset = false;
             isHidden = false;
+        }
+        else if (other.CompareTag("nostandzone")) // Player exits No-Stand Zone
+        {
+            isInNoStandZone = false;
+            if (crouchRoutine != null)
+                StopCoroutine(crouchRoutine);
+            crouchRoutine = StartCoroutine(CrouchTransition(false, false));
         }
     }
 
@@ -247,19 +262,21 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-
-
             if (userCrouching && isHidden && !isincloset)
                 return;
+
+            if (isInNoStandZone && !isCrouching)
+                return; // Prevent standing if in No-Stand Zone
 
             if (!isCrouching)
             {
                 characterController.height = 0.6f;
             }
-            else if (isCrouching)
+            else if (isCrouching && !isInNoStandZone) // Allow standing only outside No-Stand Zone
             {
                 characterController.height = 1.15f;
             }
+
             userCrouching = !userCrouching;
 
             if (crouchRoutine != null)
