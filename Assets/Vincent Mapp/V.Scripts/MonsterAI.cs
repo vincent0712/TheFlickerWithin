@@ -42,6 +42,8 @@ public class MonsterAI : MonoBehaviour
 
     private Coroutine soundCoroutine;
     private State lastState; // Keep track of the last state
+    private bool started = false;
+
 
 
     void Start()
@@ -62,7 +64,15 @@ public class MonsterAI : MonoBehaviour
 
         HandleSounds();
 
+        started = true;
     }
+
+    private void OnEnable()
+    {
+        if (started)
+            StartCoroutine(Roam());
+    }
+
 
 
 
@@ -203,74 +213,72 @@ public class MonsterAI : MonoBehaviour
     {
         while (currentState == State.Roaming)
         {
-            Vector3 destination;
+            Vector3 destination = Vector3.zero;
 
-            if (Random.value > 0.35f && pointsOfInterest.Length > 0)
+            // Filter reachable pointsOfInterest once
+            var reachablePoints = pointsOfInterest
+                .Where(p => CanReachDestination(p.position))
+                .OrderByDescending(p => Vector3.Distance(transform.position, p.position))
+                .Take(3)
+                .ToList();
+
+            if (reachablePoints.Count > 0)
             {
-                List<Transform> farthestPoints = new List<Transform>();
-                List<float> distances = new List<float>();
-
-                foreach (Transform point in pointsOfInterest)
+                if (Random.value < 0.9f) // 90% chance
                 {
-                    float distance = Vector3.Distance(transform.position, point.position);
-                    if (CanReachDestination(point.position))
-                    {
-                        farthestPoints.Add(point);
-                        distances.Add(distance);
-                    }
-                }
-
-                if (farthestPoints.Count > 0)
-                {
-                    // Sort by distance descending
-                    var sortedPoints = farthestPoints.Zip(distances, (p, d) => new { Point = p, Distance = d })
-                                                     .OrderByDescending(pd => pd.Distance)
-                                                     .Take(3)
-                                                     .ToList();
-
-                    // Pick one randomly from the top 3
-                    Transform chosenPoint = sortedPoints[Random.Range(0, sortedPoints.Count)].Point;
+                    // Pick one of the top 3 farthest
+                    Transform chosenPoint = reachablePoints[Random.Range(0, reachablePoints.Count)];
                     destination = chosenPoint.position;
-                    Debug.Log("Going to: " + chosenPoint.name);
-                    agent.SetDestination(destination);
-                    agent.speed = roamSpeed;
-
-                    yield return new WaitUntil(() => HasReachedDestination());
-                    yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
+                    Debug.Log($"[Roam] Picking point of interest: {chosenPoint.name}");
                 }
                 else
                 {
-                    continue; // No reachable point found, try again
+                    destination = GetRandomRoamPosition();
+                    Debug.Log("[Roam] Picking random roam position (10% chance).");
                 }
             }
             else
             {
-                Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
-                randomDirection += transform.position;
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
-                {
-                    if (CanReachDestination(hit.position))
-                    {
-                        destination = hit.position;
-                        agent.SetDestination(destination);
-                        agent.speed = roamSpeed;
+                // No reachable points, fallback to random
+                destination = GetRandomRoamPosition();
+                Debug.LogWarning("[Roam] No reachable points of interest found! Using random roam position.");
+            }
 
-                        yield return new WaitUntil(() => HasReachedDestination());
-                        yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
-                    }
-                    else
-                    {
-                        continue; // Skip and try again
-                    }
-                }
-                else
-                {
-                    continue; // Skip and try again
-                }
+            if (destination != Vector3.zero)
+            {
+                agent.SetDestination(destination);
+                agent.speed = roamSpeed;
+
+                yield return new WaitUntil(() => HasReachedDestination());
+                yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
+            }
+            else
+            {
+                Debug.LogError("[Roam] Failed to find any valid destination. Retrying...");
+                yield return null; // Small delay before retrying
             }
         }
     }
+
+    Vector3 GetRandomRoamPosition()
+    {
+        for (int i = 0; i < 10; i++) // Try up to 10 times
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
+            randomDirection += transform.position;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
+            {
+                if (CanReachDestination(hit.position))
+                {
+                    return hit.position;
+                }
+            }
+        }
+        return Vector3.zero; // Failed after attempts
+    }
+
+
 
     void StartSearching()
     {
@@ -331,7 +339,13 @@ public class MonsterAI : MonoBehaviour
     {
         NavMeshPath path = new NavMeshPath();
         bool hasPath = agent.CalculatePath(destination, path);
-        return hasPath && path.status == NavMeshPathStatus.PathComplete;
+
+        if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
+        {
+            Debug.LogWarning($"[CanReachDestination] Can't reach {destination}. Path status: {path.status}");
+            return false;
+        }
+        return true;
     }
 
     bool HasReachedDestination()
