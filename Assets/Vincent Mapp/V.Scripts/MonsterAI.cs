@@ -29,6 +29,10 @@ public class MonsterAI : MonoBehaviour
     public Transform visionPoint;
     public BoxCollider chasecollider;
 
+    private List<Vector3> lastVisitedPositions = new List<Vector3>();
+    private int maxMemory = 5; // Monster remembers last 5 locations
+
+
 
     private Movement movement;
     private NavMeshAgent agent;
@@ -78,15 +82,16 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
-
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", speed);
+
+        bool canSeePlayer = CanSeePlayer(); // Avoid redundant calls
         CheckPlayer();
 
-        if (currentState != lastState) // Detect when state changes
+        if (currentState != lastState)
         {
-            HandleSounds(); // Restart sounds when state changes
-            lastState = currentState; // Update last known state
+            HandleSounds();
+            lastState = currentState;
         }
 
         if (currentState == State.Chasing && movement.isHidden)
@@ -94,7 +99,7 @@ public class MonsterAI : MonoBehaviour
             Debug.Log("Player is hidden, starting search...");
             StartSearching();
         }
-        else if (CanSeePlayer())
+        else if (canSeePlayer)
         {
             movement.isSpotted = true;
             currentState = State.Chasing;
@@ -102,12 +107,13 @@ public class MonsterAI : MonoBehaviour
             agent.speed = chaseSpeed;
             agent.SetDestination(player.position);
         }
-        else if (!CanSeePlayer() && currentState == State.Chasing)
+        else if (!canSeePlayer && currentState == State.Chasing)
         {
             movement.isSpotted = false;
             StartSearching();
         }
     }
+
 
     void HandleSounds()
     {
@@ -121,34 +127,29 @@ public class MonsterAI : MonoBehaviour
 
     IEnumerator PlaySound()
     {
-        while (true) // Keep checking state
+        while (true)
         {
-            if (!au.isPlaying) // Play a new sound only when audio stops
+            if (!au.isPlaying)
             {
-                AudioClip[] soundArray = null;
+                AudioClip[] soundArray = currentState switch
+                {
+                    State.Roaming or State.Searching or State.Investigating => monsterroamsounds,
+                    State.Chasing => monsterchasesound,
+                    _ => null
+                };
 
-                if (currentState == State.Roaming || currentState == State.Searching || currentState == State.Investigating)
+                if (soundArray?.Length > 0)
                 {
-                    soundArray = monsterroamsounds;
-                    au.pitch = 1f;
-                }
-                else if (currentState == State.Chasing)
-                {
-                    soundArray = monsterchasesound;
-                    au.pitch = 0.85f;
-                }
-
-                if (soundArray != null && soundArray.Length > 0)
-                {
-                    int randomIndex = Random.Range(0, soundArray.Length);
-                    au.clip = soundArray[randomIndex];
+                    au.clip = soundArray[Random.Range(0, soundArray.Length)];
+                    au.pitch = (currentState == State.Chasing) ? 0.85f : 1f;
                     au.Play();
                 }
             }
 
-            yield return new WaitForSeconds(1f); // Keep checking state changes
+            yield return new WaitForSeconds(1f);
         }
     }
+
 
 
     void CheckPlayer()
@@ -215,33 +216,47 @@ public class MonsterAI : MonoBehaviour
         {
             Vector3 destination = Vector3.zero;
 
-            // Filter reachable pointsOfInterest once
-            var reachablePoints = pointsOfInterest
-                .Where(p => CanReachDestination(p.position))
-                .OrderByDescending(p => Vector3.Distance(transform.position, p.position))
-                .Take(3)
-                .ToList();
-
-            if (reachablePoints.Count > 0)
+            // 20% chance to pick a completely random location (wandering mode)
+            if (Random.value < 0.2f)
             {
-                if (Random.value < 0.9f) // 90% chance
-                {
-                    // Pick one of the top 3 farthest
-                    Transform chosenPoint = reachablePoints[Random.Range(0, reachablePoints.Count)];
-                    destination = chosenPoint.position;
-                    Debug.Log($"[Roam] Picking point of interest: {chosenPoint.name}");
-                }
-                else
-                {
-                    destination = GetRandomRoamPosition();
-                    Debug.Log("[Roam] Picking random roam position (10% chance).");
-                }
+                destination = GetRandomRoamPosition();
+                Debug.Log("[Roam] Choosing completely random exploration!");
             }
             else
             {
-                // No reachable points, fallback to random
-                destination = GetRandomRoamPosition();
-                Debug.LogWarning("[Roam] No reachable points of interest found! Using random roam position.");
+                // Normal targeted roaming behavior
+                if (pointsOfInterest.Length > 0)
+                {
+                    var reachablePoints = pointsOfInterest
+                        .Where(p => CanReachDestination(p.position))
+                        .OrderByDescending(p => Vector3.Distance(transform.position, p.position)) // Prioritize farther points
+                        .Take(4) // Select top 4 farthest points
+                        .ToList();
+
+                    if (reachablePoints.Count > 0)
+                    {
+                        // Avoid recently visited locations
+                        var filteredPoints = reachablePoints
+                            .Where(p => !lastVisitedPositions.Contains(p.position))
+                            .ToList();
+
+                        if (filteredPoints.Count > 0)
+                        {
+                            destination = filteredPoints[Random.Range(0, filteredPoints.Count)].position;
+                        }
+                        else
+                        {
+                            destination = reachablePoints[Random.Range(0, reachablePoints.Count)].position;
+                        }
+
+                        // Store last visited positions
+                        lastVisitedPositions.Add(destination);
+                        if (lastVisitedPositions.Count > maxMemory)
+                        {
+                            lastVisitedPositions.RemoveAt(0);
+                        }
+                    }
+                }
             }
 
             if (destination != Vector3.zero)
@@ -249,25 +264,29 @@ public class MonsterAI : MonoBehaviour
                 agent.SetDestination(destination);
                 agent.speed = roamSpeed;
 
-                yield return new WaitUntil(() => HasReachedDestination());
+                yield return new WaitUntil(HasReachedDestination);
                 yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
             }
             else
             {
-                Debug.LogError("[Roam] Failed to find any valid destination. Retrying...");
+                Debug.LogWarning("[Roam] No valid destination found! Retrying...");
                 yield return null; // Small delay before retrying
             }
         }
     }
 
+
+
+
     Vector3 GetRandomRoamPosition()
     {
         for (int i = 0; i < 10; i++) // Try up to 10 times
         {
-            Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
+            Vector3 randomDirection = Random.insideUnitSphere * roamRadius * 3f; // Increase roam radius
             randomDirection += transform.position;
+
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius * 3f, NavMesh.AllAreas))
             {
                 if (CanReachDestination(hit.position))
                 {
@@ -275,8 +294,9 @@ public class MonsterAI : MonoBehaviour
                 }
             }
         }
-        return Vector3.zero; // Failed after attempts
+        return Vector3.zero; // Fallback if no valid point is found
     }
+
 
 
 
@@ -350,22 +370,15 @@ public class MonsterAI : MonoBehaviour
 
     bool HasReachedDestination()
     {
-        if(currentState == State.Chasing && movement.isHidden)
-        {
+        if (currentState == State.Chasing && movement.isHidden)
             return true;
-        }
-        if (!agent.pathPending) // Make sure path calculation is done
-        {
-            if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) // Ensure agent has stopped moving
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+
+        if (agent.pathPending) return false;
+
+        return (agent.remainingDistance <= agent.stoppingDistance) &&
+               (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
     }
+
 
 
 
