@@ -54,6 +54,7 @@ public class MonsterAI : MonoBehaviour
     {
         movement = player.GetComponent<Movement>();
         agent = GetComponent<NavMeshAgent>();
+        currentState = State.Roaming;
         StartCoroutine(Roam());
 
         GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("points");
@@ -65,7 +66,7 @@ public class MonsterAI : MonoBehaviour
             pointsOfInterest[i] = gameObjectsWithTag[i].transform;
         }
 
-
+        
         HandleSounds();
 
         started = true;
@@ -73,8 +74,8 @@ public class MonsterAI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (started)
-            StartCoroutine(Roam());
+        currentState = State.Roaming;
+        StartCoroutine(Roam());
     }
 
 

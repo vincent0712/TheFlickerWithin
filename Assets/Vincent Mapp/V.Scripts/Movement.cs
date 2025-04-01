@@ -270,6 +270,9 @@ public class Movement : MonoBehaviour
             if (userCrouching && isHidden && !isincloset)
                 return;
 
+            if (isHidden && !isincloset)
+                return;
+
             isCrouching = !isCrouching;
 
             characterController.height = isCrouching ? 0.6f : 1.15f;
