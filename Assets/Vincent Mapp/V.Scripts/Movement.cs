@@ -152,13 +152,7 @@ public class Movement : MonoBehaviour
         else if (other.CompareTag("nostandzone")) // Player enters No-Stand Zone
         {
             isInNoStandZone = true;
-            if (!isCrouching)
-            {
-                characterController.height = 0.6f; // Force crouch
-                if (crouchRoutine != null)
-                    StopCoroutine(crouchRoutine);
-                crouchRoutine = StartCoroutine(CrouchTransition(true, false));
-            }
+            ForceCrouch(); // Immediately force crouch
         }
     }
 
@@ -176,10 +170,18 @@ public class Movement : MonoBehaviour
         else if (other.CompareTag("nostandzone")) // Player exits No-Stand Zone
         {
             isInNoStandZone = false;
-            if (crouchRoutine != null)
-                StopCoroutine(crouchRoutine);
-            crouchRoutine = StartCoroutine(CrouchTransition(false, false));
         }
+    }
+
+    void ForceCrouch()
+    {
+        isCrouching = true;
+        characterController.height = 0.6f; // Force player to crouch
+
+        if (crouchRoutine != null)
+            StopCoroutine(crouchRoutine);
+
+        crouchRoutine = StartCoroutine(CrouchTransition(true, false));
     }
 
 
@@ -262,29 +264,23 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
+            if (isInNoStandZone)
+                return; // Block standing if inside No-Stand Zone
+
             if (userCrouching && isHidden && !isincloset)
                 return;
 
-            if (isInNoStandZone && !isCrouching)
-                return; // Prevent standing if in No-Stand Zone
+            isCrouching = !isCrouching;
 
-            if (!isCrouching)
-            {
-                characterController.height = 0.6f;
-            }
-            else if (isCrouching && !isInNoStandZone) // Allow standing only outside No-Stand Zone
-            {
-                characterController.height = 1.15f;
-            }
-
-            userCrouching = !userCrouching;
+            characterController.height = isCrouching ? 0.6f : 1.15f;
 
             if (crouchRoutine != null)
                 StopCoroutine(crouchRoutine);
 
-            crouchRoutine = StartCoroutine(CrouchTransition(userCrouching, false));
+            crouchRoutine = StartCoroutine(CrouchTransition(isCrouching, false));
         }
     }
+
 
     IEnumerator CrouchTransition(bool crouching, bool laydown)
     {

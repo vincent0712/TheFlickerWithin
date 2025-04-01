@@ -59,7 +59,7 @@ public class MickyMouse : MonoBehaviour
 
     void PlayFleeSound()
     {
-        au.pitch = Random.Range(0.85f, 1.15f);
+        au.pitch = Random.Range(1.25f, 1.35f);
         au.Play();
     }
 
