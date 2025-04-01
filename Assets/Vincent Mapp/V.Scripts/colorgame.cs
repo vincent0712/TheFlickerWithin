@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class colorgame : MonoBehaviour
 {
@@ -13,9 +14,16 @@ public class colorgame : MonoBehaviour
     private Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow };
     private string[] colorNames = { "Red", "Blue", "Green", "Yellow" };
 
+    private bool cangetpoint = true;
+
+    private Fusebox fuse;
+    private AudioSource fuseaudio;
     void Start()
     {
         GeneratePuzzle();
+
+        fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
     }
 
     void GeneratePuzzle()
@@ -47,6 +55,9 @@ public class colorgame : MonoBehaviour
     {
         if (playerInput.Count != 4) return;
 
+        if (!cangetpoint)
+            return;
+
         for (int i = 0; i < 4; i++)
         {
             if (playerInput[i] != correctSequence[i])
@@ -58,5 +69,9 @@ public class colorgame : MonoBehaviour
         }
 
         Debug.Log("Correct Sequence! Puzzle Solved.");
+
+        fuse.PuzzlesCompleted++;
+        cangetpoint = false;
+        fuseaudio.Play();
     }
 }
