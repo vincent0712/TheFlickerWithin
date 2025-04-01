@@ -29,6 +29,10 @@ public class MonsterAI : MonoBehaviour
     public Transform visionPoint;
     public BoxCollider chasecollider;
 
+    private List<Vector3> lastVisitedPositions = new List<Vector3>();
+    private int maxMemory = 5; // Monster remembers last 5 locations
+
+
 
     private Movement movement;
     private NavMeshAgent agent;
@@ -38,9 +42,12 @@ public class MonsterAI : MonoBehaviour
     public Animator anim;
     public float spawnTimer = 15f;
     public AudioSource au;
+    public Flashlight flashlight;
 
     private Coroutine soundCoroutine;
     private State lastState; // Keep track of the last state
+    private bool started = false;
+
 
 
     void Start()
@@ -61,21 +68,30 @@ public class MonsterAI : MonoBehaviour
 
         HandleSounds();
 
+        started = true;
     }
+
+    private void OnEnable()
+    {
+        if (started)
+            StartCoroutine(Roam());
+    }
+
 
 
 
     void Update()
     {
-
         float speed = agent.velocity.magnitude;
         anim.SetFloat("Speed", speed);
+
+        bool canSeePlayer = CanSeePlayer(); // Avoid redundant calls
         CheckPlayer();
 
-        if (currentState != lastState) // Detect when state changes
+        if (currentState != lastState)
         {
-            HandleSounds(); // Restart sounds when state changes
-            lastState = currentState; // Update last known state
+            HandleSounds();
+            lastState = currentState;
         }
 
         if (currentState == State.Chasing && movement.isHidden)
@@ -83,7 +99,7 @@ public class MonsterAI : MonoBehaviour
             Debug.Log("Player is hidden, starting search...");
             StartSearching();
         }
-        else if (CanSeePlayer())
+        else if (canSeePlayer)
         {
             movement.isSpotted = true;
             currentState = State.Chasing;
@@ -91,12 +107,13 @@ public class MonsterAI : MonoBehaviour
             agent.speed = chaseSpeed;
             agent.SetDestination(player.position);
         }
-        else if (!CanSeePlayer() && currentState == State.Chasing)
+        else if (!canSeePlayer && currentState == State.Chasing)
         {
             movement.isSpotted = false;
             StartSearching();
         }
     }
+
 
     void HandleSounds()
     {
@@ -110,34 +127,29 @@ public class MonsterAI : MonoBehaviour
 
     IEnumerator PlaySound()
     {
-        while (true) // Keep checking state
+        while (true)
         {
-            if (!au.isPlaying) // Play a new sound only when audio stops
+            if (!au.isPlaying)
             {
-                AudioClip[] soundArray = null;
+                AudioClip[] soundArray = currentState switch
+                {
+                    State.Roaming or State.Searching or State.Investigating => monsterroamsounds,
+                    State.Chasing => monsterchasesound,
+                    _ => null
+                };
 
-                if (currentState == State.Roaming || currentState == State.Searching || currentState == State.Investigating)
+                if (soundArray?.Length > 0)
                 {
-                    soundArray = monsterroamsounds;
-                    au.pitch = 1f;
-                }
-                else if (currentState == State.Chasing)
-                {
-                    soundArray = monsterchasesound;
-                    au.pitch = 0.85f;
-                }
-
-                if (soundArray != null && soundArray.Length > 0)
-                {
-                    int randomIndex = Random.Range(0, soundArray.Length);
-                    au.clip = soundArray[randomIndex];
+                    au.clip = soundArray[Random.Range(0, soundArray.Length)];
+                    au.pitch = (currentState == State.Chasing) ? 0.85f : 1f;
                     au.Play();
                 }
             }
 
-            yield return new WaitForSeconds(1f); // Keep checking state changes
+            yield return new WaitForSeconds(1f);
         }
     }
+
 
 
     void CheckPlayer()
@@ -147,18 +159,26 @@ public class MonsterAI : MonoBehaviour
         if (movement.isHidden)
         {
             movement.isSpotted = false;
-            
         }
 
         if (currentState == State.Chasing)
         {
             chasecollider.enabled = true;
+            if (flashlight != null && flashlight.gameObject.activeInHierarchy)
+            {
+                flashlight.StartFlickering(true);  // Force flicker
+            }
         }
-        else if (currentState != State.Chasing)
+        else
         {
             chasecollider.enabled = false;
+            if (flashlight != null && flashlight.gameObject.activeInHierarchy)
+            {
+                flashlight.StopFlickering();
+            }
         }
     }
+
 
 
 
@@ -194,74 +214,91 @@ public class MonsterAI : MonoBehaviour
     {
         while (currentState == State.Roaming)
         {
-            Vector3 destination;
+            Vector3 destination = Vector3.zero;
 
-            if (Random.value > 0.35f && pointsOfInterest.Length > 0)
+            // 20% chance to pick a completely random location (wandering mode)
+            if (Random.value < 0.2f)
             {
-                List<Transform> farthestPoints = new List<Transform>();
-                List<float> distances = new List<float>();
-
-                foreach (Transform point in pointsOfInterest)
-                {
-                    float distance = Vector3.Distance(transform.position, point.position);
-                    if (CanReachDestination(point.position))
-                    {
-                        farthestPoints.Add(point);
-                        distances.Add(distance);
-                    }
-                }
-
-                if (farthestPoints.Count > 0)
-                {
-                    // Sort by distance descending
-                    var sortedPoints = farthestPoints.Zip(distances, (p, d) => new { Point = p, Distance = d })
-                                                     .OrderByDescending(pd => pd.Distance)
-                                                     .Take(3)
-                                                     .ToList();
-
-                    // Pick one randomly from the top 3
-                    Transform chosenPoint = sortedPoints[Random.Range(0, sortedPoints.Count)].Point;
-                    destination = chosenPoint.position;
-                    Debug.Log("Going to: " + chosenPoint.name);
-                    agent.SetDestination(destination);
-                    agent.speed = roamSpeed;
-
-                    yield return new WaitUntil(() => HasReachedDestination());
-                    yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
-                }
-                else
-                {
-                    continue; // No reachable point found, try again
-                }
+                destination = GetRandomRoamPosition();
+                Debug.Log("[Roam] Choosing completely random exploration!");
             }
             else
             {
-                Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
-                randomDirection += transform.position;
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
+                // Normal targeted roaming behavior
+                if (pointsOfInterest.Length > 0)
                 {
-                    if (CanReachDestination(hit.position))
-                    {
-                        destination = hit.position;
-                        agent.SetDestination(destination);
-                        agent.speed = roamSpeed;
+                    var reachablePoints = pointsOfInterest
+                        .Where(p => CanReachDestination(p.position))
+                        .OrderByDescending(p => Vector3.Distance(transform.position, p.position)) // Prioritize farther points
+                        .Take(4) // Select top 4 farthest points
+                        .ToList();
 
-                        yield return new WaitUntil(() => HasReachedDestination());
-                        yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
-                    }
-                    else
+                    if (reachablePoints.Count > 0)
                     {
-                        continue; // Skip and try again
+                        // Avoid recently visited locations
+                        var filteredPoints = reachablePoints
+                            .Where(p => !lastVisitedPositions.Contains(p.position))
+                            .ToList();
+
+                        if (filteredPoints.Count > 0)
+                        {
+                            destination = filteredPoints[Random.Range(0, filteredPoints.Count)].position;
+                        }
+                        else
+                        {
+                            destination = reachablePoints[Random.Range(0, reachablePoints.Count)].position;
+                        }
+
+                        // Store last visited positions
+                        lastVisitedPositions.Add(destination);
+                        if (lastVisitedPositions.Count > maxMemory)
+                        {
+                            lastVisitedPositions.RemoveAt(0);
+                        }
                     }
                 }
-                else
-                {
-                    continue; // Skip and try again
-                }
+            }
+
+            if (destination != Vector3.zero)
+            {
+                agent.SetDestination(destination);
+                agent.speed = roamSpeed;
+
+                yield return new WaitUntil(HasReachedDestination);
+                yield return new WaitForSeconds(Random.Range(roamWaitTimeMin, roamWaitTimeMax));
+            }
+            else
+            {
+                Debug.LogWarning("[Roam] No valid destination found! Retrying...");
+                yield return null; // Small delay before retrying
             }
         }
     }
+
+
+
+
+    Vector3 GetRandomRoamPosition()
+    {
+        for (int i = 0; i < 10; i++) // Try up to 10 times
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * roamRadius * 3f; // Increase roam radius
+            randomDirection += transform.position;
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius * 3f, NavMesh.AllAreas))
+            {
+                if (CanReachDestination(hit.position))
+                {
+                    return hit.position;
+                }
+            }
+        }
+        return Vector3.zero; // Fallback if no valid point is found
+    }
+
+
+
 
     void StartSearching()
     {
@@ -322,27 +359,26 @@ public class MonsterAI : MonoBehaviour
     {
         NavMeshPath path = new NavMeshPath();
         bool hasPath = agent.CalculatePath(destination, path);
-        return hasPath && path.status == NavMeshPathStatus.PathComplete;
+
+        if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
+        {
+            Debug.LogWarning($"[CanReachDestination] Can't reach {destination}. Path status: {path.status}");
+            return false;
+        }
+        return true;
     }
 
     bool HasReachedDestination()
     {
-        if(currentState == State.Chasing && movement.isHidden)
-        {
+        if (currentState == State.Chasing && movement.isHidden)
             return true;
-        }
-        if (!agent.pathPending) // Make sure path calculation is done
-        {
-            if (agent.remainingDistance <= agent.stoppingDistance) // Check if the agent is at the destination
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) // Ensure agent has stopped moving
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+
+        if (agent.pathPending) return false;
+
+        return (agent.remainingDistance <= agent.stoppingDistance) &&
+               (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
     }
+
 
 
 

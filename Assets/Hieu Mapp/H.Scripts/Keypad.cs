@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Keypad : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Keypad : MonoBehaviour
     public AudioClip unsuccessSound;
     public AudioClip music;
     AudioSource audioSource;
+    public Transform[] pointsspawn;
 
     private MonsterAI monster;
     public TextMeshPro playerAnswer;
@@ -31,6 +33,9 @@ public class Keypad : MonoBehaviour
         fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
         fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
         monster = GameObject.FindGameObjectWithTag("monster").GetComponent<MonsterAI>();
+
+        Transform chosenPoint = pointsspawn[Random.Range(0, pointsspawn.Length)];
+        tmpText.transform.position = chosenPoint.transform.position;
 
         playerInput = "";
 

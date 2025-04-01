@@ -22,6 +22,19 @@ public class SwitchPuzzle : MonoBehaviour
         au = gameObject.GetComponent<AudioSource>();
         fuseaudio = GameObject.FindGameObjectWithTag("fuse").GetComponent<AudioSource>();
         fuse = GameObject.FindGameObjectWithTag("fuse").GetComponent<Fusebox>();
+        ShuffleArray(correctCombination);
+    }
+
+    void ShuffleArray(bool[] array)
+    {
+        System.Random rand = new System.Random();
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            int j = rand.Next(i + 1);
+            bool temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
     }
 
     public void Interactwithpuzzle()

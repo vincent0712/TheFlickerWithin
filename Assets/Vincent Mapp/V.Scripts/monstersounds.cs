@@ -7,6 +7,7 @@ public class monstersounds : MonoBehaviour
 
     public AudioSource au;
     public float delay = 2f;
+    public GameObject blood;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class monstersounds : MonoBehaviour
     IEnumerator endgameeee()
     {
         yield return new WaitForSeconds(delay);
+        blood.SetActive(true);
         au.Play();
 
     }

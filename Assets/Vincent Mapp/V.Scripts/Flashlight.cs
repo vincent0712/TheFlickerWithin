@@ -9,6 +9,7 @@ public class Flashlight : MonoBehaviour
     public bool isreallyon = true;
     public bool isFlickering = false;
     private AudioSource aud;
+    private Coroutine flickerCoroutine;
     private Transform flashlightPoint;
 
     public bool canflicker = true;
@@ -90,5 +91,30 @@ public class Flashlight : MonoBehaviour
 
         flashlight.intensity = isreallyon ? intensity : 0f;  // Ensure flashlight returns to correct state
         isFlickering = false;
+    }
+
+    public void StartFlickering(bool forceFlicker)
+    {
+        if (!gameObject.activeInHierarchy) return;
+
+        if (forceFlicker || (!isFlickering && isreallyon && canflicker))
+        {
+            if (flickerCoroutine == null)
+            {
+                flickerCoroutine = StartCoroutine(FlickerLoop());
+            }
+        }
+    }
+
+
+    public void StopFlickering()
+    {
+        if (flickerCoroutine != null)
+        {
+            StopCoroutine(flickerCoroutine);
+            flashlight.intensity = isreallyon ? intensity : 0f;
+            isFlickering = false;
+            flickerCoroutine = null;
+        }
     }
 }

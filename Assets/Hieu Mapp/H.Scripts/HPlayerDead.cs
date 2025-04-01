@@ -10,6 +10,7 @@ public class HPlayerDead : MonoBehaviour
     public GameObject player;
     public GameObject endgame;
     public Transform point;
+    public GameObject flashlight;
 
 
     public void Start()
@@ -22,9 +23,9 @@ public class HPlayerDead : MonoBehaviour
         {
 
             Instantiate(endgamemonster, point.transform.position, point.transform.rotation);
+            flashlight.SetActive(false);
             player.SetActive(false);
             monster.SetActive(false);
-
             Instantiate(endgame);
 
 
