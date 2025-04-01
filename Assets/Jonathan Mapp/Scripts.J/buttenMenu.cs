@@ -31,7 +31,9 @@ public class buttenMenu : MonoBehaviour
     public IEnumerator wait(string name)
     {
         fade.Play("fadeout");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1;
         SceneManager.LoadScene(name);
     }
+
 }

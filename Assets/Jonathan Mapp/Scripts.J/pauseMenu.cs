@@ -5,18 +5,18 @@ public class pauseMenu : MonoBehaviour
 
     public GameObject pausePanal;
 
-    private GameObject player;
+    public Movement player;
     private bool isPaused;
 
     void Start()
     {
-        player = GameObject.FindWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Movement>();
         pausePanal.SetActive(false);
         isPaused = false;
     }
     void Update()
     {
-        if (Input.GetButtonDown("Escape"))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
             {
@@ -32,7 +32,7 @@ public class pauseMenu : MonoBehaviour
     private void PauseGame()
     {
         pausePanal.SetActive(true);
-        player.GetComponent<MPlayermovement>().canmove = false;
+        player.canmove = false;
         isPaused = true;
         Cursor.lockState = CursorLockMode.Confined;
         Time.timeScale = 0;
@@ -41,7 +41,7 @@ public class pauseMenu : MonoBehaviour
     public void ResumeGame()
     {
         pausePanal.SetActive(false);
-        player.GetComponent<MPlayermovement>().canmove = true;
+        player.canmove = true;
         isPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1;
