@@ -108,25 +108,28 @@ public class MickyMouse : MonoBehaviour
     {
         if (mouseHoles.Contains(other.transform))
         {
-            StartCoroutine(TeleportToNewHole());
+            TeleportToNewHole();
         }
     }
 
-    IEnumerator TeleportToNewHole()
+    public void TeleportToNewHole()
     {
         agent.isStopped = true; // Stop the NavMeshAgent before warping
-        yield return new WaitForEndOfFrame(); // Wait a frame to let Unity process physics updates
+
 
         // Pick a different hole for the next escape
         Transform newHole = mouseHoles[Random.Range(0, mouseHoles.Count)];
+
+        /*
         while (newHole == lastHoleUsed && mouseHoles.Count > 1)
         {
             newHole = mouseHoles[Random.Range(0, mouseHoles.Count)];
         }
-
+        */
         lastHoleUsed = newHole;
-        agent.Warp(newHole.position); // Move the mouse instantly
-        yield return new WaitForSeconds(0.1f); // Short delay to let Unity process the teleport
+        agent.Warp(newHole.transform.position); // Move the mouse instantly
+        //yield return new WaitForSeconds(1f); // Short delay to let Unity process the teleport
+        Debug.Log("försök teleportera");
 
         agent.isStopped = false; // Resume movement
         fleeing = false;
