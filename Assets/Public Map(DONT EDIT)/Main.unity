@@ -27823,6 +27823,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: faece21859f54af468b3ce1f755368b1, type: 3}
   - {fileID: 8300000, guid: 29c00fdae520fc441b50f185f2a7d6ae, type: 3}
   - {fileID: 8300000, guid: 67cddfb7357aca14c9ebc57b3896579c, type: 3}
+  player: {fileID: 1294164669}
+  monster: {fileID: 1555445457}
+  maxShakeMagnitude: 1
+  maxDistance: 15
+  minDistance: 5
 --- !u!1001 &541413038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35330,7 +35335,7 @@ Transform:
   - {fileID: 593179936}
   - {fileID: 296408534}
   - {fileID: 76879212}
-  m_Father: {fileID: 1030541422}
+  m_Father: {fileID: 1962120789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &691379518
 MonoBehaviour:
@@ -53539,38 +53544,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1030415387}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1030541421
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1030541422}
-  m_Layer: 0
-  m_Name: camholder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1030541422
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030541421}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.55, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 691379517}
-  m_Father: {fileID: 1294164669}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1031189419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65416,7 +65389,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1030541422}
+  - {fileID: 1962120789}
   - {fileID: 776824941}
   - {fileID: 154344395}
   - {fileID: 687033976}
@@ -65745,9 +65718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28c32fde73de08c4d9f24327ae5c5db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraHolder: {fileID: 1030541422}
   cam: {fileID: 691379519}
-  playerCamera: {fileID: 691379519}
   interactDistance: 3.25
   rayDistance: 3.25
   interactableLayer:
@@ -65837,7 +65808,6 @@ MonoBehaviour:
   canmove: 1
   currentSpeed: 0
   acceleration: 5
-  cameraHolder: {fileID: 1030541422}
   stamina: 11.5
   maxStamina: 11.5
   staminaDrain: 2
@@ -65848,7 +65818,7 @@ MonoBehaviour:
   runningbreath: {fileID: 8300000, guid: 0604343b69fb8ce42ac56d0073e0f012, type: 3}
   breating: {fileID: 1294164685}
   mouseSensitivity: 1.4
-  playerCamera: {fileID: 691379517}
+  playerCamera: {fileID: 1962120789}
   crouchCameraHeight: 0.1
   standingCameraHeight: 1.55
   crouchTransitionSpeed: 3.25
@@ -77944,7 +77914,7 @@ MonoBehaviour:
   baseVisionRange: 15
   crouchingVisionRange: 10
   fieldOfView: 77
-  hearingRange: 22
+  hearingRange: 25
   chaseSpeed: 5
   roamSpeed: 1.15
   searchTime: 5
@@ -93689,6 +93659,38 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1957643061}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1962120788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1962120789}
+  m_Layer: 0
+  m_Name: camholder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1962120789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962120788}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.55, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 691379517}
+  m_Father: {fileID: 1294164669}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1963661503
 PrefabInstance:
   m_ObjectHideFlags: 0
