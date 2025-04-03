@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class Mcamswitch : MonoBehaviour
 {
@@ -14,10 +15,12 @@ public class Mcamswitch : MonoBehaviour
     public GameObject flashlight;
     public MeshRenderer monster;
     public SkinnedMeshRenderer monsterrenderer;
-    public TextMeshProUGUI batterytext;
+    
     public bool camison = false;
     public float battery = 100f;
     public bool isCameraUnlocked;
+    public GameObject camerahud;
+    public Image[] batteryBars;
 
 
 
@@ -88,10 +91,19 @@ public class Mcamswitch : MonoBehaviour
             }
         }
     }
+    void UpdateBatteryMeter()
+    {
+        int activeBars = Mathf.Clamp(Mathf.CeilToInt((battery - 10f) / 22.5f), 0, 4); // Adjust so 0 bars means 10%
+
+        for (int i = 0; i < batteryBars.Length; i++)
+        {
+            batteryBars[i].enabled = i < activeBars; // Enable bars based on battery level
+        }
+    }
 
     void Update()
     {
-
+        UpdateBatteryMeter();
         if (battery > 0 && !canuse)
         {
             canuse = true;
@@ -126,7 +138,7 @@ public class Mcamswitch : MonoBehaviour
             if (camison && battery > 0)
             {
                 battery -= 1;
-                batterytext.text = "Battery: " + battery;
+                
 
                 if (battery <= 0)
                 {
@@ -149,7 +161,7 @@ public class Mcamswitch : MonoBehaviour
         {
             EnableNightVision();
             FindObjectOfType<PaintingToggle>().TogglePaintings(true);
-            batterytext.enabled = true;
+            
             camison = true;
         }
         else
@@ -189,9 +201,11 @@ public class Mcamswitch : MonoBehaviour
     {
         isNightVision = true;
         videocamera.SetActive(false);
-        batterytext.enabled = isNightVision;
-        monsterrenderer.enabled = isNightVision;
         
+        monsterrenderer.enabled = isNightVision;
+        camerahud.SetActive(isNightVision);
+
+
 
 
 
@@ -233,12 +247,13 @@ public class Mcamswitch : MonoBehaviour
     private void DisableNightVision()
     {
         FindObjectOfType<PaintingToggle>().TogglePaintings(false);
-        batterytext.enabled = false;
+        
         videocamera.SetActive(true);
         isNightVision = false;
-        batterytext.enabled = isNightVision;
-        monsterrenderer.enabled = isNightVision;
         
+        monsterrenderer.enabled = isNightVision;
+        camerahud.SetActive(isNightVision);
+
 
 
         if (nightvisionlight != null)
