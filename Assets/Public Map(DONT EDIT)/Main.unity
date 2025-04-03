@@ -27825,9 +27825,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 67cddfb7357aca14c9ebc57b3896579c, type: 3}
   player: {fileID: 1294164669}
   monster: {fileID: 1555445457}
-  maxShakeMagnitude: 1
-  maxDistance: 15
-  minDistance: 5
+  maxShakeMagnitude: 0.75
+  maxDistance: 12
+  minDistance: 4
 --- !u!1001 &541413038
 PrefabInstance:
   m_ObjectHideFlags: 0
