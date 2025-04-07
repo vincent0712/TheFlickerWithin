@@ -18,7 +18,7 @@ public class tutorial : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.T) && !anim.isPlaying && !isshowing)
+        if (Input.GetKeyDown(KeyCode.T) && !anim.isPlaying)
         {
             fadein();
         }

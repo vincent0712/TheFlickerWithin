@@ -365,21 +365,13 @@ public class Movement : MonoBehaviour
             {
                 if (isrunning)
                 {
-                    if (monster.isActiveAndEnabled)
-                    {
-                        monster.HearSound(gameObject.transform.position, 0.55f);
-                    }
-                    
+                    monster.HearSound(gameObject.transform.position, 0.55f);
 
 
                 }
                 else
                 {
-                    if(monster.isActiveAndEnabled)
-                    {
-                        monster.HearSound(gameObject.transform.position, 0.65f);
-                    }
-                    
+                    monster.HearSound(gameObject.transform.position, 0.65f);
                 }
             }
 
