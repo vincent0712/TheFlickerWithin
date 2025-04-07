@@ -9,12 +9,14 @@ public class lightswitch : MonoBehaviour, MInteractable
 
     private Animation anim;
     private bool ison = false;
+    private AudioSource au;
     //public string line;
 
     private Onscreentext onScreenText; // Reference to OnScreenText script
 
     void Start()
     {
+        au = gameObject.GetComponent<AudioSource>();
         anim = gameObject.GetComponent<Animation>();
         onScreenText = FindObjectOfType<Onscreentext>();
     }
@@ -25,6 +27,7 @@ public class lightswitch : MonoBehaviour, MInteractable
         {
             anim.Play("flickon");
             onScreenText.ShowText("How Could I Get These To Work", 2f);
+            au.Play();
 
             ison = true;
         }
@@ -32,6 +35,7 @@ public class lightswitch : MonoBehaviour, MInteractable
         {
             anim.Play("flickoff");
             ison = false;
+            au.Play();
         }
     }
 }
