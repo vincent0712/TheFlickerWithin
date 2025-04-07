@@ -8,6 +8,8 @@ public class colorgame : MonoBehaviour
     public GameObject[] buttons; // Assign the 4 button GameObjects
     public TextMeshPro[] clues;  // Assign the 4 TextMeshPro clues in the scene
     public GameObject enterButton; // Assign the enter button
+    public MeshRenderer completelight;
+    public Material completematerial;
 
     private List<int> correctSequence = new List<int>();
     private List<int> playerInput = new List<int>();
@@ -73,5 +75,7 @@ public class colorgame : MonoBehaviour
         fuse.PuzzlesCompleted++;
         cangetpoint = false;
         fuseaudio.Play();
+        completelight.material = completematerial;
+        
     }
 }
