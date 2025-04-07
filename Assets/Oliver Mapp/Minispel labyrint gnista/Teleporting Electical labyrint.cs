@@ -67,7 +67,7 @@ public class Electrical_Labyrint : MonoBehaviour
     {
         isTeleporting = true;
         canMove = false;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         if (particleEffect != null)
         {
