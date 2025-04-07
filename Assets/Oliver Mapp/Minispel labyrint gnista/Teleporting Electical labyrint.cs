@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class Electrical_Labyrint : MonoBehaviour
 {
-    public Transform target; 
-    public LayerMask obsticallayers; 
-    public GameObject particleEffect; 
-    public Vector3[] teleportPositions; 
+    public Transform target;
+    public LayerMask obsticallayers;
+    public GameObject particleEffect;
+    public GameObject[] teleportPositions;
     private bool isTeleporting = false;
     protected NavMeshAgent nav;
     private bool canMove = true;
@@ -31,7 +31,6 @@ public class Electrical_Labyrint : MonoBehaviour
     {
         gameObject.transform.position = gnistaSpawn.transform.position;
         timer.timeRemaining = timer.duration;
-        
     }
 
     void Update()
@@ -52,8 +51,6 @@ public class Electrical_Labyrint : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance <= 20f)
             puzzlehandler.Turnoffgame();
-            
-
     }
 
     // Funktion för att röra sig till målet
@@ -78,11 +75,18 @@ public class Electrical_Labyrint : MonoBehaviour
         }
 
         // Välj en slumpmässig teleportposition från teleportPositions
-        
-        transform.position = start.transform.position;
+        if (teleportPositions.Length > 0)
+        {
+            int randomIndex = Random.Range(0, teleportPositions.Length);
+            Transform randomTeleport = teleportPositions[randomIndex].transform;
 
-        nav.enabled = false;
-        nav.enabled = true;
+            // Flytta objektet och uppdatera NavMeshAgent
+            nav.enabled = false;
+            transform.position = randomTeleport.position;
+            nav.enabled = true;
+
+            nav.Warp(randomTeleport.position);
+        }
 
         isTeleporting = false;
         canMove = true;
