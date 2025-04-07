@@ -21410,7 +21410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &409105249
 Transform:
   m_ObjectHideFlags: 0
@@ -81735,13 +81735,12 @@ MonoBehaviour:
     m_Bits: 0
   particleEffect: {fileID: 0}
   teleportPositions:
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
-  - {x: -981.2, y: 587, z: -101.468}
+  - {x: 846, y: 511, z: -101.468}
+  - {x: -936, y: 198, z: -101.468}
+  - {x: -556, y: 196, z: -101.468}
+  - {x: -285, y: 200, z: -101.468}
+  - {x: -397, y: 514, z: -101.468}
+  - {x: -258, y: 588, z: -101.468}
   gnistaSpawn: {fileID: 318824496}
   timer: {fileID: 63999934}
   puzzlehandler: {fileID: 183270111}
@@ -81830,7 +81829,7 @@ Transform:
   m_GameObject: {fileID: 1607137889}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -981.2, y: 587, z: -101.467995}
+  m_LocalPosition: {x: -851, y: 587, z: -101}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -104714,7 +104713,7 @@ Transform:
   m_GameObject: {fileID: 2130641163}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -186, y: 214, z: 5513}
+  m_LocalPosition: {x: -134, y: 214, z: 5513}
   m_LocalScale: {x: 309.3, y: 315.6, z: 315.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
