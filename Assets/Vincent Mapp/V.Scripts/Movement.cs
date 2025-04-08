@@ -264,7 +264,7 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (isInNoStandZone)
+            if (isInNoStandZone && isCrouching)
                 return; // Block standing if inside No-Stand Zone
 
             if (userCrouching && isHidden && !isincloset)
